@@ -339,6 +339,20 @@ export function useGameLoop(): void {
           // Process expired events (apply coziness penalties)
           // Apply penalties from all expired events and check for lose condition
           if (expiredEvents.length > 0) {
+            // Trigger failure visual feedback for each expired event (Story 4.6)
+            expiredEvents.forEach((event) => {
+              // Trigger event animation (failure)
+              window.dispatchEvent(new CustomEvent('game:eventAnimation', {
+                detail: { eventId: event.id, animation: 'failure' },
+              }));
+            });
+            
+            // Trigger screen shake effect (once for all expired events)
+            window.dispatchEvent(new CustomEvent('game:screenShake'));
+            
+            // Trigger coziness bar flash red
+            window.dispatchEvent(new CustomEvent('game:cozinessBarFlash'));
+            
             // Calculate total penalty from all expired events
             const totalPenalty = expiredEvents.reduce(
               (sum, event) => sum + event.cozinessPenalty,

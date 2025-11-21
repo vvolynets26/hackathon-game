@@ -18,6 +18,7 @@
  * ```
  */
 
+import { useEffect, useState } from 'react';
 import { useGame } from '../../contexts/GameContext';
 import { TRANSLATIONS } from '../../utils/translations';
 import styles from './CozinessBar.module.css';
@@ -72,12 +73,29 @@ function getGradientColors(value: number): { start: string; end: string } {
 export function CozinessBar() {
   const { gameState } = useGame();
   const coziness = gameState.coziness;
+  const [flashRed, setFlashRed] = useState(false);
+  
+  // Listen for custom event to trigger flash red
+  useEffect(() => {
+    const handleFlashRed = () => {
+      setFlashRed(true);
+      setTimeout(() => {
+        setFlashRed(false);
+      }, 300); // Match animation duration
+    };
+    
+    window.addEventListener('game:cozinessBarFlash', handleFlashRed);
+    
+    return () => {
+      window.removeEventListener('game:cozinessBarFlash', handleFlashRed);
+    };
+  }, []);
   
   // Clamp coziness to valid range (0-100)
   const clampedCoziness = Math.max(0, Math.min(100, coziness));
   
-  // Calculate bar fill percentage
-  const fillPercentage = clampedCoziness;
+  // Calculate bar fill percentage (ensure it's a valid number)
+  const fillPercentage = Math.max(0, Math.min(100, clampedCoziness));
   
   // Get gradient colors based on coziness value
   const gradient = getGradientColors(clampedCoziness);
@@ -85,13 +103,24 @@ export function CozinessBar() {
   // Create linear gradient CSS value
   const gradientStyle = `linear-gradient(to right, ${gradient.start}, ${gradient.end})`;
   
+  // Debug logging (only in development)
+  if (import.meta.env.DEV) {
+    console.log('[CozinessBar]', {
+      coziness,
+      clampedCoziness,
+      fillPercentage,
+      gradientStyle,
+      width: `${fillPercentage}%`,
+    });
+  }
+  
   return (
     <div className={styles.cozinessBar}>
       {/* Ukrainian label */}
       <div className={styles.label}>{TRANSLATIONS.gameplay.coziness}</div>
       
       {/* Bar container */}
-      <div className={styles.barContainer}>
+      <div className={`${styles.barContainer} ${flashRed ? styles.flashRed : ''}`}>
         {/* Bar fill with gradient */}
         <div
           className={styles.barFill}
@@ -99,6 +128,10 @@ export function CozinessBar() {
             width: `${fillPercentage}%`,
             background: gradientStyle,
           }}
+          role="progressbar"
+          aria-valuenow={clampedCoziness}
+          aria-valuemin={0}
+          aria-valuemax={100}
         />
         
         {/* Optional value display inside bar */}

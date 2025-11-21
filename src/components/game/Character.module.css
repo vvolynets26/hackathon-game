@@ -308,11 +308,47 @@
 }
 
 /* ============================================================================
-   Future Enhancements (Story 4.5 - Equipped Skins)
+   Character Skins (Story 4.7 - Cosmetic Item Display)
    ============================================================================ */
 
-/* Character skins can be added as CSS classes:
-   .characterVisual.skin-cozy-sweater { ... }
-   .characterVisual.skin-default { ... }
-*/
+/* Base character appearance (default) - already defined above */
+
+/* Cozy Sweater Skin - distinct warm sweater appearance */
+.characterVisual.skin-cozy-sweater .body {
+  background: linear-gradient(
+    135deg,
+    #8b6f47 0%,    /* Warm beige sweater */
+    #7a5f3a 30%,   /* Medium */
+    #6a4f2d 60%,   /* Darker */
+    #5a3f20 100%   /* Deep warm tone */
+  );
+  /* Add subtle pattern/texture for sweater */
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.05) 2px,
+      rgba(255, 255, 255, 0.05) 4px
+    ),
+    linear-gradient(
+      135deg,
+      #8b6f47 0%,
+      #7a5f3a 30%,
+      #6a4f2d 60%,
+      #5a3f20 100%
+    );
+  /* Slightly different border for sweater texture */
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Cozy Sweater Skin - arms match sweater */
+.characterVisual.skin-cozy-sweater .armLeft,
+.characterVisual.skin-cozy-sweater .armRight {
+  background: linear-gradient(
+    135deg,
+    #7a5f3a 0%,
+    #6a4f2d 100%
+  );
+}
 

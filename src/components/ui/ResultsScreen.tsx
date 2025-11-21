@@ -15,7 +15,7 @@
  * 
  * @example
  * ```tsx
- * {gameState.gameOver && <ResultsScreen />}
+ * {gameState.gameOver && <ResultsScreen onShopClick={handleOpenShop} />}
  * ```
  */
 
@@ -42,14 +42,27 @@ interface EveningStartState {
 }
 
 /**
+ * ResultsScreen component props.
+ */
+interface ResultsScreenProps {
+  /** Callback when shop button is clicked */
+  onShopClick: () => void;
+  /** Optional callback when menu button is clicked */
+  onMenuClick?: () => void;
+}
+
+/**
  * ResultsScreen component.
  * 
  * Displays results after evening ends (win or lose).
  * Reads from GameContext and ProgressionContext to show performance metrics.
  * 
+ * @param props - Component props
+ * @param props.onShopClick - Callback when shop button is clicked
+ * @param props.onMenuClick - Optional callback when menu button is clicked
  * @returns React element representing the results screen overlay
  */
-export function ResultsScreen() {
+export function ResultsScreen({ onShopClick, onMenuClick }: ResultsScreenProps) {
   const gameContext = useGame();
   const { gameState } = gameContext;
   const { progressionState } = useProgression();
@@ -118,12 +131,15 @@ export function ResultsScreen() {
     );
   };
   
-  // Handle "Shop" button click (placeholder for Story 4.4)
+  // Handle "Shop" button click
   const handleShop = () => {
-    // TODO: Navigate to shop screen (Story 4.4)
-    // For now, just log that shop button was clicked
-    if (import.meta.env.DEV) {
-      console.log('Shop button clicked - navigation to be implemented in Story 4.4');
+    onShopClick();
+  };
+
+  // Handle "Menu" button click
+  const handleMenu = () => {
+    if (onMenuClick) {
+      onMenuClick();
     }
   };
   
@@ -196,6 +212,14 @@ export function ResultsScreen() {
           >
             Магазин
           </button>
+          {onMenuClick && (
+            <button 
+              className={styles.secondaryButton}
+              onClick={handleMenu}
+            >
+              Меню
+            </button>
+          )}
         </div>
       </div>
     </div>

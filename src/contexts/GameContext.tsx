@@ -80,8 +80,8 @@ const DEFAULT_GAME_STATE: GameState = {
 export interface GameStateContextValue {
   /** Current game state */
   gameState: GameState;
-  /** Update coziness level (0-100, automatically clamped) */
-  setCoziness: (value: number) => void;
+  /** Update coziness level (0-100, automatically clamped). Accepts a number or a function that takes previous value and returns new value. */
+  setCoziness: (value: number | ((prev: number) => number)) => void;
   /** Update time remaining in seconds (validated >= 0) */
   setTimeRemaining: (value: number) => void;
   /** Update score/points (validated >= 0) */
@@ -125,10 +125,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [characterPosition, setCharacterPosition] = useState<CharacterPosition | null>(null);
 
   // Update functions using functional updates to avoid stale closures
-  const setCoziness = useCallback((value: number) => {
-    // Clamp coziness to valid range (0-100)
-    const clamped = Math.max(0, Math.min(100, value));
+  const setCoziness = useCallback((value: number | ((prev: number) => number)) => {
     setGameState((prev) => {
+      // Calculate new coziness value (support both number and function)
+      const newValue = typeof value === 'function' ? value(prev.coziness) : value;
+      // Clamp coziness to valid range (0-100)
+      const clamped = Math.max(0, Math.min(100, newValue));
       // Track minimum coziness for achievement (Story 3.5)
       // Update minimum if new coziness is lower than current minimum
       const newMinCoziness = Math.min(prev.achievementProgress.minCoziness, clamped);

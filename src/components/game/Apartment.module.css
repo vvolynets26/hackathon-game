@@ -327,6 +327,138 @@
 }
 
 /* ============================================================================
+   Cosmetic Items (Story 4.7 - Cosmetic Item Display)
+   ============================================================================ */
+
+/* Base cat cosmetic - positioned on sofa */
+.cosmeticCat {
+  position: absolute;
+  bottom: 25%;
+  left: 18%;
+  width: 40px;
+  height: 30px;
+  z-index: 3; /* Above sofa, below character */
+  pointer-events: none;
+}
+
+/* Ginger cat variant - distinct orange/ginger coloring */
+.cosmeticCat.cat-ginger {
+  background: linear-gradient(
+    135deg,
+    #ff8c42 0%,    /* Bright orange */
+    #ff6b35 50%,   /* Deep orange */
+    #d2691e 100%   /* Ginger brown */
+  );
+  border-radius: 50% 50% 40% 40%;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(255, 140, 66, 0.3);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  /* Cat ears */
+  position: relative;
+}
+
+/* Cat ears */
+.cosmeticCat.cat-ginger::before,
+.cosmeticCat.cat-ginger::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(
+    135deg,
+    #ff8c42 0%,
+    #ff6b35 100%
+  );
+  border-radius: 50% 50% 0 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cosmeticCat.cat-ginger::before {
+  left: 6px;
+  transform: rotate(-20deg);
+}
+
+.cosmeticCat.cat-ginger::after {
+  right: 6px;
+  transform: rotate(20deg);
+}
+
+/* Base candle cosmetic - positioned on table/shelf */
+.cosmeticCandle {
+  position: absolute;
+  top: 20%;
+  right: 18%;
+  width: 12px;
+  height: 40px;
+  z-index: 3; /* Above furniture, below character */
+  pointer-events: none;
+}
+
+/* Candle variants - base styling */
+.cosmeticCandle {
+  background: linear-gradient(
+    to bottom,
+    #f5deb3 0%,    /* Wheat - candle wax */
+    #daa520 50%,   /* Goldenrod */
+    #b8860b 100%   /* Dark goldenrod */
+  );
+  border-radius: 2px;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    0 0 12px rgba(255, 215, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Candle flame */
+  position: relative;
+}
+
+/* Candle flame */
+.cosmeticCandle::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 10px;
+  background: radial-gradient(
+    circle,
+    #fff9c4 0%,    /* Light yellow center */
+    #ffd700 50%,   /* Gold */
+    #ff8c00 100%   /* Dark orange */
+  );
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow:
+    0 0 8px rgba(255, 215, 0, 0.6),
+    0 0 4px rgba(255, 140, 0, 0.4);
+  animation: candleFlame 2s ease-in-out infinite;
+}
+
+/* Candle flame animation */
+@keyframes candleFlame {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.9;
+  }
+  25% {
+    transform: translateX(-50%) scale(1.1) translateX(1px);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(0.95) translateX(-1px);
+    opacity: 0.85;
+  }
+  75% {
+    transform: translateX(-50%) scale(1.05) translateX(0.5px);
+    opacity: 0.95;
+  }
+}
+
+/* Candle variants can be added here with specific styling */
+/* For now, cat-ginger serves as both cat and candle placeholder */
+
+/* ============================================================================
    Performance Optimizations
    ============================================================================ */
 
@@ -334,7 +466,54 @@
 .gnome,
 .wallCarpet,
 .candleLight1,
-.candleLight2 {
+.candleLight2,
+.cosmeticCat,
+.cosmeticCandle {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ============================================================================
+   Screen Shake Effect (for event failures)
+   ============================================================================ */
+
+/* Screen shake animation - very small oscillation to avoid motion sickness */
+@keyframes screenShake {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  10% {
+    transform: translate3d(-2px, 1px, 0);
+  }
+  20% {
+    transform: translate3d(2px, -1px, 0);
+  }
+  30% {
+    transform: translate3d(-1px, 2px, 0);
+  }
+  40% {
+    transform: translate3d(1px, -2px, 0);
+  }
+  50% {
+    transform: translate3d(-2px, 1px, 0);
+  }
+  60% {
+    transform: translate3d(2px, -1px, 0);
+  }
+  70% {
+    transform: translate3d(-1px, 2px, 0);
+  }
+  80% {
+    transform: translate3d(1px, -2px, 0);
+  }
+  90% {
+    transform: translate3d(-2px, 1px, 0);
+  }
+}
+
+.screenShake {
+  animation: screenShake 300ms ease-in-out;
   will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;

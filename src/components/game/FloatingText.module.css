@@ -1,0 +1,43 @@
+/**
+ * FloatingText Component Styles
+ * 
+ * Styles for floating text that animates upward and fades out.
+ * Uses GPU-accelerated CSS animations for performance.
+ */
+
+.floatingText {
+  position: absolute;
+  font-size: 1.25rem; /* 20px - Medium size for visibility */
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  z-index: 100; /* Above event indicators and character */
+  white-space: nowrap;
+  /* Center text at position (similar to EventIndicator) */
+  transform: translate3d(-50%, -50%, 0) translateZ(0);
+  /* GPU-accelerated animations */
+  will-change: transform, opacity;
+  backface-visibility: hidden; /* Performance optimization */
+  /* Animation defined in keyframes */
+  animation: floatUp 1000ms ease-out forwards;
+}
+
+/* Upward float and fade out animation */
+@keyframes floatUp {
+  0% {
+    transform: translate3d(-50%, -50%, 0) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-50%, calc(-50% - 60px), 0) translateZ(0);
+    opacity: 0;
+  }
+}
+
+/* Responsive sizing for smaller screens */
+@media (max-width: 768px) {
+  .floatingText {
+    font-size: 1rem; /* 16px */
+  }
+}
+

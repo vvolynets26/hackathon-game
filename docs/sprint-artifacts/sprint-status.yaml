@@ -91,13 +91,13 @@ development_status:
   epic-4: backlog
   4-1-xp-and-level-hud-display: done  # [MVP] HUD progression display - Implementation complete 2025-01-21
   4-2-світлячки-hud-display-and-ukrainian-for-progression: ready-for-dev  # [MVP] Currency HUD
-  4-3-results-screen: in-progress  # [MVP] Results screen
-  4-4-shop-screen: backlog  # [MVP] Shop UI
+  4-3-results-screen: done  # [MVP] Results screen
+  4-4-shop-screen: done  # [MVP] Shop UI
   4-5-ukrainian-text-for-shop-and-results: backlog  # [ENH] Full Ukrainian localization
-  4-6-event-interaction-visual-feedback: backlog  # [MVP] Event feedback
-  4-7-cosmetic-item-display: backlog  # [MVP] Cosmetic items in game
+  4-6-event-interaction-visual-feedback: done  # [MVP] Event feedback
+  4-7-cosmetic-item-display: review  # [MVP] Cosmetic items in game - Implementation complete 2025-01-21
   4-8-achievements-screen: backlog  # [ENH] Achievements UI (can be simplified for MVP)
-  4-9-main-menu-system: backlog  # [MVP] Menu navigation
+  4-9-main-menu-system: review  # [MVP] Menu navigation
   4-10-ukrainian-text-for-achievements: backlog  # [ENH] Ukrainian text
   4-11-ukrainian-text-for-menu-and-navigation: backlog  # [ENH] Ukrainian text
   4-12-first-run-onboarding-overlay: backlog  # [MVP] Tutorial/onboarding (simplified)

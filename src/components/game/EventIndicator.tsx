@@ -58,6 +58,8 @@ interface EventIndicatorProps {
   containerRef?: React.RefObject<HTMLElement>;
   /** Stack offset index for multiple events at same location (0 = no offset) */
   stackOffset?: number;
+  /** Animation state: 'success' triggers success animation, 'failure' triggers failure animation */
+  animationState?: 'success' | 'failure' | null;
 }
 
 /**
@@ -71,7 +73,7 @@ interface EventIndicatorProps {
  * @param props.containerRef - Optional container ref for position calculation
  * @returns React element representing the event indicator
  */
-export function EventIndicator({ event, containerRef, stackOffset = 0 }: EventIndicatorProps) {
+export function EventIndicator({ event, containerRef, stackOffset = 0, animationState = null }: EventIndicatorProps) {
   // Get container size for percentage-based locations
   // Using useMemo to avoid accessing refs during render
   const getContainerSize = React.useCallback((): { width: number; height: number } | undefined => {
@@ -100,6 +102,13 @@ export function EventIndicator({ event, containerRef, stackOffset = 0 }: EventIn
   
   // Get priority CSS class
   const priorityClass = PRIORITY_CLASSES[event.priority];
+  
+  // Get animation CSS class based on animation state
+  const animationClass = animationState === 'success' 
+    ? styles.animationSuccess 
+    : animationState === 'failure' 
+    ? styles.animationFailure 
+    : '';
   
   // Get Ukrainian text for event type and description
   const eventTypeName = TRANSLATIONS.eventTypes[event.type];
@@ -171,13 +180,13 @@ export function EventIndicator({ event, containerRef, stackOffset = 0 }: EventIn
   
   return (
     <div
-      className={`${styles.eventIndicator} ${priorityClass}`}
+      className={`${styles.eventIndicator} ${priorityClass} ${animationClass}`}
       style={{
         left: position.left,
         top: position.top,
         // Override CSS transform to include stack offset with GPU acceleration
         transform: `translate3d(calc(-50% + ${stackOffsetX}px), calc(-50% + ${stackOffsetY}px), 0)`,
-        cursor: 'pointer', // Indicate clickable
+        cursor: animationState ? 'default' : 'pointer', // Disable pointer when animating
       }}
       title={`${eventTypeName} (${priorityLabel}) - Таймер: ${timerSeconds.toFixed(1)}с - ${TRANSLATIONS.gameplay.eventInteraction}`}
       onClick={handleClick}
@@ -233,6 +242,8 @@ interface EventIndicatorsProps {
   events: GameEvent[];
   /** Optional container ref for position calculation */
   containerRef?: React.RefObject<HTMLElement>;
+  /** Map of event IDs to animation states */
+  eventAnimations?: Map<string, 'success' | 'failure'>;
 }
 
 /**
@@ -276,7 +287,7 @@ function groupEventsByLocation(events: GameEvent[]): Map<string, GameEvent[]> {
   return groups;
 }
 
-export function EventIndicators({ events, containerRef }: EventIndicatorsProps) {
+export function EventIndicators({ events, containerRef, eventAnimations = new Map() }: EventIndicatorsProps) {
   if (events.length === 0) {
     return null;
   }
@@ -315,6 +326,7 @@ export function EventIndicators({ events, containerRef }: EventIndicatorsProps) 
           event={event} 
           containerRef={containerRef}
           stackOffset={stackOffset}
+          animationState={eventAnimations.get(event.id) || null}
         />
       ))}
     </>

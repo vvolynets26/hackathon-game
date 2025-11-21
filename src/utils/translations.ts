@@ -80,6 +80,52 @@ export const TRANSLATIONS = {
     /** Lose message when coziness reaches zero */
     lose: 'Затишок закінчився',
   },
+
+  /**
+   * Shop screen text
+   */
+  shop: {
+    /** Shop screen title */
+    title: 'Магазин',
+    /** Back button text */
+    back: 'Назад',
+    /** Item state labels */
+    itemState: {
+      /** Locked item state */
+      locked: 'Заблоковано',
+      /** Purchased item state */
+      purchased: 'Куплено',
+      /** Equipped item state */
+      equipped: 'Використовується',
+    },
+    /** Action button labels */
+    actions: {
+      /** Purchase button */
+      purchase: 'Купити',
+      /** Equip button */
+      equip: 'Обрати',
+      /** Equipped state (non-clickable) */
+      equipped: 'Використовується',
+      /** Insufficient currency (disabled) */
+      insufficientCurrency: 'Недостатньо світлячків',
+      /** Owned state (for buffs) */
+      owned: 'Придбано',
+    },
+  },
+
+  /**
+   * Menu screen text
+   */
+  menu: {
+    /** Menu screen title */
+    title: 'Вечір при блекауті',
+    /** Play button text */
+    play: 'Грати',
+    /** Shop button text */
+    shop: 'Магазин',
+    /** Achievements button text */
+    achievements: 'Досягнення',
+  },
 } as const;
 
 /**

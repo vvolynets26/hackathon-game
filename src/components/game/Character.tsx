@@ -446,6 +446,14 @@ export function Character({ containerRef: apartmentContainerRef }: CharacterProp
     return null;
   }
   
+  // Get equipped character skin from ProgressionContext (Story 4.7)
+  const equippedSkin = progressionState.equippedItems.characterSkin;
+  // Map skin IDs to CSS class names (CSS Modules requires known class names)
+  let skinClass = '';
+  if (equippedSkin === 'skin-cozy-sweater') {
+    skinClass = styles['skin-cozy-sweater'];
+  }
+  
   return (
     <div
       ref={containerRef}
@@ -456,7 +464,7 @@ export function Character({ containerRef: apartmentContainerRef }: CharacterProp
       }}
     >
       {/* Character visual - cozy Ukrainian character */}
-      <div className={`${styles.characterVisual} ${isMoving ? styles.walking : ''}`}>
+      <div className={`${styles.characterVisual} ${isMoving ? styles.walking : ''} ${skinClass}`}>
         <div className={styles.body}>
           {/* UnitySpace text is added via CSS ::before */}
           {/* Arms */}

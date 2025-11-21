@@ -28,8 +28,10 @@
   height: 1.5rem;
   background: rgba(0, 0, 0, 0.3); /* Dark background for empty bar */
   border-radius: 0.5rem; /* 8px - consistent with UX design specification */
-  overflow: hidden;
+  overflow: hidden; /* Important: ensures barFill doesn't overflow rounded corners */
   border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Ensure container has a defined width for percentage calculations */
+  min-width: 0;
   /* Performance optimization for smooth updates */
   transform: translateZ(0); /* Force GPU acceleration */
   backface-visibility: hidden; /* Performance optimization */
@@ -40,13 +42,22 @@
   top: 0;
   left: 0;
   height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  /* Fallback background color (will be overridden by inline gradient) */
+  background-color: #4caf50;
   /* Smooth GPU-accelerated transitions for width and background changes */
   transition: width 0.3s ease, background 0.3s ease;
+  /* Border radius - container's overflow: hidden will clip it properly */
   border-radius: 0.5rem; /* 8px - consistent with UX design specification */
   will-change: width, background; /* GPU acceleration hint */
   transform: translateZ(0); /* Force GPU acceleration */
   backface-visibility: hidden; /* Performance optimization */
-  /* Gradient is applied via inline style */
+  z-index: 1; /* Ensure fill is above background but below text */
+  /* Ensure the fill is visible */
+  display: block;
+  /* Gradient is applied via inline style (overrides background-color) */
 }
 
 .valueDisplay {
@@ -59,7 +70,25 @@
   color: #ffffff; /* Light Text from UX design specification */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   pointer-events: none;
-  z-index: 1;
+  z-index: 2; /* Ensure text is above the fill */
+  width: 100%; /* Ensure text is centered across full bar width */
+  text-align: center;
+}
+
+/* Flash red animation for event failures */
+@keyframes flashRed {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(255, 0, 0, 0.6);
+    border-color: rgba(255, 0, 0, 0.8);
+  }
+}
+
+.flashRed {
+  animation: flashRed 300ms ease-in-out;
 }
 
 /* Responsive adjustments for smaller screens */

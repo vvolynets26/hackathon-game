@@ -293,9 +293,9 @@ export function useEventInteraction(
       }
       
       // Update game state (score and coziness)
-      // Note: setScore and setCoziness expect numbers, not updater functions
+      // Use functional updates to avoid stale state
       setScore(gameState.score + resolvedEvent.points);
-      setCoziness(gameState.coziness + resolvedEvent.cozinessReward);
+      setCoziness((prev) => prev + resolvedEvent.cozinessReward);
 
       // Track resolved events count for achievement (Story 3.5)
       // Increment resolved events count in achievement progress
@@ -305,6 +305,52 @@ export function useEventInteraction(
           resolvedEventsCount: gameState.achievementProgress.resolvedEventsCount + 1,
         },
       });
+      
+      // Trigger success visual feedback (Story 4.6)
+      // Get container size for positioning floating text
+      const containerSize = getCurrentContainerSize();
+      const eventX = containerSize && resolvedEvent.location.x <= 1.0
+        ? resolvedEvent.location.x * containerSize.width
+        : resolvedEvent.location.x;
+      const eventY = containerSize && resolvedEvent.location.y <= 1.0
+        ? resolvedEvent.location.y * containerSize.height
+        : resolvedEvent.location.y;
+      
+      // Convert to percentage for FloatingText component
+      const position = containerSize
+        ? { x: resolvedEvent.location.x, y: resolvedEvent.location.y }
+        : { x: eventX, y: eventY };
+      
+      // Trigger event animation (success)
+      window.dispatchEvent(new CustomEvent('game:eventAnimation', {
+        detail: { eventId: resolvedEvent.id, animation: 'success' },
+      }));
+      
+      // Create floating text for points
+      const pointsTextId = `floating-text-points-${resolvedEvent.id}-${Date.now()}`;
+      window.dispatchEvent(new CustomEvent('game:floatingText', {
+        detail: {
+          id: pointsTextId,
+          text: `+${resolvedEvent.points}`,
+          color: '#ffffff', // White for points
+          position: { x: position.x, y: position.y },
+        },
+      }));
+      
+      // Create floating text for coziness (slightly offset)
+      const cozinessTextId = `floating-text-coziness-${resolvedEvent.id}-${Date.now()}`;
+      const cozinessPosition = {
+        x: position.x,
+        y: position.y - 0.03, // Offset upward by 3%
+      };
+      window.dispatchEvent(new CustomEvent('game:floatingText', {
+        detail: {
+          id: cozinessTextId,
+          text: `+${resolvedEvent.cozinessReward}`,
+          color: '#4caf50', // Green for coziness
+          position: cozinessPosition,
+        },
+      }));
       
       if (import.meta.env.DEV) {
         console.log('[EventInteraction] Event resolved successfully', {
