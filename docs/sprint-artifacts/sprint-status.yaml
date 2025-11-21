@@ -89,9 +89,9 @@ development_status:
 
   # Epic 4: User Interface & Experience - MVP + Enhancement + Polish split
   epic-4: backlog
-  4-1-xp-and-level-hud-display: ready-for-dev  # [MVP] HUD progression display
-  4-2-світлячки-hud-display-and-ukrainian-for-progression: backlog  # [MVP] Currency HUD
-  4-3-results-screen: backlog  # [MVP] Results screen
+  4-1-xp-and-level-hud-display: done  # [MVP] HUD progression display - Implementation complete 2025-01-21
+  4-2-світлячки-hud-display-and-ukrainian-for-progression: ready-for-dev  # [MVP] Currency HUD
+  4-3-results-screen: in-progress  # [MVP] Results screen
   4-4-shop-screen: backlog  # [MVP] Shop UI
   4-5-ukrainian-text-for-shop-and-results: backlog  # [ENH] Full Ukrainian localization
   4-6-event-interaction-visual-feedback: backlog  # [MVP] Event feedback

@@ -1,0 +1,71 @@
+/**
+ * XPLevelDisplay Component Styles
+ * 
+ * Styles for the XP and Level display in the HUD.
+ * Uses light text on dark background with warm accent colors.
+ */
+
+.xpLevelDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem; /* 4px - xs spacing from 8px grid system (UX Design Specification) */
+  min-width: 100px;
+}
+
+.levelText {
+  font-size: 1rem; /* 16px - Body size from UX design specification */
+  font-weight: 500;
+  color: #ffffff; /* Light Text from UX design specification */
+  opacity: 0.9;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.xpBarContainer {
+  position: relative;
+  width: 100px;
+  height: 0.75rem; /* 12px - compact bar height */
+  background: rgba(0, 0, 0, 0.3); /* Dark background for empty bar */
+  border-radius: 0.375rem; /* 6px - consistent with UX design specification */
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Performance optimization for smooth updates */
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Performance optimization */
+}
+
+.xpBarFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #ffd700; /* Warm gold accent color - matches «Світлячки» accent */
+  /* Smooth GPU-accelerated transitions for width changes */
+  transition: width 0.3s ease;
+  border-radius: 0.375rem; /* 6px - consistent with UX design specification */
+  will-change: width; /* GPU acceleration hint */
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Performance optimization */
+}
+
+/* Level change animation preparation (to be implemented in Story 4.9) */
+/* When level changes, the levelText will have a pulse/glow animation */
+/* For now, we prepare the structure for future animation */
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .xpLevelDisplay {
+    min-width: 80px;
+  }
+  
+  .levelText {
+    font-size: 0.9rem; /* 14.4px - Small size from UX design specification */
+  }
+  
+  .xpBarContainer {
+    width: 80px;
+    height: 0.625rem; /* 10px */
+  }
+}
+

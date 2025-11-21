@@ -1,0 +1,221 @@
+/**
+ * ResultsScreen Component Styles
+ * 
+ * Styles for the results screen overlay displayed after each evening.
+ * Uses full-screen overlay with centered card, smooth animations, and warm accent colors.
+ */
+
+/* Full-screen overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8); /* Dimmed background */
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Above HUD (z-index: 1000) */
+  /* Smooth fade-in animation */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Centered results card */
+.resultsCard {
+  background: rgba(26, 31, 46, 0.95); /* Dark Night (#1a1f2e) - UX Design Specification */
+  border: 1px solid rgba(255, 140, 66, 0.3); /* Warm Orange (#ff8c42) accent */
+  border-radius: 1rem; /* 16px - lg spacing from 8px grid system */
+  padding: 2rem; /* 32px - 2xl spacing from 8px grid system */
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* 24px - xl spacing from 8px grid system */
+  /* Smooth slide-in animation */
+  animation: slideIn 0.3s ease-out;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Top section: Title */
+.topSection {
+  text-align: center;
+}
+
+.title {
+  font-size: 1.5rem; /* 24px - h1 size from UX design specification */
+  font-weight: 600;
+  color: #ffffff; /* Light Text from UX design specification */
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Middle section: Performance metrics */
+.middleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* 16px - md spacing from 8px grid system */
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem; /* 12px */
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem; /* 8px - md spacing from 8px grid system */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metricLabel {
+  font-size: 1rem; /* 16px - Body size from UX design specification */
+  color: #ffffff; /* Light Text */
+  opacity: 0.9;
+}
+
+.metricValue {
+  font-size: 1rem; /* 16px - Body size */
+  font-weight: 600;
+  color: #ffd700; /* Warm gold accent color - matches «Світлячки» accent */
+}
+
+/* XP bar section */
+.xpBarSection {
+  margin-top: 0.5rem; /* 8px - sm spacing */
+  padding: 0.75rem; /* 12px */
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem; /* 8px */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Level up section */
+.levelUpSection {
+  text-align: center;
+  padding: 1rem; /* 16px */
+  background: rgba(255, 215, 0, 0.1); /* Warm gold background with transparency */
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 0.5rem; /* 8px */
+  /* Small glow animation */
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+  }
+}
+
+.levelUpText {
+  font-size: 1.25rem; /* 20px - larger text for prominence */
+  font-weight: 600;
+  color: #ffd700; /* Warm gold accent */
+  margin: 0;
+}
+
+/* Bottom section: Action buttons */
+.bottomSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* 12px */
+  margin-top: auto; /* Push to bottom */
+}
+
+.primaryButton {
+  padding: 0.75rem 1.5rem; /* 12px 24px */
+  font-size: 1rem; /* 16px - Body size */
+  font-weight: 600;
+  color: #1a1f2e; /* Dark Night background */
+  background: #ffd700; /* Warm gold accent */
+  border: none;
+  border-radius: 0.5rem; /* 8px */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  /* Hover state */
+}
+
+.primaryButton:hover {
+  background: #ffed4e; /* Lighter gold on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.primaryButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(255, 215, 0, 0.3);
+}
+
+.secondaryButton {
+  padding: 0.75rem 1.5rem; /* 12px 24px */
+  font-size: 1rem; /* 16px - Body size */
+  font-weight: 500;
+  color: #ffffff; /* Light Text */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem; /* 8px */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.secondaryButton:active {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .resultsCard {
+    padding: 1.5rem; /* 24px */
+    max-width: 95%;
+  }
+  
+  .title {
+    font-size: 1.25rem; /* 20px */
+  }
+  
+  .metricLabel,
+  .metricValue {
+    font-size: 0.9rem; /* 14.4px - Small size */
+  }
+  
+  .levelUpText {
+    font-size: 1.1rem; /* 17.6px */
+  }
+  
+  .primaryButton,
+  .secondaryButton {
+    padding: 0.625rem 1.25rem; /* 10px 20px */
+    font-size: 0.9rem; /* 14.4px */
+  }
+}
+
