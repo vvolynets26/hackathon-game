@@ -400,7 +400,20 @@ export function Character({ containerRef: apartmentContainerRef }: CharacterProp
       // Handle E key for event interaction
       if (event.key === 'e' || event.key === 'E') {
         event.preventDefault();
-        handleEventInteraction();
+        if (import.meta.env.DEV) {
+          console.log('[Character] E key pressed', {
+            position,
+            gameState: {
+              isPlaying: gameState.isPlaying,
+              isPaused: gameState.isPaused,
+              gameOver: gameState.gameOver,
+            },
+          });
+        }
+        const result = handleEventInteraction();
+        if (import.meta.env.DEV) {
+          console.log('[Character] handleEventInteraction result:', result);
+        }
         return;
       }
       
