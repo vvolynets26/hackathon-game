@@ -1,0 +1,216 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>localStorage Utilities</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-21</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-4-local-storage-utilities.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a developer</asA>
+    <iWant>I want type-safe localStorage utilities</iWant>
+    <soThat>So that I can persist and load game data reliably</soThat>
+    <tasks>
+      - Task 1 (AC: 1): Create localStorage utility functions (saveGameState, loadGameState, saveEquippedItems, loadEquippedItems)
+      - Task 2 (AC: 2): Verify key naming convention (hackathon-game: prefix, kebab-case)
+      - Task 3 (AC: 3): Implement quota limit handling (catch QuotaExceededError)
+      - Task 4 (AC: 4): Implement corrupted data handling (JSON parse errors return null)
+      - Task 5 (AC: 5): Ensure TypeScript type safety (no any types)
+      - Task 6: Testing & Validation - Verify TypeScript compilation and test all functions
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. **Given** type definitions exist **When** I create localStorage utilities **Then** `src/utils/localStorage.ts` provides: `saveGameState(state: ProgressionState): void` - saves progression to localStorage with key `'hackathon-game:progression'`; `loadGameState(): ProgressionState | null` - loads progression from localStorage, returns null if not found or corrupted; `saveEquippedItems(items: EquippedItems): void` - saves equipped items with key `'hackathon-game:equipped-items'`; `loadEquippedItems(): EquippedItems | null` - loads equipped items; All functions handle errors gracefully (try-catch, return null on failure); All functions validate data structure before returning
+
+    2. **Given** localStorage utilities are created **When** I review the implementation **Then** localStorage keys follow naming convention: `'hackathon-game:{key-name}'` in kebab-case
+
+    3. **Given** localStorage utilities are created **When** I test error handling **Then** functions handle localStorage quota limits (catch QuotaExceededError)
+
+    4. **Given** localStorage utilities are created **When** I test error handling **Then** functions handle corrupted data (JSON parse errors return null)
+
+    5. **Given** localStorage utilities are created **When** I check TypeScript types **Then** TypeScript types ensure type safety (no `any`)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Persistence - localStorage API</section>
+        <snippet>Use localStorage API for browser-native storage. Follow architecture document "Persistence" section for localStorage patterns. Use JSON.stringify/parse for serialization. localStorage keys must follow naming convention: `'hackathon-game:{key-name}'` in kebab-case. localStorage Schema: Progression data: `'hackathon-game:progression'` - stores ProgressionState object; Equipped items: `'hackathon-game:equipped-items'` - stores EquippedItems object. Error Recovery: All localStorage operations must handle errors gracefully. Catch `QuotaExceededError` for storage quota limits. Catch JSON parse errors for corrupted data. Return null on failure (don't throw exceptions). Validate data structure before returning (type guards).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Data Architecture - localStorage Schema</section>
+        <snippet>localStorage Schema: `'hackathon-game:progression'` stores ProgressionState object; `'hackathon-game:equipped-items'` stores EquippedItems object. Keys use prefix `'hackathon-game:'` and kebab-case format. Data stored as JSON strings via JSON.stringify/parse.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Implementation Patterns - Naming Conventions</section>
+        <snippet>localStorage Keys: Prefix with app name: `hackathon-game:level`, `hackathon-game:xp`. Use kebab-case: `hackathon-game:svitlyachky`, `hackathon-game:purchased-items`. File naming: kebab-case for utility files (matches architecture document).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>Utility files: `src/utils/localStorage.ts`. Directory structure matches architecture document. Utils directory is new - no existing files to conflict with.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Lifecycle Patterns - Error Recovery</section>
+        <snippet>Try-catch around localStorage operations. Fallback to default values on load failure. User-friendly error messages (Ukrainian). Loading States: Use boolean flags: `isLoading`, `isInitializing`. Show loading UI during initialization. Handle localStorage load errors gracefully.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Epic 1: Foundation - Story 1.4: localStorage Utilities</section>
+        <snippet>Story defines requirements: `src/utils/localStorage.ts` provides `saveGameState(state: ProgressionState): void`, `loadGameState(): ProgressionState | null`, `saveEquippedItems(items: EquippedItems): void`, `loadEquippedItems(): EquippedItems | null`. All functions handle errors gracefully (try-catch, return null on failure). All functions validate data structure before returning. localStorage keys follow naming convention: `'hackathon-game:{key-name}'` in kebab-case. Functions handle localStorage quota limits (catch QuotaExceededError). Functions handle corrupted data (JSON parse errors return null). TypeScript types ensure type safety (no `any`). Prerequisites: Story 1.2 (Core Type Definitions). Technical Notes: Follow architecture document "Persistence" section. Use JSON.stringify/parse for serialization. Add error handling for edge cases (quota, corruption). Prepare for debounced saves in Story 3.1. Keys must match architecture document localStorage schema.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Data Persistence (FR43-FR45)</section>
+        <snippet>FR43: The game saves player progress to localStorage (level, XP, «Світлячки», purchased items, achievements). FR44: The game loads saved progress when the player returns to the game. FR45: The game persists the player's selected character skin and equipped items. Persistence: localStorage for: Current level, Total XP, Amount of «Світлячки», Purchased items, Last selected character/skin, Achievement progress.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-4-local-storage-utilities.md</path>
+        <title>Story 1.4: localStorage Utilities</title>
+        <section>Dev Notes - Relevant Architecture Patterns and Constraints</section>
+        <snippet>Persistence Approach: Use localStorage API for browser-native storage. Follow architecture document "Persistence" section for localStorage patterns. Use JSON.stringify/parse for serialization. localStorage keys must follow naming convention: `'hackathon-game:{key-name}'` in kebab-case. localStorage Schema: Progression data: `'hackathon-game:progression'` - stores ProgressionState object; Equipped items: `'hackathon-game:equipped-items'` - stores EquippedItems object. Error Handling: All localStorage operations must handle errors gracefully. Catch `QuotaExceededError` for storage quota limits. Catch JSON parse errors for corrupted data. Return null on failure (don't throw exceptions). Validate data structure before returning (type guards). Type Safety: Use TypeScript strict mode (no `any` types). Validate parsed data matches expected interfaces. Use type guards for runtime validation. Export types if needed for use in other modules. Data Validation: Validate ProgressionState structure after parsing (check required fields). Validate EquippedItems structure after parsing (check object shape). Return null if validation fails (don't return partial/invalid data). Integration Notes: These utilities will be used by ProgressionContext in Story 3.1. ProgressionContext will call `loadGameState()` on initialization. ProgressionContext will call `saveGameState()` when progression changes. Prepare for debounced saves in Story 3.1 (utilities should be stateless). Utilities are pure functions (no side effects except localStorage).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-4-local-storage-utilities.md</path>
+        <title>Story 1.4: localStorage Utilities</title>
+        <section>Dev Notes - Learnings from Previous Story</section>
+        <snippet>From Story 1-3-react-context-setup-for-game-state (Status: review): Context Providers Created: Both GameContext and ProgressionContext are implemented and ready. ProgressionContext uses default values (level: 1, xp: 0, svitlyachky: 0, purchasedItems: [], equippedItems: {}, achievements: []). Story 1.3 noted: "localStorage integration will be added in Story 1.4, for now use defaults or placeholder". This story will enable ProgressionContext to load from localStorage instead of defaults. localStorage utilities should be stateless pure functions (no React hooks). ProgressionContext will integrate these utilities in Story 3.1 (XP and Level System). Utilities should handle all error cases gracefully (quota, corruption, missing data). TypeScript types from Story 1.2 (ProgressionState, EquippedItems) are ready for use.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-2-core-type-definitions.md</path>
+        <title>Story 1.2: Core Type Definitions</title>
+        <section>Dev Notes - Data Structure Requirements</section>
+        <snippet>ProgressionState includes: level, xp, svitlyachky, purchasedItems (string[]), equippedItems (optional properties), achievements (string[]). EquippedItems structure: optional characterSkin?, cat?, candle? (all strings). Types match architecture document "Data Architecture" section exactly. All types properly exported and documented with JSDoc comments.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>src/types/progression.ts</path>
+        <title>Progression Type Definitions</title>
+        <purpose>Defines ProgressionState and EquippedItems types that localStorage utilities will serialize/deserialize</purpose>
+        <snippet>export interface EquippedItems { characterSkin?: string; cat?: string; candle?: string; } export interface ProgressionState { level: number; xp: number; svitlyachky: number; purchasedItems: string[]; equippedItems: EquippedItems; achievements: string[]; }</snippet>
+      </file>
+      <file>
+        <path>src/contexts/ProgressionContext.tsx</path>
+        <title>Progression Context Provider</title>
+        <purpose>ProgressionContext that will use localStorage utilities in Story 3.1. Currently uses default values, will integrate loadGameState() and saveGameState() after this story</purpose>
+        <snippet>ProgressionProvider component manages progression state using useState. Note: localStorage integration will be added in Story 1.4. For now, uses default values. DEFAULT_PROGRESSION_STATE: { level: 1, xp: 0, svitlyachky: 0, purchasedItems: [], equippedItems: {}, achievements: [] }. All update functions use functional updates to avoid stale closures. Context is ready for localStorage integration.</snippet>
+      </file>
+      <file>
+        <path>src/contexts/GameContext.tsx</path>
+        <title>Game Context Provider</title>
+        <purpose>GameContext that may use localStorage utilities in future stories. Currently manages game session state only</purpose>
+        <snippet>GameContext manages current game session state (coziness, timeRemaining, score, activeEvents, isPlaying, isPaused, gameOver). Will use localStorage utilities in future stories for game state persistence if needed.</snippet>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="typescript" version="~5.9.3" />
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="@types/react" version="^19.2.5" />
+        <package name="@types/react-dom" version="^19.2.3" />
+      </ecosystem>
+      <ecosystem name="build-tool">
+        <package name="vite" version="^5.4.11" />
+        <package name="@vitejs/plugin-react" version="^4.3.1" />
+      </ecosystem>
+      <dependency type="story">
+        <id>1-2-core-type-definitions</id>
+        <status>done</status>
+        <description>Provides ProgressionState and EquippedItems types that localStorage utilities will use</description>
+      </dependency>
+      <dependency type="story">
+        <id>1-3-react-context-setup-for-game-state</id>
+        <status>done</status>
+        <description>ProgressionContext is ready for localStorage integration. Currently uses default values, will use loadGameState() and saveGameState() after this story</description>
+      </dependency>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <name>TypeScript Strict Mode</name>
+      <description>TypeScript strict mode is enabled (from Story 1.1). All types must be properly typed - no implicit any. No `any` types are used (use `unknown` if needed for validation). TypeScript types ensure type safety throughout.</description>
+    </constraint>
+    <constraint>
+      <name>localStorage Key Naming Convention</name>
+      <description>localStorage keys must follow naming convention: `'hackathon-game:{key-name}'` in kebab-case. Keys must match architecture document localStorage schema exactly: `'hackathon-game:progression'` for ProgressionState, `'hackathon-game:equipped-items'` for EquippedItems.</description>
+    </constraint>
+    <constraint>
+      <name>Error Handling Requirements</name>
+      <description>All localStorage operations must handle errors gracefully. Catch `QuotaExceededError` for storage quota limits. Catch JSON parse errors for corrupted data. Return null on failure (don't throw exceptions). Validate data structure before returning (type guards). All functions must use try-catch blocks.</description>
+    </constraint>
+    <constraint>
+      <name>Data Validation</name>
+      <description>Validate ProgressionState structure after parsing (check required fields: level, xp, svitlyachky, purchasedItems, equippedItems, achievements). Validate EquippedItems structure after parsing (check object shape, optional properties). Return null if validation fails (don't return partial/invalid data). Consider using type guards for runtime validation.</description>
+    </constraint>
+    <constraint>
+      <name>Pure Function Requirements</name>
+      <description>localStorage utilities should be stateless pure functions (no React hooks). Utilities are pure functions (no side effects except localStorage). Prepare for debounced saves in Story 3.1 (utilities should be stateless). Functions should be easily testable and reusable.</description>
+    </constraint>
+    <constraint>
+      <name>Integration Requirements</name>
+      <description>These utilities will be used by ProgressionContext in Story 3.1. ProgressionContext will call `loadGameState()` on initialization. ProgressionContext will call `saveGameState()` when progression changes. Utilities must be ready for integration with ProgressionContext. Functions should match expected signatures for context integration.</description>
+    </constraint>
+    <constraint>
+      <name>Architecture Alignment</name>
+      <description>Follow architecture document "Persistence" section for localStorage patterns. Use JSON.stringify/parse for serialization. File organization: Utility files in `src/utils/localStorage.ts`. Directory structure matches architecture document. Utils directory is new - no existing files to conflict with.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ProgressionState</name>
+      <source>src/types/progression.ts</source>
+      <description>Interface for player progression state. Used by saveGameState() and loadGameState() functions. Contains: level (number), xp (number), svitlyachky (number), purchasedItems (string[]), equippedItems (EquippedItems), achievements (string[]).</description>
+    </interface>
+    <interface>
+      <name>EquippedItems</name>
+      <source>src/types/progression.ts</source>
+      <description>Interface for equipped cosmetic items. Used by saveEquippedItems() and loadEquippedItems() functions. Contains optional properties: characterSkin? (string), cat? (string), candle? (string).</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      TypeScript compilation validation: Run `npm run build` or `npx tsc --noEmit` to verify no TypeScript errors. Test all functions manually: saveGameState() saves data correctly, loadGameState() loads data correctly, loadGameState() returns null when data doesn't exist, loadGameState() returns null when data is corrupted, saveEquippedItems() saves data correctly, loadEquippedItems() loads data correctly, loadEquippedItems() returns null when data doesn't exist, loadEquippedItems() returns null when data is corrupted, quota limit handling (simulate or document expected behavior). Verify functions are ready for integration with ProgressionContext in Story 3.1. No test framework configured yet - manual testing required.
+    </standards>
+    <locations>
+      Utility file: `src/utils/localStorage.ts`. Test files (when added): Co-located with source files as `*.test.ts` or `*.spec.ts` per architecture document. Currently no test framework configured - Vitest mentioned in architecture but not yet installed.
+    </locations>
+    <ideas>
+      <test id="AC1">
+        <description>Verify saveGameState() saves ProgressionState to localStorage with correct key 'hackathon-game:progression'. Verify loadGameState() loads ProgressionState from localStorage and returns correct data. Verify loadGameState() returns null when data doesn't exist. Verify saveEquippedItems() saves EquippedItems to localStorage with correct key 'hackathon-game:equipped-items'. Verify loadEquippedItems() loads EquippedItems from localStorage and returns correct data. Verify loadEquippedItems() returns null when data doesn't exist.</description>
+      </test>
+      <test id="AC2">
+        <description>Verify all localStorage keys use prefix 'hackathon-game:'. Verify keys use kebab-case format. Verify keys match architecture document schema exactly.</description>
+      </test>
+      <test id="AC3">
+        <description>Verify saveGameState() catches QuotaExceededError and handles gracefully (log error, return without throwing). Verify saveEquippedItems() catches QuotaExceededError and handles gracefully. Test quota limit handling (simulate or document expected behavior).</description>
+      </test>
+      <test id="AC4">
+        <description>Verify loadGameState() catches JSON parse errors and returns null. Verify loadEquippedItems() catches JSON parse errors and returns null. Verify functions handle case where localStorage contains invalid JSON. Verify functions validate parsed data structure before returning. Verify functions return null if data doesn't match expected interface.</description>
+      </test>
+      <test id="AC5">
+        <description>Verify all function parameters are properly typed. Verify all return types are explicit (no implicit `any`). Ensure no `any` types are used (use `unknown` if needed for validation). Verify TypeScript compilation succeeds with no errors.</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

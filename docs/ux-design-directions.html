@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вечір при блекауті - Design Directions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #1a1f2e;
+            color: #ffffff;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: #2d3442;
+            padding: 24px 32px;
+            border-bottom: 2px solid #ffd700;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #f5f5f5;
+            font-size: 16px;
+        }
+
+        .navigation {
+            background: #1e2740;
+            padding: 16px 32px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #2d3442;
+        }
+
+        .nav-button {
+            padding: 8px 16px;
+            background: #2d3442;
+            border: 1px solid #1e2740;
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-button:hover {
+            background: #3a4152;
+            border-color: #ffd700;
+        }
+
+        .nav-button.active {
+            background: #ffd700;
+            color: #1a1f2e;
+            border-color: #ffd700;
+        }
+
+        .direction-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            padding: 32px;
+            background: #1a1f2e;
+        }
+
+        .thumbnail {
+            background: #2d3442;
+            border: 2px solid #1e2740;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .thumbnail:hover {
+            border-color: #ffd700;
+            transform: translateY(-2px);
+        }
+
+        .thumbnail.active {
+            border-color: #ffd700;
+            background: #3a4152;
+        }
+
+        .thumbnail-preview {
+            width: 100%;
+            height: 120px;
+            background: #1a1f2e;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .thumbnail-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #ffffff;
+        }
+
+        .thumbnail-desc {
+            font-size: 12px;
+            color: #f5f5f5;
+            opacity: 0.8;
+        }
+
+        .direction-view {
+            display: none;
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .direction-view.active {
+            display: block;
+        }
+
+        .direction-info {
+            background: #2d3442;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid #1e2740;
+        }
+
+        .direction-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 12px;
+        }
+
+        .direction-personality {
+            font-size: 18px;
+            color: #f5f5f5;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .direction-chars {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .char-item {
+            background: #1a1f2e;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .char-label {
+            font-size: 12px;
+            color: #f5f5f5;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .char-value {
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .mockup-container {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid #2d3442;
+        }
+
+        .mockup-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffd700;
+        }
+
+        /* Game Screen Mockup */
+        .game-screen {
+            background: #1a1f2e;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #2d3442;
+            position: relative;
+            min-height: 600px;
+        }
+
+        .game-hud {
+            background: rgba(45, 52, 66, 0.95);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e2740;
+        }
+
+        .hud-left {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .coziness-bar-container {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .coziness-label {
+            font-size: 12px;
+            color: #f5f5f5;
+            margin-bottom: 4px;
+        }
+
+        .coziness-bar {
+            height: 24px;
+            background: #1e2740;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .coziness-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ffeb3b, #4caf50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1f2e;
+            font-weight: 600;
+            font-size: 12px;
+            transition: width 0.3s;
+            width: 75%;
+        }
+
+        .hud-right {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .level-display {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .level-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .xp-bar {
+            width: 120px;
+            height: 8px;
+            background: #1e2740;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: #ffd700;
+            width: 60%;
+        }
+
+        .currency-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .game-area {
+            padding: 32px;
+            position: relative;
+            min-height: 500px;
+        }
+
+        .apartment {
+            background: #1e2740;
+            border-radius: 8px;
+            padding: 24px;
+            min-height: 400px;
+            position: relative;
+            border: 2px solid #2d3442;
+        }
+
+        .event-indicator {
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 3px solid;
+            background: rgba(26, 31, 46, 0.9);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.9; }
+        }
+
+        .event-minor {
+            border-color: #64b5f6;
+            color: #64b5f6;
+            top: 20%;
+            left: 20%;
+        }
+
+        .event-standard {
+            border-color: #fff176;
+            color: #fff176;
+            top: 20%;
+            right: 20%;
+        }
+
+        .event-critical {
+            border-color: #ff8c42;
+            color: #ff8c42;
+            bottom: 20%;
+            left: 50%;
+        }
+
+        /* Results Screen Mockup */
+        .results-screen {
+            background: #2d3442;
+            border-radius: 8px;
+            padding: 48px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .results-title {
+            font-size: 32px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 32px;
+            color: #ffd700;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #1a1f2e;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #1e2740;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #f5f5f5;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #ffd700;
+            color: #1a1f2e;
+        }
+
+        .btn-primary:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #4ecdc4;
+            color: #1a1f2e;
+        }
+
+        .btn-secondary:hover {
+            background: #5eddd4;
+            transform: translateY(-2px);
+        }
+
+        /* Shop Screen Mockup */
+        .shop-screen {
+            background: #2d3442;
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .shop-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .shop-currency {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .shop-item {
+            background: #1a1f2e;
+            border: 2px solid #1e2740;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .shop-item:hover {
+            border-color: #ffd700;
+            transform: translateY(-4px);
+        }
+
+        .item-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .item-price {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .item-button {
+            width: 100%;
+            padding: 10px;
+            background: #ffd700;
+            color: #1a1f2e;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .comparison-mode {
+            display: none;
+        }
+
+        .comparison-mode.active {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            padding: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 Design Directions Showcase</h1>
+        <p>Вечір при блекауті - Explore different design approaches</p>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-button" onclick="showThumbnails()">All Directions</button>
+        <button class="nav-button" onclick="toggleComparison()">Compare</button>
+    </div>
+
+    <div id="thumbnails" class="direction-thumbnails">
+        <div class="thumbnail active" onclick="showDirection(1)">
+            <div class="thumbnail-preview">🏠</div>
+            <div class="thumbnail-title">Cozy Minimal Game UI</div>
+            <div class="thumbnail-desc">Chosen direction - Balanced, professional</div>
+        </div>
+        <div class="thumbnail" onclick="showDirection(2)">
+            <div class="thumbnail-preview">📊</div>
+            <div class="thumbnail-title">Dense Dashboard</div>
+            <div class="thumbnail-desc">Information-rich, data-focused</div>
+        </div>
+        <div class="thumbnail" onclick="showDirection(3)">
+            <div class="thumbnail-preview">🌟</div>
+            <div class="thumbnail-title">Spacious Explorer</div>
+            <div class="thumbnail-desc">Breathing room, clean minimalism</div>
+        </div>
+    </div>
+
+    <!-- Direction 1: Cozy Minimal Game UI (Chosen) -->
+    <div id="direction-1" class="direction-view active">
+        <div class="direction-info">
+            <div class="direction-title">Cozy Minimal Game UI</div>
+            <div class="direction-personality">Professional & Efficient • Balanced Structure</div>
+            <div class="direction-chars">
+                <div class="char-item">
+                    <div class="char-label">Layout</div>
+                    <div class="char-value">Full-screen with overlay HUD</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Density</div>
+                    <div class="char-value">Balanced</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Navigation</div>
+                    <div class="char-value">Modal overlays</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Visual Weight</div>
+                    <div class="char-value">Moderate with soft depth</div>
+                </div>
+            </div>
+            <p style="margin-top: 16px; color: #f5f5f5;">
+                <strong>Rationale:</strong> This approach prioritizes gameplay clarity (unobstructed apartment view) while providing professional, polished UI screens for progression elements (shop, results). The dark background with warm light sources creates the cozy atmosphere, while clean UI ensures players can quickly understand their progress and options.
+            </p>
+        </div>
+
+        <div class="mockup-container">
+            <div class="mockup-title">Main Game Screen</div>
+            <div class="game-screen">
+                <div class="game-hud">
+                    <div class="hud-left">
+                        <div class="timer">⏱️ 00:45</div>
+                        <div class="coziness-bar-container">
+                            <div class="coziness-label">Затишок</div>
+                            <div class="coziness-bar">
+                                <div class="coziness-fill">75%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hud-right">
+                        <div class="level-display">
+                            <div class="level-text">Lv. 2</div>
+                            <div class="xp-bar">
+                                <div class="xp-fill"></div>
+                            </div>
+                        </div>
+                        <div class="currency-display">✨ 5</div>
+                    </div>
+                </div>
+                <div class="game-area">
+                    <div class="apartment">
+                        <div class="event-indicator event-minor">🐱</div>
+                        <div class="event-indicator event-standard">📱</div>
+                        <div class="event-indicator event-critical">⚡</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mockup-container">
+            <div class="mockup-title">Results Screen</div>
+            <div class="results-screen">
+                <div class="results-title">Вечір завершено! ✨</div>
+                <div class="results-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Очки</div>
+                        <div class="stat-value">235</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Затишок</div>
+                        <div class="stat-value">75%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">XP отримано</div>
+                        <div class="stat-value">+20</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Світлячки</div>
+                        <div class="stat-value">+2 ✨</div>
+                    </div>
+                </div>
+                <div class="results-actions">
+                    <button class="btn btn-primary">Грати ще один вечір</button>
+                    <button class="btn btn-secondary">Магазин</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mockup-container">
+            <div class="mockup-title">Shop Screen</div>
+            <div class="shop-screen">
+                <div class="shop-header">
+                    <div class="shop-title">Магазин</div>
+                    <div class="shop-currency">✨ x 7</div>
+                </div>
+                <div class="shop-items">
+                    <div class="shop-item">
+                        <div class="item-icon">👤</div>
+                        <div class="item-name">Скин: Айтішник</div>
+                        <div class="item-price">✨ 3</div>
+                        <button class="item-button">Купити</button>
+                    </div>
+                    <div class="shop-item">
+                        <div class="item-icon">🐱</div>
+                        <div class="item-name">Новий кіт</div>
+                        <div class="item-price">✨ 4</div>
+                        <button class="item-button">Купити</button>
+                    </div>
+                    <div class="shop-item">
+                        <div class="item-icon">⚡</div>
+                        <div class="item-name">+5% швидкості</div>
+                        <div class="item-price">✨ 5</div>
+                        <button class="item-button">Купити</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Direction 2: Dense Dashboard -->
+    <div id="direction-2" class="direction-view">
+        <div class="direction-info">
+            <div class="direction-title">Dense Dashboard</div>
+            <div class="direction-personality">Information-Rich • Data-Focused</div>
+            <div class="direction-chars">
+                <div class="char-item">
+                    <div class="char-label">Layout</div>
+                    <div class="char-value">Sidebar + main area</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Density</div>
+                    <div class="char-value">High</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Navigation</div>
+                    <div class="char-value">Persistent sidebar</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Visual Weight</div>
+                    <div class="char-value">Rich with multiple panels</div>
+                </div>
+            </div>
+            <p style="margin-top: 16px; color: #f5f5f5;">
+                <strong>Alternative:</strong> This approach maximizes information visibility with a persistent sidebar showing stats, achievements, and shop access. The game area is slightly smaller but all progression data is always visible. Best for players who want to see everything at once.
+            </p>
+        </div>
+
+        <div class="mockup-container">
+            <div class="mockup-title">Main Game Screen (Dense Layout)</div>
+            <div style="background: #2d3442; border-radius: 8px; padding: 16px; display: grid; grid-template-columns: 200px 1fr; gap: 16px; min-height: 600px;">
+                <div style="background: #1a1f2e; border-radius: 8px; padding: 16px;">
+                    <div style="margin-bottom: 24px; font-weight: 600; color: #ffd700;">Статистика</div>
+                    <div style="font-size: 12px; color: #f5f5f5; margin-bottom: 8px;">Рівень: 2</div>
+                    <div style="font-size: 12px; color: #f5f5f5; margin-bottom: 8px;">XP: 150/300</div>
+                    <div style="font-size: 12px; color: #f5f5f5; margin-bottom: 24px;">✨ 5</div>
+                    <div style="margin-bottom: 24px; font-weight: 600; color: #ffd700;">Меню</div>
+                    <div style="font-size: 12px; color: #f5f5f5; margin-bottom: 8px; cursor: pointer;">🏪 Магазин</div>
+                    <div style="font-size: 12px; color: #f5f5f5; margin-bottom: 8px; cursor: pointer;">🏆 Досягнення</div>
+                </div>
+                <div style="background: #1a1f2e; border-radius: 8px; padding: 16px;">
+                    <div style="background: #1e2740; border-radius: 8px; padding: 16px; min-height: 550px; position: relative;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                            <div style="color: #ffffff;">⏱️ 00:45</div>
+                            <div style="color: #ffd700;">Lv. 2</div>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <div style="font-size: 12px; color: #f5f5f5; margin-bottom: 4px;">Затишок</div>
+                            <div style="height: 20px; background: #1e2740; border-radius: 10px; overflow: hidden;">
+                                <div style="height: 100%; background: linear-gradient(to right, #ffeb3b, #4caf50); width: 75%; display: flex; align-items: center; justify-content: center; color: #1a1f2e; font-size: 10px; font-weight: 600;">75%</div>
+                            </div>
+                        </div>
+                        <div style="position: absolute; top: 100px; left: 50px;">
+                            <div style="width: 48px; height: 48px; border-radius: 50%; border: 3px solid #64b5f6; display: flex; align-items: center; justify-content: center; font-size: 24px; background: rgba(26, 31, 46, 0.9);">🐱</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Direction 3: Spacious Explorer -->
+    <div id="direction-3" class="direction-view">
+        <div class="direction-info">
+            <div class="direction-title">Spacious Explorer</div>
+            <div class="direction-personality">Breathing Room • Clean Minimalism</div>
+            <div class="direction-chars">
+                <div class="char-item">
+                    <div class="char-label">Layout</div>
+                    <div class="char-value">Centered, wide margins</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Density</div>
+                    <div class="char-value">Low</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Navigation</div>
+                    <div class="char-value">Floating menu buttons</div>
+                </div>
+                <div class="char-item">
+                    <div class="char-label">Visual Weight</div>
+                    <div class="char-value">Minimal, subtle</div>
+                </div>
+            </div>
+            <p style="margin-top: 16px; color: #f5f5f5;">
+                <strong>Alternative:</strong> This approach emphasizes spaciousness with wide margins, floating HUD elements, and minimal UI chrome. The game area feels open and uncluttered. Best for players who want a clean, immersive experience with less visual noise.
+            </p>
+        </div>
+
+        <div class="mockup-container">
+            <div class="mockup-title">Main Game Screen (Spacious Layout)</div>
+            <div style="background: #1a1f2e; border-radius: 8px; padding: 64px; min-height: 600px; position: relative;">
+                <div style="position: absolute; top: 24px; left: 24px; background: rgba(45, 52, 66, 0.9); padding: 12px 20px; border-radius: 8px; display: flex; gap: 24px; align-items: center;">
+                    <div style="color: #ffffff;">⏱️ 00:45</div>
+                    <div style="width: 200px; height: 16px; background: #1e2740; border-radius: 8px; overflow: hidden;">
+                        <div style="height: 100%; background: linear-gradient(to right, #ffeb3b, #4caf50); width: 75%;"></div>
+                    </div>
+                    <div style="color: #ffd700;">Lv. 2 ✨ 5</div>
+                </div>
+                <div style="background: #1e2740; border-radius: 8px; padding: 64px; min-height: 400px; max-width: 800px; margin: 80px auto 0; position: relative;">
+                    <div style="position: absolute; top: 80px; left: 100px;">
+                        <div style="width: 64px; height: 64px; border-radius: 50%; border: 3px solid #fff176; display: flex; align-items: center; justify-content: center; font-size: 32px; background: rgba(26, 31, 46, 0.9);">📱</div>
+                    </div>
+                </div>
+                <div style="position: absolute; bottom: 24px; right: 24px; display: flex; gap: 12px;">
+                    <button style="padding: 12px 24px; background: rgba(45, 52, 66, 0.9); border: 1px solid #2d3442; border-radius: 8px; color: #ffffff; cursor: pointer;">🏪</button>
+                    <button style="padding: 12px 24px; background: rgba(45, 52, 66, 0.9); border: 1px solid #2d3442; border-radius: 8px; color: #ffffff; cursor: pointer;">⚙️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDirection = 1;
+        let comparisonMode = false;
+
+        function showDirection(num) {
+            // Hide all directions
+            document.querySelectorAll('.direction-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Hide thumbnails
+            document.getElementById('thumbnails').style.display = 'none';
+            
+            // Show selected direction
+            document.getElementById(`direction-${num}`).classList.add('active');
+            currentDirection = num;
+            
+            // Update thumbnail active state
+            document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
+                thumb.classList.toggle('active', index === num - 1);
+            });
+        }
+
+        function showThumbnails() {
+            document.querySelectorAll('.direction-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById('thumbnails').style.display = 'grid';
+        }
+
+        function toggleComparison() {
+            comparisonMode = !comparisonMode;
+            // Implementation for comparison mode
+            alert('Comparison mode: Feature coming soon! This would allow side-by-side viewing of multiple directions.');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                const next = currentDirection < 3 ? currentDirection + 1 : 1;
+                showDirection(next);
+            } else if (e.key === 'ArrowLeft') {
+                const prev = currentDirection > 1 ? currentDirection - 1 : 3;
+                showDirection(prev);
+            } else if (e.key === 'Escape') {
+                showThumbnails();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<story-context id="1-3-react-context-setup-for-game-state" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>3</storyId>
+    <title>React Context Setup for Game State</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-21T08:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-3-react-context-setup-for-game-state.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a developer</asA>
+    <iWant>I want React Context providers for game state and progression state</iWant>
+    <soThat>so that components can access and update game state throughout the application</soThat>
+    <tasks>
+      <task id="1" ac="1">Create GameContext
+        - Create `src/contexts/` directory if it doesn't exist
+        - Create `src/contexts/GameContext.tsx` file
+        - Import `GameState` type from `src/types/game.ts`
+        - Define `GameContext` using `createContext&lt;GameStateContextValue | null&gt;(null)`
+        - Define `GameStateContextValue` interface with game state and update functions
+        - Create `GameProvider` component that wraps children
+        - Use `useState` or `useReducer` for game state management
+        - Implement update functions: setCoziness, setTimeRemaining, setScore, addEvent, removeEvent
+        - Set initial state matching default game state (coziness: 60, timeRemaining: 60-90, score: 0, activeEvents: [], isPlaying: false, isPaused: false, gameOver: false)
+        - Export `GameContext`, `GameProvider`, and custom hook `useGame()`
+      </task>
+      <task id="2" ac="2">Create ProgressionContext
+        - Create `src/contexts/ProgressionContext.tsx` file
+        - Import `ProgressionState` type from `src/types/progression.ts`
+        - Define `ProgressionContext` using `createContext&lt;ProgressionStateContextValue | null&gt;(null)`
+        - Define `ProgressionStateContextValue` interface with progression state and update functions
+        - Create `ProgressionProvider` component that wraps children
+        - Use `useState` or `useReducer` for progression state management
+        - Implement update functions: addXP, levelUp, addSvitlyachky, purchaseItem, unlockAchievement
+        - Set initial state to load from localStorage or use defaults (level: 1, xp: 0, svitlyachky: 0, purchasedItems: [], equippedItems: {}, achievements: [])
+        - Note: localStorage integration will be added in Story 1.4, for now use defaults or placeholder
+        - Export `ProgressionContext`, `ProgressionProvider`, and custom hook `useProgression()`
+      </task>
+      <task id="3" ac="3">Verify hook usage for state management
+        - Verify GameContext uses `useState` or `useReducer` hook
+        - Verify ProgressionContext uses `useState` or `useReducer` hook
+        - Ensure no direct state mutations (use functional updates)
+        - Consider useReducer for complex state updates (game events, progression updates)
+      </task>
+      <task id="4" ac="4">Test provider composition
+        - Create test example or verify providers can be nested
+        - Test: &lt;ProgressionProvider&gt;&lt;GameProvider&gt;...&lt;/GameProvider&gt;&lt;/ProgressionProvider&gt;
+        - Test: &lt;GameProvider&gt;&lt;ProgressionProvider&gt;...&lt;/ProgressionProvider&gt;&lt;/GameProvider&gt;
+        - Verify both contexts can be consumed independently
+        - Verify contexts work when composed together
+      </task>
+      <task id="5" ac="5">Export TypeScript types
+        - Export `GameStateContextValue` interface/type from GameContext.tsx
+        - Export `ProgressionStateContextValue` interface/type from ProgressionContext.tsx
+        - Export custom hooks `useGame()` and `useProgression()` with proper return types
+        - Ensure TypeScript types enable autocomplete and type checking in IDEs
+        - Add JSDoc comments for context value interfaces
+      </task>
+      <task id="6" ac="1-5">Testing &amp; Validation
+        - Verify TypeScript compilation succeeds: `npm run build` or `npx tsc --noEmit`
+        - Ensure no TypeScript errors or warnings in context files
+        - Test contexts can be imported and used in other components
+        - Verify initial state values are correct
+        - Test update functions work correctly (manually or with temporary test component)
+        - Check that contexts are ready for use in Story 2.1 (Game Loop)
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Given type definitions exist, When I create Context providers, Then `src/contexts/GameContext.tsx` provides: GameContext with GameState type, GameProvider component that wraps children, Context value includes: current game state, update functions (setCoziness, setTimeRemaining, setScore, addEvent, removeEvent, etc.), Initial state matches default game state</criterion>
+    <criterion id="2">Given type definitions exist, When I create Context providers, Then `src/contexts/ProgressionContext.tsx` provides: ProgressionContext with ProgressionState type, ProgressionProvider component that wraps children, Context value includes: current progression state, update functions (addXP, levelUp, addSvitlyachky, purchaseItem, unlockAchievement, etc.), Initial state loads from localStorage or uses defaults</criterion>
+    <criterion id="3">Given Context providers are created, When I review the implementation, Then both contexts use React hooks (useState or useReducer) for state management</criterion>
+    <criterion id="4">Given Context providers are created, When I test provider composition, Then context providers can be composed (ProgressionProvider wraps GameProvider or vice versa)</criterion>
+    <criterion id="5">Given Context providers are created, When I check TypeScript types, Then TypeScript types are properly exported for context consumption</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/sprint-artifacts/1-3-react-context-setup-for-game-state.md" title="Story 1.3: React Context Setup for Game State" section="Story">
+        Story specification with acceptance criteria, tasks, and dev notes. Includes detailed implementation guidance for creating GameContext and ProgressionContext providers.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="State Management">
+        Architecture decision to use React Context API instead of Redux. Guidance on using useState or useReducer for state management. Context re-renders all consumers - manage with care to prevent performance issues.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Data Architecture">
+        Exact GameState and ProgressionState structure definitions. Initial state values: GameState (coziness: 60, timeRemaining: 60-90, score: 0, activeEvents: [], isPlaying: false, isPaused: false, gameOver: false), ProgressionState (level: 1, xp: 0, svitlyachky: 0, purchasedItems: [], equippedItems: {}, achievements: []).
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="ADR-002">
+        Architecture decision record explaining rationale for React Context over Redux. Simple state management needs, no extra dependencies, sufficient for hackathon scope.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        Project structure showing contexts directory location: `src/contexts/GameContext.tsx` and `src/contexts/ProgressionContext.tsx`. File naming conventions: PascalCase for component files.
+      </doc>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="State Management">
+        PRD requirement: Local component state + simple context or hooks. No Redux needed for MVP. Keep state management simple and straightforward.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 1.3">
+        Epic-level story definition with acceptance criteria and technical notes. Prerequisites: Story 1.2. Context should be ready for use in Story 2.1.
+      </doc>
+      <doc path="docs/sprint-artifacts/1-2-core-type-definitions.md" title="Story 1.2: Core Type Definitions" section="Dev Agent Record">
+        Previous story learnings: Type definitions complete and ready. GameState, ProgressionState, and GameEvent types are defined and exported. TypeScript strict mode enabled. Import pattern: Use `import type` for type-only imports.
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/types/game.ts" kind="type-definition" symbol="GameState" lines="39-54" reason="GameState interface defines the structure for game context state. Includes coziness, timeRemaining, score, activeEvents, isPlaying, isPaused, gameOver properties." />
+      <artifact path="src/types/progression.ts" kind="type-definition" symbol="ProgressionState" lines="72-85" reason="ProgressionState interface defines the structure for progression context state. Includes level, xp, svitlyachky, purchasedItems, equippedItems, achievements properties." />
+      <artifact path="src/types/progression.ts" kind="type-definition" symbol="EquippedItems" lines="29-36" reason="EquippedItems interface defines the structure for equipped cosmetic items. Used within ProgressionState.equippedItems property." />
+      <artifact path="src/types/events.ts" kind="type-definition" symbol="GameEvent" lines="62-84" reason="GameEvent interface defines the structure for events in activeEvents array. Required for GameState.activeEvents property type." />
+      <artifact path="src/types/events.ts" kind="type-definition" symbol="EventType" lines="20" reason="EventType union type defines valid event types. Used in GameEvent.type property." />
+      <artifact path="src/types/events.ts" kind="type-definition" symbol="EventPriority" lines="30" reason="EventPriority union type defines valid priority levels. Used in GameEvent.priority property." />
+      <artifact path="src/contexts" kind="directory" symbol="" lines="" reason="Contexts directory location. Currently empty - needs to be created. Will contain GameContext.tsx and ProgressionContext.tsx files." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+      </ecosystem>
+      <ecosystem name="dev">
+        <package name="typescript" version="~5.9.3" />
+        <package name="@types/react" version="^19.2.5" />
+        <package name="@types/react-dom" version="^19.2.3" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>State Management Approach: Use React Context API for global state (no Redux per PRD). Follow architecture document "State Management" section. Use `useState` for simple state or `useReducer` for complex state updates. Context re-renders all consumers - manage with care to prevent performance issues.</constraint>
+    <constraint>Context Structure: GameContext manages coziness, timeRemaining, score, activeEvents, isPlaying, isPaused, gameOver. ProgressionContext manages level, xp, svitlyachky, purchasedItems, equippedItems, achievements. Both contexts provide typed update functions for state modifications.</constraint>
+    <constraint>Context Provider Pattern: Create Context with `createContext&lt;T | null&gt;(null)` (null initial value). Provider component wraps children and provides context value. Custom hook (e.g., `useGame()`) wraps `useContext()` and handles null check. Export Context, Provider, and custom hook for clean API.</constraint>
+    <constraint>Update Functions: Use functional updates: `setState(prev =&gt; newValue)` to avoid stale closures. For complex updates (event management, progression calculations), consider `useReducer`. Update functions should be stable (use `useCallback` if needed, or rely on React's memoization). Functions should handle edge cases (e.g., removeEvent should handle non-existent events gracefully).</constraint>
+    <constraint>Type Safety: Context value types must match GameState and ProgressionState interfaces exactly. Custom hooks return typed context value (not null after provider check). Export context value types for use in components. Follow TypeScript best practices from Story 1.2.</constraint>
+    <constraint>Initial State: GameContext uses default game state (game not started). ProgressionContext loads from localStorage or uses defaults (localStorage integration in Story 1.4). For Story 1.3: Use default values, note that localStorage integration comes in Story 1.4.</constraint>
+    <constraint>Provider Composition: Providers can be nested in any order (both compositions should work). Components can consume both contexts independently. Prepare for App.tsx to wrap application with both providers.</constraint>
+    <constraint>File Naming: PascalCase for context files (matches component naming convention). Directory structure matches architecture document. Context files: `src/contexts/GameContext.tsx`, `src/contexts/ProgressionContext.tsx`.</constraint>
+    <constraint>TypeScript Strict Mode: TypeScript strict mode is enabled - all types must be properly defined. Use `import type` for type-only imports. No `any` types allowed.</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="GameStateContextValue" kind="TypeScript interface" signature="interface GameStateContextValue { gameState: GameState; setCoziness: (value: number) =&gt; void; setTimeRemaining: (value: number) =&gt; void; setScore: (value: number) =&gt; void; addEvent: (event: GameEvent) =&gt; void; removeEvent: (eventId: string) =&gt; void; ... }" path="src/contexts/GameContext.tsx" />
+    <interface name="ProgressionStateContextValue" kind="TypeScript interface" signature="interface ProgressionStateContextValue { progressionState: ProgressionState; addXP: (amount: number) =&gt; void; levelUp: () =&gt; void; addSvitlyachky: (amount: number) =&gt; void; purchaseItem: (itemId: string) =&gt; void; unlockAchievement: (achievementId: string) =&gt; void; ... }" path="src/contexts/ProgressionContext.tsx" />
+    <interface name="useGame" kind="React custom hook" signature="function useGame(): GameStateContextValue" path="src/contexts/GameContext.tsx" />
+    <interface name="useProgression" kind="React custom hook" signature="function useProgression(): ProgressionStateContextValue" path="src/contexts/ProgressionContext.tsx" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      TypeScript compilation must succeed with no errors. Use `npm run build` or `npx tsc --noEmit` to verify. No TypeScript errors or warnings in context files. Test contexts can be imported and used in other components. Verify initial state values are correct. Test update functions work correctly (manually or with temporary test component). Contexts should be ready for use in Story 2.1 (Game Loop). Consider using Vitest for unit tests (from architecture document), but manual testing is acceptable for this foundational story.
+    </standards>
+    <locations>
+      Test files should be co-located with source files: `src/contexts/GameContext.test.tsx` and `src/contexts/ProgressionContext.test.tsx` (optional for this story). Manual testing via temporary test components is acceptable.
+    </locations>
+    <ideas>
+      <test ac="1">Test GameContext provides correct initial state values (coziness: 60, timeRemaining: 60-90, score: 0, activeEvents: [], isPlaying: false, isPaused: false, gameOver: false)</test>
+      <test ac="1">Test GameContext update functions (setCoziness, setTimeRemaining, setScore, addEvent, removeEvent) modify state correctly</test>
+      <test ac="2">Test ProgressionContext provides correct initial state values (level: 1, xp: 0, svitlyachky: 0, purchasedItems: [], equippedItems: {}, achievements: [])</test>
+      <test ac="2">Test ProgressionContext update functions (addXP, levelUp, addSvitlyachky, purchaseItem, unlockAchievement) modify state correctly</test>
+      <test ac="3">Test both contexts use React hooks (useState or useReducer) for state management</test>
+      <test ac="4">Test provider composition: ProgressionProvider wraps GameProvider and both contexts work</test>
+      <test ac="4">Test provider composition: GameProvider wraps ProgressionProvider and both contexts work</test>
+      <test ac="5">Test TypeScript types are properly exported and enable autocomplete in IDEs</test>
+      <test ac="5">Test custom hooks (useGame, useProgression) return typed context values (not null after provider check)</test>
+    </ideas>
+  </tests>
+</story-context>
+

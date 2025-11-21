@@ -1,0 +1,199 @@
+<story-context id="2-1-game-state-management-and-game-loop" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>1</storyId>
+    <title>Game State Management and Game Loop</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T12:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want the game to run a continuous game loop that updates game state</iWant>
+    <soThat>so that the evening timer counts down and game mechanics function properly</soThat>
+    <tasks>
+      <task id="1" ac="1,4">Create useGameLoop hook
+        - Create `src/hooks/useGameLoop.ts` file
+        - Implement hook that wraps `requestAnimationFrame`
+        - Calculate delta time for frame-independent updates
+        - Handle cleanup (cancel animation frame) in useEffect cleanup
+        - Follow architecture patterns [Source: docs/architecture.md#Game-Loop-Lifecycle]
+      </task>
+      <task id="2" ac="2">Implement Page Visibility API pause/resume
+        - Listen for document visibility changes
+        - Pause game loop when tab becomes inactive (`document.hidden === true`)
+        - Resume game loop when tab becomes active
+        - Update `isPaused` state in GameContext
+        - Prevent timer updates while paused
+      </task>
+      <task id="3" ac="1">Implement game state updates in game loop
+        - Update evening timer (decrease by delta time, use EVENING_DURATION constant) [Source: docs/sprint-artifacts/1-5-game-constants-and-configuration.md]
+        - Update «Затишок» meter (decrease by COZINESS_DECAY_RATE * delta time) [Source: docs/sprint-artifacts/1-5-game-constants-and-configuration.md]
+        - Update active event timers (count down by delta time, Story 2.5 will handle this fully)
+        - Clamp values to valid ranges (coziness: 0-100, timeRemaining: &gt;= 0)
+        - Update GameContext state via context update functions
+      </task>
+      <task id="4" ac="4">Integrate game loop with GameContext
+        - Use GameContext from `src/contexts/GameContext.tsx` (created in Story 1.3)
+        - Update game state using context update functions (not direct state mutation)
+        - Ensure React re-renders when state changes
+        - Read initial game state from context
+        - Read player level from ProgressionContext (for level-based bonuses)
+      </task>
+      <task id="5" ac="5">Initialize game state when evening starts
+        - Create function to initialize/reset game state
+        - Set initial coziness (60 or based on level bonuses from Story 3.3)
+        - Set initial timeRemaining from EVENING_DURATION constant [Source: docs/sprint-artifacts/1-5-game-constants-and-configuration.md]
+        - Reset score to 0
+        - Reset activeEvents to empty array
+        - Set isPlaying: true, isPaused: false, gameOver: false
+        - Ensure GameState matches type definition from `src/types/game.ts`
+      </task>
+      <task id="6" ac="4">Performance optimization and testing
+        - Verify 60 FPS performance (no frame drops during gameplay)
+        - Ensure delta time calculation is accurate (handle frame rate variations)
+        - Test pause/resume functionality (tab visibility changes)
+        - Test cleanup on component unmount (no memory leaks)
+        - Verify game loop stops when gameOver is true
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Given the game is initialized, When I start an evening, Then the game loop starts using `requestAnimationFrame`, And the game loop updates every frame (~60 FPS): Evening timer decreases by delta time, «Затишок» meter decreases by decay rate (if no events affecting it), Active event timers count down, Game state is updated in GameContext</criterion>
+    <criterion id="2">Given the game loop is running, When the browser tab becomes inactive, Then the game loop pauses (using Page Visibility API), And when the tab becomes active again, the game loop resumes, And timers do not count down while paused</criterion>
+    <criterion id="3">Given the game component unmounts, When the component is removed from the DOM, Then the animation frame is cancelled, And no memory leaks occur (cleanup in useEffect)</criterion>
+    <criterion id="4">Given the game loop is running, When the game loop integrates with React, Then it uses `useGameLoop` hook that wraps requestAnimationFrame, And it updates GameContext state via context update functions, And it triggers React re-renders when state changes, And it maintains 60 FPS performance (no frame drops)</criterion>
+    <criterion id="5">Given an evening starts, When initial game state is set, Then game state structure matches GameState interface from types [Source: docs/architecture.md#Data-Architecture], And initial values are: coziness: 60 (or based on level bonuses from ProgressionContext), timeRemaining: 60-90 seconds (from EVENING_DURATION constant), score: 0, activeEvents: [], isPlaying: true, isPaused: false, gameOver: false</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md" title="Story 2.1: Game State Management and Game Loop" section="Story">
+        Story specification with acceptance criteria, tasks, and dev notes. Includes detailed implementation guidance for creating game loop hook, Page Visibility API integration, and React Context integration.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Game Loop Lifecycle">
+        Architecture patterns for game loop lifecycle: Start with requestAnimationFrame in useEffect, Update game state to trigger re-renders, Cleanup by canceling animation frame in useEffect cleanup. Use Page Visibility API to pause when tab inactive.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Decision Summary">
+        Architecture decision to use requestAnimationFrame for 60 FPS (not setInterval). Standard for browser games, provides smooth frame rate, integrates with browser rendering cycle.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="ADR-002">
+        Architecture decision record explaining rationale for React Context over Redux. Simple state management needs, no extra dependencies, sufficient for hackathon scope. Context updates trigger React re-renders automatically.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Data Architecture">
+        GameState interface structure definition. Includes coziness, timeRemaining, score, activeEvents, isPlaying, isPaused, gameOver properties. Initial state values specified.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Performance Considerations">
+        Game loop optimization: Use requestAnimationFrame for smooth 60 FPS, batch state updates to minimize re-renders, use React.memo for expensive components. Memory management: clean up event listeners on unmount, cancel animation frames on cleanup.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        Project structure showing hooks directory location: `src/hooks/useGameLoop.ts`. File naming conventions: camelCase for hook files. Hook should follow React hook rules.
+      </doc>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Game Mechanics">
+        PRD specifications for game mechanics: Evening timer (60-90 seconds), «Затишок» meter (0-100, decreases over time), event timers, game loop requirements. Win/lose conditions based on timer and coziness.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 2.1">
+        Epic-level story definition with acceptance criteria and technical notes. Prerequisites: Story 1.3 (Game Context), Story 1.5 (Constants). Follow architecture document "Game Loop" section.
+      </doc>
+      <doc path="docs/sprint-artifacts/1-5-game-constants-and-configuration.md" title="Story 1.5: Game Constants and Configuration" section="Dev Agent Record">
+        Previous story learnings: Constants file ready for use. EVENING_DURATION: 75 seconds, COZINESS_START: 60, COZINESS_DECAY_RATE: 0.5 per second. Helper functions available: `getMaxSimultaneousEvents(level)`, `getEventTimerDuration(level)`. Import pattern: Use named exports.
+      </doc>
+      <doc path="docs/sprint-artifacts/1-3-react-context-setup-for-game-state.md" title="Story 1.3: React Context Setup for Game State" section="Dev Agent Record">
+        Previous story learnings: GameContext available with GameState type and update functions. Use `useContext(GameContext)` to access state and update functions. State updates via context trigger React re-renders automatically. ProgressionContext available for level/XP data.
+      </doc>
+      <doc path="docs/sprint-artifacts/1-2-core-type-definitions.md" title="Story 1.2: Core Type Definitions" section="Dev Agent Record">
+        Previous story learnings: GameState type definition complete and ready. TypeScript strict mode enabled. Import pattern: Use `import type` for type-only imports. Types exported from `src/types/game.ts`.
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/types/game.ts" kind="type-definition" symbol="GameState" lines="39-54" reason="GameState interface defines the structure for game state. Includes coziness, timeRemaining, score, activeEvents, isPlaying, isPaused, gameOver properties. Required for game loop state updates." />
+      <artifact path="src/contexts/GameContext.tsx" kind="context" symbol="GameContext" lines="90-227" reason="GameContext provides game state and update functions. Hook must use context update functions (setCoziness, setTimeRemaining, setScore, setPlaying, setPaused, setGameOver, updateGameState) to modify state. Context triggers React re-renders when state changes." />
+      <artifact path="src/contexts/GameContext.tsx" kind="interface" symbol="GameStateContextValue" lines="62-83" reason="GameStateContextValue interface defines context value structure. Includes gameState and all update functions. Hook should use these functions to update state, not direct mutations." />
+      <artifact path="src/contexts/GameContext.tsx" kind="hook" symbol="useGame" lines="220-226" reason="useGame hook provides access to GameContext. Hook must use this to access game state and update functions. Throws error if used outside GameProvider." />
+      <artifact path="src/contexts/ProgressionContext.tsx" kind="context" symbol="ProgressionContext" lines="1-50" reason="ProgressionContext provides player level for level-based bonuses. Hook should read player level to determine initial coziness and evening duration based on level bonuses (future Story 3.3)." />
+      <artifact path="src/utils/constants.ts" kind="constant" symbol="EVENING_DURATION" lines="41" reason="EVENING_DURATION constant (75 seconds) used for initial timeRemaining. Import from constants file for initial game state setup." />
+      <artifact path="src/utils/constants.ts" kind="constant" symbol="COZINESS_START" lines="64" reason="COZINESS_START constant (60) used for initial coziness value. Import from constants file for initial game state setup." />
+      <artifact path="src/utils/constants.ts" kind="constant" symbol="COZINESS_DECAY_RATE" lines="75" reason="COZINESS_DECAY_RATE constant (0.5 per second) used for coziness decay in game loop. Multiply by delta time for frame-independent updates." />
+      <artifact path="src/hooks" kind="directory" symbol="" lines="" reason="Hooks directory location. Currently exists from Story 1.3 setup. Will contain useGameLoop.ts file." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+      </ecosystem>
+      <ecosystem name="dev">
+        <package name="typescript" version="~5.9.3" />
+        <package name="@types/react" version="^19.2.5" />
+        <package name="@types/react-dom" version="^19.2.3" />
+      </ecosystem>
+      <ecosystem name="browser">
+        <package name="requestAnimationFrame" version="native" />
+        <package name="Page Visibility API" version="native" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Game Loop Pattern: Use `requestAnimationFrame` for 60 FPS (not setInterval) [Source: docs/architecture.md#Decision-Summary]. Calculate delta time for frame-independent updates (ensures consistent game speed regardless of frame rate). Use Page Visibility API to pause when tab inactive [Source: docs/architecture.md#Game-Loop-Lifecycle]. Cleanup animation frame in useEffect cleanup to prevent memory leaks [Source: docs/architecture.md#Game-Loop-Lifecycle].</constraint>
+    <constraint>State Management Pattern: Use React Context API for game state (GameContext created in Story 1.3) [Source: docs/architecture.md#ADR-002]. Update state via context update functions (not direct mutations). State changes trigger React re-renders automatically. Read initial state and level bonuses from contexts [Source: docs/architecture.md#Integration-Points].</constraint>
+    <constraint>Hook Pattern: Implement `useGameLoop` hook in `src/hooks/useGameLoop.ts` [Source: docs/architecture.md#Project-Structure]. Hook should accept dependencies (isPlaying, isPaused, gameOver). Hook should return nothing (side effects only) or return current frame info. Follow React hook rules (call at top level, include dependencies in useEffect).</constraint>
+    <constraint>Performance Considerations: Maintain 60 FPS (no frame drops). Use delta time for frame-independent updates (ensures game speed consistency). Minimize state updates (only update when values actually change). Avoid expensive calculations in game loop (pre-calculate or cache). Use GPU-accelerated CSS transforms for rendering (not handled here, but prepare for Story 2.3).</constraint>
+    <constraint>Initial State Values: coziness: 60 (or based on level bonuses from ProgressionContext), timeRemaining: 60-90 seconds (from EVENING_DURATION constant), score: 0, activeEvents: [], isPlaying: true, isPaused: false, gameOver: false. GameState structure must match GameState interface from `src/types/game.ts`.</constraint>
+    <constraint>Constants Usage: Import constants from `src/utils/constants.ts`: EVENING_DURATION, COZINESS_START, COZINESS_DECAY_RATE. Use helper functions for level-dependent lookups if needed. Follow export pattern from Story 1.5 (named exports).</constraint>
+    <constraint>Page Visibility API: Listen for `document.visibilitychange` event. Check `document.hidden` property to determine if tab is inactive. Pause game loop when `document.hidden === true`. Resume when `document.hidden === false`. Update `isPaused` state in GameContext. Prevent timer updates while paused.</constraint>
+    <constraint>Delta Time Calculation: Calculate delta time as difference between current frame time and previous frame time. Handle frame rate variations (some frames may take longer). Use delta time for all time-based updates (timer countdown, coziness decay). Ensure frame-independent game speed.</constraint>
+    <constraint>Value Clamping: Clamp coziness to valid range (0-100). Clamp timeRemaining to valid range (&gt;= 0). Ensure values never go below minimum or above maximum. Use Math.max and Math.min for clamping.</constraint>
+    <constraint>TypeScript Strict Mode: TypeScript strict mode is enabled - all types must be properly defined. Use `import type` for type-only imports. No `any` types allowed. Hook must have proper return type (void or frame info type).</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="useGameLoop" kind="React custom hook" signature="function useGameLoop(): void" path="src/hooks/useGameLoop.ts" />
+    <interface name="GameState" kind="TypeScript interface" signature="interface GameState { coziness: number; timeRemaining: number; score: number; activeEvents: GameEvent[]; isPlaying: boolean; isPaused: boolean; gameOver: boolean; }" path="src/types/game.ts" />
+    <interface name="GameStateContextValue" kind="TypeScript interface" signature="interface GameStateContextValue { gameState: GameState; setCoziness: (value: number) =&gt; void; setTimeRemaining: (value: number) =&gt; void; setScore: (value: number) =&gt; void; setPlaying: (playing: boolean) =&gt; void; setPaused: (paused: boolean) =&gt; void; setGameOver: (gameOver: boolean) =&gt; void; updateGameState: (updates: Partial&lt;GameState&gt;) =&gt; void; ... }" path="src/contexts/GameContext.tsx" />
+    <interface name="requestAnimationFrame" kind="Browser API" signature="function requestAnimationFrame(callback: (timestamp: number) =&gt; void): number" path="browser-native" />
+    <interface name="Page Visibility API" kind="Browser API" signature="document.addEventListener('visibilitychange', handler: () =&gt; void); document.hidden: boolean" path="browser-native" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      TypeScript compilation must succeed with no errors. Use `npm run build` or `npx tsc --noEmit` to verify. No TypeScript errors or warnings in hook file. Test game loop starts and stops correctly. Test pause/resume functionality with Page Visibility API. Test cleanup on component unmount (no memory leaks). Verify 60 FPS performance (no frame drops). Test delta time calculation accuracy. Test value clamping (coziness 0-100, timeRemaining &gt;= 0). Consider using Vitest for unit tests (from architecture document), but manual testing is acceptable for this foundational story.
+    </standards>
+    <locations>
+      Test files should be co-located with source files: `src/hooks/useGameLoop.test.ts` (optional for this story). Manual testing via temporary test components is acceptable.
+    </locations>
+    <ideas>
+      <test ac="1">Test game loop starts when evening begins (isPlaying becomes true)</test>
+      <test ac="1">Test game loop updates every frame (~60 FPS) using requestAnimationFrame</test>
+      <test ac="1">Test evening timer decreases by delta time each frame</test>
+      <test ac="1">Test «Затишок» meter decreases by COZINESS_DECAY_RATE * delta time each frame</test>
+      <test ac="1">Test active event timers count down by delta time (basic test, Story 2.5 will handle fully)</test>
+      <test ac="1">Test game state is updated in GameContext (verify context updates trigger re-renders)</test>
+      <test ac="2">Test game loop pauses when browser tab becomes inactive (document.hidden === true)</test>
+      <test ac="2">Test game loop resumes when tab becomes active (document.hidden === false)</test>
+      <test ac="2">Test timers do not count down while paused (verify timeRemaining and coziness don't change)</test>
+      <test ac="2">Test isPaused state is updated in GameContext when tab visibility changes</test>
+      <test ac="3">Test animation frame is cancelled when component unmounts</test>
+      <test ac="3">Test no memory leaks occur (verify cleanup in useEffect runs)</test>
+      <test ac="4">Test useGameLoop hook wraps requestAnimationFrame correctly</test>
+      <test ac="4">Test game loop updates GameContext state via context update functions</test>
+      <test ac="4">Test React re-renders when state changes (verify component updates)</test>
+      <test ac="4">Test 60 FPS performance (no frame drops during gameplay, verify smooth updates)</test>
+      <test ac="5">Test initial game state structure matches GameState interface</test>
+      <test ac="5">Test initial coziness is 60 (or based on level bonuses from ProgressionContext)</test>
+      <test ac="5">Test initial timeRemaining is 60-90 seconds (from EVENING_DURATION constant)</test>
+      <test ac="5">Test initial score is 0</test>
+      <test ac="5">Test initial activeEvents is empty array</test>
+      <test ac="5">Test initial isPlaying is true</test>
+      <test ac="5">Test initial isPaused is false</test>
+      <test ac="5">Test initial gameOver is false</test>
+      <test ac="1,3">Test value clamping: coziness stays within 0-100 range</test>
+      <test ac="1,3">Test value clamping: timeRemaining stays &gt;= 0</test>
+      <test ac="1,4">Test delta time calculation handles frame rate variations correctly</test>
+      <test ac="4">Test game loop stops when gameOver is true</test>
+    </ideas>
+  </tests>
+</story-context>
+

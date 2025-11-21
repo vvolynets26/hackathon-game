@@ -1,0 +1,257 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>5</storyId>
+    <title>Game Constants and Configuration</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-5-game-constants-and-configuration.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a developer</asA>
+    <iWant>I want centralized game constants and configuration</iWant>
+    <soThat>So that game mechanics values are easy to adjust and maintain</soThat>
+    <tasks>
+      - Task 1 (AC: 1, 4): Create constants file structure (src/utils/constants.ts with TypeScript exports and JSDoc comments)
+      - Task 2 (AC: 1): Implement game timing constants (EVENING_DURATION: 75s default, EVENT_SPAWN_INTERVAL: 3.5s default)
+      - Task 3 (AC: 1): Implement coziness constants (COZINESS_START: 60, COZINESS_DECAY_RATE: reasonable default like 0.5)
+      - Task 4 (AC: 1): Implement event system constants (MAX_SIMULTANEOUS_EVENTS per level, EVENT_TIMER_DURATION per level)
+      - Task 5 (AC: 1): Implement event scoring constants (EVENT_SCORING, EVENT_COZINESS_IMPACT)
+      - Task 6 (AC: 1): Implement progression constants (XP_LEVEL_THRESHOLDS, SVITLYACHKY_REWARDS)
+      - Task 7 (AC: 1): Implement shop items constant (SHOP_ITEMS array with at least 3 items)
+      - Task 8 (AC: 2): Ensure TypeScript type safety (explicit types, as const for readonly objects, no any)
+      - Task 9 (AC: 3): Verify PRD alignment (cross-reference all constant values with PRD specifications)
+      - Task 10: Testing & Validation - Verify TypeScript compilation, exports work, ready for use in Story 2.1 and 3.1
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. **Given** the project is set up **When** I create constants file **Then** `src/utils/constants.ts` exports: EVENING_DURATION (60-90 seconds, configurable, use 75 as default), COZINESS_START (60 - starting coziness value), COZINESS_DECAY_RATE (decay per second value, use reasonable default like 0.5 if not specified in PRD), EVENT_SPAWN_INTERVAL (3-4 seconds, use 3.5 as default), MAX_SIMULTANEOUS_EVENTS (object mapping level to max events {1: 2, 2: 2, 3: 3, 4: 3, 5: 4}), EVENT_TIMER_DURATION (object mapping level to timer duration, 5-10 seconds based on difficulty), EVENT_SCORING (object with points for minor: +10, standard: +15, critical: +20), EVENT_COZINESS_IMPACT (object with rewards/penalties: minor: +5/-5, standard: +8/-10, critical: +10/-20), XP_LEVEL_THRESHOLDS ([0, 100, 300, 600] for levels 1-4), SVITLYACHKY_REWARDS (base: 1, bonus_50: 1, bonus_80: 1 for max 3 per evening), SHOP_ITEMS (array of shop item definitions, 3 items minimum: cosmetic skin 3 «Світлячки», cosmetic cat/candle 4 «Світлячки», gameplay buff 5 «Світлячки»)
+
+    2. **Given** constants file is created **When** I check TypeScript types **Then** all constants are typed with TypeScript (no `any` types), use `as const` for readonly objects/arrays, create TypeScript interfaces/types for complex constants (e.g., ShopItem), ensure TypeScript compilation succeeds
+
+    3. **Given** constants file is created **When** I verify values against PRD **Then** constants match PRD specifications exactly (Event Types & Scoring section, XP System section, «Світлячки» section, Shop Items & Prices section)
+
+    4. **Given** constants file is created **When** I check exports **Then** constants are exported for use throughout the codebase (game loop, event system, progression system)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Game Mechanics - Event Spawning</section>
+        <snippet>Events appear every 3-4 seconds. Max simultaneous events: Level 1-2: 2 events maximum, Level 3-4: 3 events maximum, Level 5+: 4 events maximum. Each event has a countdown timer (5-10 seconds depending on difficulty). If event expires → lose «Затишок» and score penalty.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progression & Economy - «Затишок» Range</section>
+        <snippet>«Затишок» Range: 0-100 (starts at 60 on early levels). Decreases over time (decay rate). Increases when events are resolved successfully. Decreases when events expire or fail.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progression & Economy - Event Types & Scoring</section>
+        <snippet>Minor Events (nice-to-have: calm cat, bring blanket): Points on resolve: +10, «Затишок» on resolve: +5, «Затишок» on failure: -5. Standard Events (typical blackout tasks: charge phone, light candle): Points on resolve: +15, «Затишок» on resolve: +8, «Затишок» on failure: -10. Critical Events (safety/essential: turn off kettle, restore main light): Points on resolve: +20, «Затишок» on resolve: +10, «Затишок» on failure: -20.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progression & Economy - XP System</section>
+        <snippet>XP = floor(total_score / 10) per evening. Example: 200-point evening = 20 XP. Level Up Formula: Level 1 → 0 XP (starting level), Level 2 → 100 XP, Level 3 → 300 XP, Level 4 → 600 XP.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progression & Economy - «Світлячки» (In-Game Currency)</section>
+        <snippet>Base reward: 1 «Світлячок» for surviving (Затишок > 0 at end). Performance bonus: +1 if final Затишок ≥ 50. Performance bonus: +1 if final Затишок ≥ 80. Maximum: 3 «Світлячки» per evening (perfect run).</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progression & Economy - Shop Items & Prices (MVP)</section>
+        <snippet>3 items total (sweet spot for hackathon MVP): 1. Cosmetic (skin): New character skin - 3 «Світлячки», 2. Cosmetic (cat/candle): New cat or fancy candle - 4 «Світлячки», 3. Gameplay buff: Light gameplay effect (e.g., +5% speed or +5 starting «Затишок») - 5 «Світлячки».</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Game Mechanics - Win & Lose Conditions</section>
+        <snippet>Evening timer: 60-90 seconds per evening. Win Condition: Evening timer reaches 0 while «Затишок» > 0. Lose Condition: «Затишок» hits 0 before the timer ends → evening ends early.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure - Utility Organization</section>
+        <snippet>Utility Organization: Domain-specific utilities in `utils/`. Constants in `utils/constants.ts`. Type definitions in `types/`. File naming: kebab-case for utility files (matches architecture document). Directory structure matches architecture document.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Implementation Patterns - Format Patterns</section>
+        <snippet>TypeScript Types: Use interfaces for object shapes. Use type aliases for unions/primitives. TypeScript Config: Strict mode enabled. Better type safety, catches errors early. All constants should be typed explicitly, use `as const` for readonly objects/arrays to ensure immutability.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Epic 1: Foundation - Story 1.5: Game Constants and Configuration</section>
+        <snippet>Story defines requirements: `src/utils/constants.ts` exports all game mechanics constants. Constants include: EVENING_DURATION (60-90 seconds), COZINESS_START (60), COZINESS_DECAY_RATE, EVENT_SPAWN_INTERVAL (3-4 seconds), MAX_SIMULTANEOUS_EVENTS (level-dependent), EVENT_TIMER_DURATION (level-dependent), EVENT_SCORING (minor: +10, standard: +15, critical: +20), EVENT_COZINESS_IMPACT (rewards/penalties per priority), XP_LEVEL_THRESHOLDS ([0, 100, 300, 600]), SVITLYACHKY_REWARDS (base: 1, bonus_50: 1, bonus_80: 1), SHOP_ITEMS (array of shop item definitions, 3 items minimum). All constants are typed with TypeScript, match PRD specifications exactly, and are exported for use throughout the codebase. Prerequisites: Story 1.1. Technical Notes: Reference PRD "Game Mechanics" and "Progression & Economy" sections. Make constants easily adjustable for balancing. Use descriptive constant names. Consider making some constants level-dependent functions if needed.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-5-game-constants-and-configuration.md</path>
+        <title>Story 1.5: Game Constants and Configuration</title>
+        <section>Dev Notes - Relevant Architecture Patterns and Constraints</section>
+        <snippet>Constants Organization: Centralize all game mechanics values in `src/utils/constants.ts`. Use descriptive constant names following naming conventions. Group related constants together (timing, scoring, progression, etc.). Make constants easily adjustable for game balancing. TypeScript Best Practices: Use `as const` for readonly objects/arrays to ensure type safety. Create interfaces for complex constant structures (e.g., ShopItem interface). Export types if needed for use in other modules. Follow TypeScript strict mode (no `any` types). Constants Usage: Constants will be imported and used throughout the codebase. Game loop (Story 2.1) will use timing and event constants. Event system (Story 2.4-2.6) will use event constants. Progression system (Story 3.1-3.4) will use progression and shop constants. All constants should be ready for immediate use in subsequent stories. Level-Dependent Constants: Some constants are level-dependent (MAX_SIMULTANEOUS_EVENTS, EVENT_TIMER_DURATION). Consider creating helper functions if needed (e.g., `getMaxEvents(level: number): number`). Or use object lookups with fallback values. Shop Items Structure: Shop items should include: id, name, price, type, description, effect (if gameplay buff). Type should distinguish between cosmetic and gameplay items. Prepare for integration with shop system in Story 3.4.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-5-game-constants-and-configuration.md</path>
+        <title>Story 1.5: Game Constants and Configuration</title>
+        <section>Dev Notes - Learnings from Previous Story</section>
+        <snippet>From Story 1-4-local-storage-utilities (Status: done): Utils Directory Created: `src/utils/` directory already exists from Story 1.4. Type Safety Pattern: Story 1.4 established pattern of using TypeScript strict mode, no `any` types, using `unknown` for validation. Export Pattern: Story 1.4 exports functions - follow similar pattern for constants (export all constants for use throughout codebase). JSDoc Comments: Story 1.4 added comprehensive JSDoc comments - follow same pattern for constants documentation. File Organization: Story 1.4 created `src/utils/localStorage.ts` - constants file should follow same location pattern: `src/utils/constants.ts`. Type Definitions: Story 1.2 created type definitions in `src/types/` - constants may need to reference these types (e.g., EventType, EventPriority from `src/types/events.ts`). Testing Approach: Story 1.4 verified TypeScript compilation - follow same approach: `npx tsc --noEmit` and `npm run build`. Implementation Notes: Constants file should be stateless (no functions, just exported constants). All constants should be typed explicitly. Use `as const` for readonly objects/arrays to ensure immutability. Constants will be imported by game loop, event manager, progression system, and shop system. Make constants easily adjustable for game balancing (consider making some configurable via environment or settings).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>src/types/events.ts</path>
+        <title>Event Type Definitions</title>
+        <purpose>Defines EventType and EventPriority types that constants may reference. Constants should use these types for type safety.</purpose>
+        <snippet>export type EventType = 'phone' | 'kettle' | 'cat' | 'candle'; export type EventPriority = 'minor' | 'standard' | 'critical'; export interface GameEvent { id: string; type: EventType; priority: EventPriority; location: { x: number; y: number }; timer: number; points: number; cozinessReward: number; cozinessPenalty: number; }</snippet>
+      </file>
+      <file>
+        <path>src/types/progression.ts</path>
+        <title>Progression Type Definitions</title>
+        <purpose>Defines ProgressionState and EquippedItems types. Constants may reference these types if shop items need to match progression types.</purpose>
+        <snippet>export interface EquippedItems { characterSkin?: string; cat?: string; candle?: string; } export interface ProgressionState { level: number; xp: number; svitlyachky: number; purchasedItems: string[]; equippedItems: EquippedItems; achievements: string[]; }</snippet>
+      </file>
+      <file>
+        <path>src/utils/localStorage.ts</path>
+        <title>localStorage Utilities</title>
+        <purpose>Utils directory pattern established in Story 1.4. Constants file should follow same location and export pattern. Shows JSDoc comment style to follow.</purpose>
+        <snippet>Utils directory: `src/utils/` already exists. File naming: kebab-case (`localStorage.ts`). Export pattern: Named exports for all utilities. JSDoc comments: Comprehensive documentation with examples. TypeScript: Strict mode, explicit types, no `any`. Constants file should follow same patterns: location in `src/utils/constants.ts`, named exports, comprehensive JSDoc, explicit types.</snippet>
+      </file>
+      <file>
+        <path>src/contexts/GameContext.tsx</path>
+        <title>Game Context Provider</title>
+        <purpose>GameContext will use timing and event constants in Story 2.1 (Game Loop). Constants should be ready for import.</purpose>
+        <snippet>GameContext manages game session state (coziness, timeRemaining, score, activeEvents, isPlaying, isPaused, gameOver). Will use constants from `src/utils/constants.ts` for: EVENING_DURATION (initial timeRemaining), EVENT_SPAWN_INTERVAL (event spawning), MAX_SIMULTANEOUS_EVENTS (event limits), EVENT_SCORING (score calculation), EVENT_COZINESS_IMPACT (coziness changes). Constants must be ready for use in Story 2.1.</snippet>
+      </file>
+      <file>
+        <path>src/contexts/ProgressionContext.tsx</path>
+        <title>Progression Context Provider</title>
+        <purpose>ProgressionContext will use progression constants in Story 3.1 (XP System). Constants should be ready for import.</purpose>
+        <snippet>ProgressionContext manages progression state (level, xp, svitlyachky, purchasedItems, equippedItems, achievements). Will use constants from `src/utils/constants.ts` for: XP_LEVEL_THRESHOLDS (level up calculation), SVITLYACHKY_REWARDS (currency rewards), SHOP_ITEMS (shop system). Constants must be ready for use in Story 3.1.</snippet>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="typescript" version="~5.9.3" />
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="@types/react" version="^19.2.5" />
+        <package name="@types/react-dom" version="^19.2.3" />
+      </ecosystem>
+      <ecosystem name="build-tool">
+        <package name="vite" version="^5.4.11" />
+        <package name="@vitejs/plugin-react" version="^4.3.1" />
+      </ecosystem>
+      <dependency type="story">
+        <id>1-1-project-setup-and-initialization</id>
+        <status>done</status>
+        <description>Project setup with React + TypeScript + Vite. Prerequisite for creating constants file.</description>
+      </dependency>
+      <dependency type="story">
+        <id>1-2-core-type-definitions</id>
+        <status>done</status>
+        <description>Provides EventType, EventPriority, and other types that constants may reference. Constants should use these types for type safety.</description>
+      </dependency>
+      <dependency type="story">
+        <id>1-4-local-storage-utilities</id>
+        <status>done</status>
+        <description>Created `src/utils/` directory and established patterns for utility files. Constants file should follow same location and export patterns.</description>
+      </dependency>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <name>TypeScript Strict Mode</name>
+      <description>TypeScript strict mode is enabled (from Story 1.1). All constants must be properly typed - no implicit any. No `any` types are used (use `unknown` if needed for validation). TypeScript types ensure type safety throughout. Use `as const` for readonly objects/arrays to ensure immutability.</description>
+    </constraint>
+    <constraint>
+      <name>Constants Organization</name>
+      <description>Centralize all game mechanics values in `src/utils/constants.ts`. Use descriptive constant names following naming conventions. Group related constants together (timing, scoring, progression, etc.). Make constants easily adjustable for game balancing. Constants file should be stateless (no functions, just exported constants).</description>
+    </constraint>
+    <constraint>
+      <name>PRD Alignment Requirements</name>
+      <description>All constant values must match PRD specifications exactly. Reference PRD "Game Mechanics" and "Progression & Economy" sections. Verify event scoring matches PRD (minor: +10, standard: +15, critical: +20). Verify XP thresholds match PRD ([0, 100, 300, 600]). Verify currency rewards match PRD (base: 1, bonus_50: 1, bonus_80: 1). Verify shop items match PRD (3 items: cosmetic skin 3, cosmetic cat/candle 4, gameplay buff 5).</description>
+    </constraint>
+    <constraint>
+      <name>Level-Dependent Constants</name>
+      <description>Some constants are level-dependent (MAX_SIMULTANEOUS_EVENTS, EVENT_TIMER_DURATION). Consider creating helper functions if needed (e.g., `getMaxEvents(level: number): number`). Or use object lookups with fallback values. Event timer duration: 5-10 seconds based on difficulty/level. Max simultaneous events: {1: 2, 2: 2, 3: 3, 4: 3, 5: 4}.</description>
+    </constraint>
+    <constraint>
+      <name>Shop Items Structure</name>
+      <description>Shop items should include: id (string), name (string), price (number in «Світлячки»), type (cosmetic | buff), description (string), effect (optional, if gameplay buff). Type should distinguish between cosmetic and gameplay items. At least 3 items required: cosmetic skin (3 «Світлячки»), cosmetic cat/candle (4 «Світлячки»), gameplay buff (5 «Світлячки»). Prepare for integration with shop system in Story 3.4.</description>
+    </constraint>
+    <constraint>
+      <name>Export Requirements</name>
+      <description>All constants must be exported for use throughout the codebase. Constants will be imported by: Game loop (Story 2.1) - timing and event constants, Event system (Story 2.4-2.6) - event constants, Progression system (Story 3.1-3.4) - progression and shop constants. Use named exports (not default export). Follow export pattern from Story 1.4 (localStorage utilities).</description>
+    </constraint>
+    <constraint>
+      <name>Documentation Requirements</name>
+      <description>Add comprehensive JSDoc comments for each constant group. Follow JSDoc pattern from Story 1.4 (localStorage utilities). Document: Constant purpose, Value meaning, Usage examples, References to PRD sections. Group related constants with section comments.</description>
+    </constraint>
+    <constraint>
+      <name>Architecture Alignment</name>
+      <description>Follow architecture document "Project Structure" section for file organization. File location: `src/utils/constants.ts`. Directory structure matches architecture document. File naming: kebab-case for utility files (matches architecture document). Utils directory already exists from Story 1.4.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>EventType</name>
+      <source>src/types/events.ts</source>
+      <description>Union type representing event types: 'phone' | 'kettle' | 'cat' | 'candle'. Constants may reference this type if needed for shop items or other structures.</description>
+    </interface>
+    <interface>
+      <name>EventPriority</name>
+      <source>src/types/events.ts</source>
+      <description>Union type representing event priorities: 'minor' | 'standard' | 'critical'. Constants will use this type for EVENT_SCORING and EVENT_COZINESS_IMPACT objects.</description>
+    </interface>
+    <interface>
+      <name>GameEvent</name>
+      <source>src/types/events.ts</source>
+      <description>Interface for game events. Constants will define values used to create GameEvent objects (points, cozinessReward, cozinessPenalty based on priority).</description>
+    </interface>
+    <interface>
+      <name>ShopItem</name>
+      <source>src/utils/constants.ts (to be created)</source>
+      <description>Interface for shop items that should be defined in constants file. Should include: id (string), name (string), price (number), type ('cosmetic' | 'buff'), description (string), effect (optional string for gameplay buffs).</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      TypeScript compilation validation: Run `npm run build` or `npx tsc --noEmit` to verify no TypeScript errors. Test constant exports: Verify all constants can be imported in other files. Verify constants have correct types (no `any`). Verify readonly objects/arrays use `as const`. Test PRD alignment: Cross-reference all constant values with PRD specifications. Verify event scoring matches PRD exactly. Verify XP thresholds match PRD exactly. Verify currency rewards match PRD exactly. Verify shop items match PRD exactly. Test integration readiness: Verify constants are ready for use in Story 2.1 (Game Loop). Verify constants are ready for use in Story 3.1 (XP System). No test framework configured yet - manual testing required.
+    </standards>
+    <locations>
+      Constants file: `src/utils/constants.ts`. Test files (when added): Co-located with source files as `*.test.ts` or `*.spec.ts` per architecture document. Currently no test framework configured - Vitest mentioned in architecture but not yet installed.
+    </locations>
+    <ideas>
+      <test id="AC1">
+        <description>Verify `src/utils/constants.ts` exists and exports all required constants: EVENING_DURATION (75 default), COZINESS_START (60), COZINESS_DECAY_RATE (reasonable default like 0.5), EVENT_SPAWN_INTERVAL (3.5 default), MAX_SIMULTANEOUS_EVENTS ({1: 2, 2: 2, 3: 3, 4: 3, 5: 4}), EVENT_TIMER_DURATION (level-dependent, 5-10 seconds), EVENT_SCORING ({minor: 10, standard: 15, critical: 20}), EVENT_COZINESS_IMPACT ({minor: {reward: 5, penalty: -5}, standard: {reward: 8, penalty: -10}, critical: {reward: 10, penalty: -20}}), XP_LEVEL_THRESHOLDS ([0, 100, 300, 600]), SVITLYACHKY_REWARDS ({base: 1, bonus_50: 1, bonus_80: 1}), SHOP_ITEMS (array with at least 3 items). Verify all constants are exported and can be imported.</description>
+      </test>
+      <test id="AC2">
+        <description>Verify all constants have explicit TypeScript types (no implicit `any`). Verify readonly objects/arrays use `as const` for type safety. Verify complex constants (SHOP_ITEMS) have TypeScript interfaces/types (e.g., ShopItem interface). Verify TypeScript compilation succeeds with no errors. Verify no `any` types are used anywhere.</description>
+      </test>
+      <test id="AC3">
+        <description>Verify EVENT_SCORING matches PRD: minor: +10, standard: +15, critical: +20. Verify EVENT_COZINESS_IMPACT matches PRD: minor: +5/-5, standard: +8/-10, critical: +10/-20. Verify XP_LEVEL_THRESHOLDS matches PRD: [0, 100, 300, 600] for levels 1-4. Verify SVITLYACHKY_REWARDS matches PRD: base: 1, bonus_50: 1, bonus_80: 1 (max 3 per evening). Verify SHOP_ITEMS matches PRD: 3 items with prices 3, 4, 5 «Світлячки». Verify COZINESS_START matches PRD: 60. Verify MAX_SIMULTANEOUS_EVENTS matches PRD: Level 1-2: 2, Level 3-4: 3, Level 5+: 4. Cross-reference all values with PRD "Game Mechanics" and "Progression & Economy" sections.</description>
+      </test>
+      <test id="AC4">
+        <description>Verify all constants are exported using named exports (not default export). Verify constants can be imported in test files: `import { EVENING_DURATION, COZINESS_START, ... } from './utils/constants'`. Verify constants are ready for use in Story 2.1 (Game Loop) - timing and event constants. Verify constants are ready for use in Story 3.1 (XP System) - progression constants. Verify constants follow same export pattern as Story 1.4 (localStorage utilities).</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>

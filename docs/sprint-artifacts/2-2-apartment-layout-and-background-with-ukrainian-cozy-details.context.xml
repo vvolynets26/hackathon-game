@@ -1,0 +1,197 @@
+<story-context id="2-2-apartment-layout-and-background-with-ukrainian-cozy-details" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2</storyId>
+    <title>Apartment Layout and Background with Ukrainian Cozy Details</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T12:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-2-apartment-layout-and-background-with-ukrainian-cozy-details.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want to see an apartment layout with authentic Ukrainian cozy details</iWant>
+    <soThat>so that I have a visually warm, culturally authentic game space to play in</soThat>
+    <tasks>
+      <task id="1" ac="1,4">Create Apartment component structure
+        - Create `src/components/game/Apartment.tsx` file
+        - Set up component with TypeScript types
+        - Create CSS module file `src/components/game/Apartment.module.css`
+        - Follow component naming conventions [Source: docs/architecture.md#Naming-Conventions]
+      </task>
+      <task id="2" ac="1,2">Implement apartment background and layout
+        - Create dark background with "Cozy Blackout" theme colors (dark blues/greys: #1a1f2e, #2d3442, #1e2740) [Source: docs/ux-design-specification.md#Color-System]
+        - Design simple 2D layout (single screen or 2-3 rooms)
+        - Position furniture and objects in apartment
+        - Define apartment boundaries (for character movement constraints in Story 2.3)
+        - Set up event object locations (phone, kettle, cat, candle positions) for Story 2.4
+        - Use CSS for styling (no complex pixel art)
+      </task>
+      <task id="3" ac="1,3">Implement Ukrainian cozy details
+        - **Гном з JYSK**: Create small figure on shelf
+          - Position in living room or near TV
+          - Style with long шапка (hat), beard, tiny nose
+          - Add subtle glow or tiny idle "wiggle" animation (CSS animation, every few seconds)
+          - Pure charm element - zero gameplay impact
+        - **Килим на стіні / етно-постер**: Create carpet on wall or ethno-poster
+          - Position behind sofa or bed
+          - Style with simple folk-ish pattern or geometric орнамент (без політики)
+          - Optional: Add subtle texture or parallax effect when character passes nearby (very minor)
+        - **Плед в клітинку на дивані**: Create plaid blanket on sofa
+          - Drape over sofa in living room
+          - Style as soft rectangular shape with plaid pattern (simple stripes)
+          - Use warm tones: червоний / коричневий / беж (red / brown / beige)
+          - Prepare for optional micro-interaction in Story 2.6 (Minor event "Принести плед")
+      </task>
+      <task id="4" ac="3">Implement CSS animations for cozy details
+        - Create gnome wiggle animation (CSS keyframes, subtle movement)
+        - Add optional parallax effect for килим (very subtle, only if performance allows)
+        - Ensure animations are performance-friendly (CSS animations, not JavaScript)
+        - Test animations don't cause frame drops (maintain 60 FPS)
+      </task>
+      <task id="5" ac="2,4">Define apartment boundaries and event locations
+        - Create apartment boundary constants or configuration
+        - Define event object positions (phone, kettle, cat, candle) as coordinates
+        - Export boundary and location data for use in Story 2.3 (character movement) and Story 2.4 (event spawning)
+        - Ensure boundaries are clear and match apartment visual layout
+      </task>
+      <task id="6" ac="1,2,3,4">Integration and testing
+        - Verify apartment renders correctly in game container
+        - Test apartment boundaries are properly defined
+        - Verify cozy details are visible but not distracting
+        - Test CSS animations perform well (no frame drops)
+        - Verify apartment is ready for character positioning (Story 2.3)
+        - Verify event locations are accessible for event system (Story 2.4)
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Given the game is running, When I view the gameplay screen, Then `Apartment.tsx` component displays: Apartment background with dark blues/greys (night, blackout atmosphere), Simple 2D layout (single screen or 2-3 rooms), Furniture and objects positioned in the apartment, Visual style matches "Cozy Blackout" theme, **MVP Ukrainian cozy details** (3-4 items for cultural authenticity): **Гном з JYSK (JYSK Gnome)**: Small figure on shelf with subtle glow or idle wiggle animation, **Килим на стіні / етно-постер**: Carpet on wall or ethno-poster behind sofa/bed with folk pattern, **Плед в клітинку на дивані**: Plaid blanket on sofa with warm tones (red/brown/beige)</criterion>
+    <criterion id="2">Given the apartment layout is rendered, When I view the gameplay area, Then apartment layout: Defines boundaries for character movement (character cannot move outside play area), Provides locations for event objects (phone, kettle, cat, candle positions), Uses simple shapes or sprites (no complex pixel art), Styled with CSS (dark background, warm light sources), Cozy details are decorative (except blanket which may be interactive in Story 2.6)</criterion>
+    <criterion id="3">Given cozy details are implemented, When I view the apartment, Then cozy details: Simple CSS-styled elements or basic sprites, Subtle animations (gnome wiggle, optional parallax) use CSS animations, Performance-friendly (no heavy assets), Visible but not distracting from gameplay, Adds cultural authenticity without complexity</criterion>
+    <criterion id="4">Given the apartment component is created, When the game renders, Then apartment is: Rendered as game container/background, Sized appropriately for gameplay area, Ready for character and event positioning (Story 2.3, 2.4), Culturally authentic with Ukrainian cozy elements</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/sprint-artifacts/2-2-apartment-layout-and-background-with-ukrainian-cozy-details.md" title="Story 2.2: Apartment Layout and Background with Ukrainian Cozy Details" section="Story">
+        Complete story specification with acceptance criteria, tasks, and dev notes. Includes detailed implementation guidance for creating Apartment component, implementing cozy details, and defining boundaries/locations.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Color System">
+        "Cozy Blackout" theme color palette: Background/Apartment colors (dark blues/greys: #1a1f2e, #2d3442, #1e2740), Light Sources (warm yellows/oranges: #f4a460, #ff8c42, #ffd700), UI/HUD colors (light text: #ffffff, warm accents). Use these exact colors for apartment background and cozy details.
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Visual Foundation">
+        Visual foundation principles: Dark but cozy atmosphere, warm light sources, simple flat 2D shapes, soft rounded corners, slight shadows for depth. Apartment should follow these principles for cohesive visual style.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Naming Conventions">
+        Component naming patterns: PascalCase for component files (`Apartment.tsx`), PascalCase for component names (`Apartment`), Match file name to component name. CSS Modules pattern: `Apartment.module.css` for component styles.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Structure Patterns">
+        Component organization: By feature/domain (`components/game/`), CSS Modules for styling (`Apartment.module.css`), Class names in camelCase (`.apartment`, `.cozyDetail`). Component should be functional React component with TypeScript types.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        Project structure showing component locations: `src/components/game/Apartment.tsx` for apartment component, `src/components/game/Apartment.module.css` for styling. Directory structure already exists from Story 1.1 setup.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Performance Considerations">
+        Performance requirements: Use CSS animations (not JavaScript) for performance, ensure animations don't cause frame drops (maintain 60 FPS), keep assets lightweight (no heavy images, use CSS shapes), test performance in Chrome (primary target browser). GPU-accelerated CSS transforms for animations.
+      </doc>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Product Scope">
+        MVP apartment layout specifications: Single screen or simple 2-3 rooms, one polished layout is better than multiple half-finished ones. Simple 2D shapes, no complex pixel art. Apartment serves as game container/background.
+      </doc>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="User Experience Principles">
+        Overall art direction "Cozy Blackout": Visually dark but not scary, cozy warm light inside dark evening. Palette: Background/Apartment dark blues/greys (night, blackout), Light Sources warm yellows/oranges (cozy feeling), Simple flat 2D shapes, soft rounded corners everywhere.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 2.2">
+        Epic-level story definition with acceptance criteria and technical notes. Prerequisites: Story 2.1 (Game Loop), Story 1.5 (Constants). Follow UX design document "Visual Foundation" section. Cozy details are MVP items - prioritize 3-4 for cultural authenticity.
+      </doc>
+      <doc path="docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md" title="Story 2.1: Game State Management and Game Loop" section="Dev Agent Record">
+        Previous story learnings: Game loop available at `src/hooks/useGameLoop.ts`, runs at 60 FPS using `requestAnimationFrame`, delta time calculation ensures frame-independent updates, Page Visibility API pauses/resumes game. GameContext available with all update functions. Apartment component is visual-only in this story (no game state updates needed).
+      </doc>
+      <doc path="docs/sprint-artifacts/1-5-game-constants-and-configuration.md" title="Story 1.5: Game Constants and Configuration" section="Dev Agent Record">
+        Previous story learnings: Constants available in `src/utils/constants.ts`. Can add apartment-specific constants if needed (boundaries, event locations). Follow existing constant naming patterns. Export constants for use in other components.
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/components/game" kind="directory" symbol="" lines="" reason="Game component directory location. Currently exists from Story 1.1 setup. Will contain Apartment.tsx and Apartment.module.css files." />
+      <artifact path="src/hooks/useGameLoop.ts" kind="hook" symbol="useGameLoop" lines="44-244" reason="Game loop hook available for reading game state if needed (e.g., for dynamic lighting based on events). Apartment component can read game state from GameContext, but is visual-only in this story." />
+      <artifact path="src/contexts/GameContext.tsx" kind="context" symbol="GameContext" lines="90-227" reason="GameContext provides game state. Apartment component can read game state if needed (e.g., for dynamic lighting based on events). Game state structure matches GameState interface from `src/types/game.ts`." />
+      <artifact path="src/utils/constants.ts" kind="constant" symbol="constants" lines="1-339" reason="Constants file available. Can add apartment-specific constants if needed (boundaries, event locations). Follow existing constant naming patterns. Export constants for use in other components (Story 2.3, 2.4)." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+      </ecosystem>
+      <ecosystem name="dev">
+        <package name="typescript" version="~5.9.3" />
+        <package name="@types/react" version="^19.2.5" />
+        <package name="@types/react-dom" version="^19.2.3" />
+      </ecosystem>
+      <ecosystem name="browser">
+        <package name="CSS Animations" version="native" />
+        <package name="CSS Modules" version="vite-native" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Component Pattern: Create `Apartment.tsx` in `src/components/game/` directory [Source: docs/architecture.md#Project-Structure]. Use CSS Modules for styling: `Apartment.module.css` [Source: docs/architecture.md#Structure-Patterns]. Follow PascalCase naming for component: `Apartment` [Source: docs/architecture.md#Naming-Conventions]. Component should be a functional React component with TypeScript types.</constraint>
+    <constraint>Styling Pattern: Use CSS for all styling (dark blues/greys background, warm accents) [Source: docs/ux-design-specification.md#Color-System]. Follow "Cozy Blackout" theme colors from UX design specification. Use CSS animations for subtle effects (gnome wiggle, optional parallax). Keep styling simple for hackathon scope (CSS shapes, no complex pixel art).</constraint>
+    <constraint>Performance Considerations: Use CSS animations (not JavaScript) for performance [Source: docs/architecture.md#Performance-Considerations]. Ensure animations don't cause frame drops (maintain 60 FPS). Keep assets lightweight (no heavy images, use CSS shapes). Test performance in Chrome (primary target browser). GPU-accelerated CSS transforms for animations.</constraint>
+    <constraint>Integration Points: Apartment boundaries will be used by Character component (Story 2.3) for movement constraints. Event locations will be used by EventManager (Story 2.4) for event spawning. Apartment serves as game container/background for all gameplay elements. Export boundary and location data as constants or configuration object.</constraint>
+    <constraint>Cozy Details Implementation: Simple CSS-styled elements or basic sprites (no complex pixel art). Subtle animations use CSS animations (gnome wiggle, optional parallax). Performance-friendly (no heavy assets). Visible but not distracting from gameplay. Adds cultural authenticity without complexity. Pure charm elements - zero gameplay impact (except blanket which may be interactive in Story 2.6).</constraint>
+    <constraint>Color Palette: Background/Apartment: Dark Night #1a1f2e (main apartment background), Dark Grey #2d3442 (furniture, objects), Deep Blue #1e2740 (shadows, depth). Light Sources: Candle Yellow #f4a460 (primary light source), Warm Orange #ff8c42 (bright candles, lamps), Soft Glow #ffd700 (ambient warm light). Cozy details use warm tones: red/brown/beige for blanket [Source: docs/ux-design-specification.md#Color-System].</constraint>
+    <constraint>Layout Requirements: Simple 2D layout (single screen or 2-3 rooms) [Source: docs/prd.md#Product-Scope]. Define boundaries for character movement (character cannot move outside play area). Provide locations for event objects (phone, kettle, cat, candle positions). Use simple shapes or sprites (no complex pixel art). Sized appropriately for gameplay area.</constraint>
+    <constraint>Ukrainian Cozy Details: **Гном з JYSK**: Small figure on shelf, long шапка (hat), beard, tiny nose, subtle glow or tiny idle "wiggle" animation (CSS animation, every few seconds), pure charm element. **Килим на стіні / етно-постер**: Behind sofa or bed, simple folk-ish pattern or geometric орнамент (без політики), optional subtle parallax. **Плед в клітинку на дивані**: Draped over sofa, plaid pattern (simple stripes), warm tones (red/brown/beige), prepare for optional micro-interaction in Story 2.6.</constraint>
+    <constraint>TypeScript Strict Mode: TypeScript strict mode is enabled - all types must be properly defined. Component props should use TypeScript interfaces. No `any` types allowed. CSS Modules class names should be typed (Vite provides automatic typing for CSS Modules).</constraint>
+    <constraint>Visual-Only Component: Apartment component is visual-only in this story. No game state updates needed (that's handled by game loop). Apartment provides visual context and defines boundaries/locations. Character movement (Story 2.3) will use apartment boundaries. Event spawning (Story 2.4) will use event locations defined here.</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="Apartment" kind="React component" signature="function Apartment(): JSX.Element" path="src/components/game/Apartment.tsx" />
+    <interface name="Apartment.module.css" kind="CSS Module" signature="CSS module with classes for apartment layout, background, cozy details, animations" path="src/components/game/Apartment.module.css" />
+    <interface name="ApartmentBoundaries" kind="TypeScript type/interface" signature="interface ApartmentBoundaries { minX: number; maxX: number; minY: number; maxY: number; }" path="src/utils/constants.ts (or separate config)" />
+    <interface name="EventLocations" kind="TypeScript type/interface" signature="interface EventLocations { phone: { x: number; y: number }; kettle: { x: number; y: number }; cat: { x: number; y: number }; candle: { x: number; y: number }; }" path="src/utils/constants.ts (or separate config)" />
+  </interfaces>
+
+  <tests>
+    <standards>
+      TypeScript compilation must succeed with no errors. Use `npm run build` or `npx tsc --noEmit` to verify. No TypeScript errors or warnings in component file. Test apartment renders correctly in game container. Test apartment boundaries are properly defined. Verify cozy details are visible but not distracting. Test CSS animations perform well (no frame drops, maintain 60 FPS). Verify apartment is ready for character positioning (Story 2.3). Verify event locations are accessible for event system (Story 2.4). Consider using Vitest for unit tests (from architecture document), but manual testing is acceptable for this visual component story.
+    </standards>
+    <locations>
+      Test files should be co-located with source files: `src/components/game/Apartment.test.tsx` (optional for this story). Manual testing via visual inspection and browser DevTools is acceptable.
+    </locations>
+    <ideas>
+      <test ac="1">Test Apartment component renders without errors</test>
+      <test ac="1">Test apartment background displays with dark blues/greys colors (#1a1f2e, #2d3442, #1e2740)</test>
+      <test ac="1">Test simple 2D layout is visible (single screen or 2-3 rooms)</test>
+      <test ac="1">Test furniture and objects are positioned in apartment</test>
+      <test ac="1">Test visual style matches "Cozy Blackout" theme</test>
+      <test ac="1">Test Гном з JYSK (JYSK Gnome) is visible on shelf with subtle glow or wiggle animation</test>
+      <test ac="1">Test Килим на стіні / етно-постер is visible behind sofa/bed with folk pattern</test>
+      <test ac="1">Test Плед в клітинку на дивані is visible on sofa with warm tones (red/brown/beige)</test>
+      <test ac="2">Test apartment boundaries are defined (minX, maxX, minY, maxY values exist)</test>
+      <test ac="2">Test event object locations are defined (phone, kettle, cat, candle positions exist as coordinates)</test>
+      <test ac="2">Test apartment uses simple shapes or sprites (no complex pixel art)</test>
+      <test ac="2">Test apartment is styled with CSS (dark background, warm light sources)</test>
+      <test ac="2">Test cozy details are decorative (except blanket which may be interactive in Story 2.6)</test>
+      <test ac="3">Test cozy details are simple CSS-styled elements or basic sprites</test>
+      <test ac="3">Test gnome wiggle animation uses CSS animations (not JavaScript)</test>
+      <test ac="3">Test optional parallax effect for килим uses CSS animations (if implemented)</test>
+      <test ac="3">Test animations are performance-friendly (no frame drops, maintain 60 FPS)</test>
+      <test ac="3">Test cozy details are visible but not distracting from gameplay</test>
+      <test ac="3">Test cozy details add cultural authenticity without complexity</test>
+      <test ac="4">Test apartment is rendered as game container/background</test>
+      <test ac="4">Test apartment is sized appropriately for gameplay area</test>
+      <test ac="4">Test apartment is ready for character positioning (boundaries exported for Story 2.3)</test>
+      <test ac="4">Test apartment is ready for event system (event locations exported for Story 2.4)</test>
+      <test ac="4">Test apartment is culturally authentic with Ukrainian cozy elements</test>
+      <test ac="1,3">Test CSS animations don't cause frame drops (performance test in Chrome DevTools)</test>
+      <test ac="2,4">Test apartment boundaries and event locations are exported and accessible</test>
+      <test ac="1,2,3,4">Test apartment component integrates correctly with game container</test>
+    </ideas>
+  </tests>
+</story-context>
+

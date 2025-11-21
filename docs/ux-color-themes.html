@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вечір при блекауті - Color Theme Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #1a1f2e;
+            color: #ffffff;
+            padding: 32px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffd700;
+        }
+
+        .subtitle {
+            color: #f5f5f5;
+            margin-bottom: 48px;
+            font-size: 16px;
+        }
+
+        .theme-section {
+            margin-bottom: 64px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #ffffff;
+            border-bottom: 2px solid #ffd700;
+            padding-bottom: 8px;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .color-card {
+            background: #2d3442;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #1e2740;
+        }
+
+        .color-swatch {
+            width: 100%;
+            height: 120px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #ffffff;
+        }
+
+        .color-hex {
+            font-family: "Courier New", monospace;
+            font-size: 14px;
+            color: #f5f5f5;
+            margin-bottom: 4px;
+        }
+
+        .color-usage {
+            font-size: 12px;
+            color: #f5f5f5;
+            opacity: 0.8;
+        }
+
+        .gradient-bar {
+            height: 40px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .component-showcase {
+            background: #2d3442;
+            border-radius: 8px;
+            padding: 32px;
+            margin-top: 32px;
+            border: 1px solid #1e2740;
+        }
+
+        .component-group {
+            margin-bottom: 32px;
+        }
+
+        .component-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffd700;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-primary {
+            background: #ffd700;
+            color: #1a1f2e;
+        }
+
+        .btn-secondary {
+            background: #4ecdc4;
+            color: #1a1f2e;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: #ffffff;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: #1a1f2e;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: #ffffff;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #1e2740;
+            background: #1a1f2e;
+            color: #ffffff;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        .card {
+            background: #2d3442;
+            border-radius: 8px;
+            padding: 24px;
+            border: 1px solid #1e2740;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .card-text {
+            color: #f5f5f5;
+            margin-bottom: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-success {
+            background: #4caf50;
+            color: #ffffff;
+        }
+
+        .badge-warning {
+            background: #ff9800;
+            color: #1a1f2e;
+        }
+
+        .badge-info {
+            background: #2196f3;
+            color: #ffffff;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background: #1e2740;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1f2e;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .event-priority {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .event-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .event-timer {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: #1a1f2e;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .coziness-meter {
+            width: 100%;
+            height: 32px;
+            border-radius: 16px;
+            margin: 16px 0;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Color Theme Explorer</h1>
+        <p class="subtitle">Вечір при блекауті - "Cozy Blackout" Theme</p>
+
+        <!-- Background/Apartment Colors -->
+        <div class="theme-section">
+            <h2 class="section-title">Background / Apartment Colors</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #1a1f2e;"></div>
+                    <div class="color-name">Dark Night</div>
+                    <div class="color-hex">#1a1f2e</div>
+                    <div class="color-usage">Main apartment background</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #2d3442;"></div>
+                    <div class="color-name">Dark Grey</div>
+                    <div class="color-hex">#2d3442</div>
+                    <div class="color-usage">Furniture, objects</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #1e2740;"></div>
+                    <div class="color-name">Deep Blue</div>
+                    <div class="color-hex">#1e2740</div>
+                    <div class="color-usage">Shadows, depth</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Light Sources -->
+        <div class="theme-section">
+            <h2 class="section-title">Light Sources (Warm & Cozy)</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #f4a460; box-shadow: 0 0 20px rgba(244, 164, 96, 0.6);"></div>
+                    <div class="color-name">Candle Yellow</div>
+                    <div class="color-hex">#f4a460</div>
+                    <div class="color-usage">Primary light source</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #ff8c42; box-shadow: 0 0 20px rgba(255, 140, 66, 0.6);"></div>
+                    <div class="color-name">Warm Orange</div>
+                    <div class="color-hex">#ff8c42</div>
+                    <div class="color-usage">Bright candles, lamps</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);"></div>
+                    <div class="color-name">Soft Glow</div>
+                    <div class="color-hex">#ffd700</div>
+                    <div class="color-usage">Ambient warm light</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- UI/HUD Colors -->
+        <div class="theme-section">
+            <h2 class="section-title">UI / HUD Colors</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #ffffff;"></div>
+                    <div class="color-name">Light Text</div>
+                    <div class="color-hex">#ffffff</div>
+                    <div class="color-usage">Primary text</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #f5f5f5;"></div>
+                    <div class="color-name">Near-White</div>
+                    <div class="color-hex">#f5f5f5</div>
+                    <div class="color-usage">Secondary text</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #ffd700;"></div>
+                    <div class="color-name">Accent Warm</div>
+                    <div class="color-hex">#ffd700</div>
+                    <div class="color-usage">«Світлячки», highlights</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #4ecdc4;"></div>
+                    <div class="color-name">Accent Teal</div>
+                    <div class="color-hex">#4ecdc4</div>
+                    <div class="color-usage">Alternative accent</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Semantic Colors -->
+        <div class="theme-section">
+            <h2 class="section-title">Semantic Colors</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #4caf50;"></div>
+                    <div class="color-name">Success</div>
+                    <div class="color-hex">#4caf50</div>
+                    <div class="color-usage">High «Затишок», completed events</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #ff9800;"></div>
+                    <div class="color-name">Warning</div>
+                    <div class="color-hex">#ff9800</div>
+                    <div class="color-usage">Medium «Затишок», urgent events</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #f44336;"></div>
+                    <div class="color-name">Danger</div>
+                    <div class="color-hex">#f44336</div>
+                    <div class="color-usage">Low «Затишок», expired events</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #2196f3;"></div>
+                    <div class="color-name">Info</div>
+                    <div class="color-hex">#2196f3</div>
+                    <div class="color-usage">Minor events, neutral information</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Priority Colors -->
+        <div class="theme-section">
+            <h2 class="section-title">Event Priority Colors</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #64b5f6;"></div>
+                    <div class="color-name">Minor Events</div>
+                    <div class="color-hex">#64b5f6</div>
+                    <div class="color-usage">Calm cat, blanket</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #fff176;"></div>
+                    <div class="color-name">Standard Events</div>
+                    <div class="color-hex">#fff176</div>
+                    <div class="color-usage">Phone, candle</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: #ff8c42;"></div>
+                    <div class="color-name">Critical Events</div>
+                    <div class="color-hex">#ff8c42</div>
+                    <div class="color-usage">Kettle, power</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- «Затишок» Bar Gradient -->
+        <div class="theme-section">
+            <h2 class="section-title">«Затишок» Bar Gradient</h2>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="gradient-bar" style="background: linear-gradient(to right, #f44336, #ff9800);"></div>
+                    <div class="color-name">Low (0-33%)</div>
+                    <div class="color-hex">#f44336 → #ff9800</div>
+                    <div class="color-usage">Red to Orange</div>
+                </div>
+                <div class="color-card">
+                    <div class="gradient-bar" style="background: linear-gradient(to right, #ff9800, #ffeb3b);"></div>
+                    <div class="color-name">Medium (34-66%)</div>
+                    <div class="color-hex">#ff9800 → #ffeb3b</div>
+                    <div class="color-usage">Orange to Yellow</div>
+                </div>
+                <div class="color-card">
+                    <div class="gradient-bar" style="background: linear-gradient(to right, #ffeb3b, #4caf50);"></div>
+                    <div class="color-name">High (67-100%)</div>
+                    <div class="color-hex">#ffeb3b → #4caf50</div>
+                    <div class="color-usage">Yellow to Green</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component Showcase -->
+        <div class="component-showcase">
+            <h2 class="section-title">Live Component Examples</h2>
+
+            <!-- Buttons -->
+            <div class="component-group">
+                <div class="component-title">Buttons</div>
+                <div class="button-group">
+                    <button class="btn btn-primary">Primary Button</button>
+                    <button class="btn btn-secondary">Secondary Button</button>
+                    <button class="btn btn-success">Success</button>
+                    <button class="btn btn-warning">Warning</button>
+                    <button class="btn btn-danger">Danger</button>
+                    <button class="btn btn-primary" disabled>Disabled</button>
+                </div>
+            </div>
+
+            <!-- Form Inputs -->
+            <div class="component-group">
+                <div class="component-title">Form Inputs</div>
+                <div class="form-group">
+                    <label class="form-label">Event Name</label>
+                    <input type="text" class="form-input" placeholder="Введіть назву події" value="Телефон розрядився">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Timer (seconds)</label>
+                    <input type="number" class="form-input" placeholder="0" value="45">
+                </div>
+            </div>
+
+            <!-- Cards -->
+            <div class="component-group">
+                <div class="component-title">Cards</div>
+                <div class="card">
+                    <div class="card-title">Подія: Кіт нервує</div>
+                    <div class="card-text">Кіт потребує уваги. Підійдіть до нього та заспокойте.</div>
+                    <span class="badge badge-info">Мінорна подія</span>
+                    <span class="badge badge-warning">Час: 5 сек</span>
+                </div>
+                <div class="card">
+                    <div class="card-title">Подія: Чайник закипає</div>
+                    <div class="card-text">Критична подія! Потрібно вимкнути чайник негайно.</div>
+                    <span class="badge badge-danger">Критична подія</span>
+                    <span class="badge badge-warning">Час: 3 сек</span>
+                </div>
+            </div>
+
+            <!-- Progress Bars -->
+            <div class="component-group">
+                <div class="component-title">«Затишок» Progress Bar</div>
+                <div style="margin-bottom: 16px;">
+                    <div style="margin-bottom: 8px; font-weight: 500;">Low «Затишок» (25%)</div>
+                    <div class="coziness-meter">
+                        <div class="progress-fill" style="width: 25%; background: linear-gradient(to right, #f44336, #ff9800);">25%</div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <div style="margin-bottom: 8px; font-weight: 500;">Medium «Затишок» (55%)</div>
+                    <div class="coziness-meter">
+                        <div class="progress-fill" style="width: 55%; background: linear-gradient(to right, #ff9800, #ffeb3b);">55%</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="margin-bottom: 8px; font-weight: 500;">High «Затишок» (85%)</div>
+                    <div class="coziness-meter">
+                        <div class="progress-fill" style="width: 85%; background: linear-gradient(to right, #ffeb3b, #4caf50);">85%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Icons with Priority -->
+            <div class="component-group">
+                <div class="component-title">Event Priority Indicators</div>
+                <div class="event-priority">
+                    <div class="event-icon" style="background: #64b5f6; color: #1a1f2e;">
+                        🐱
+                        <div class="event-timer" style="color: #64b5f6;">5</div>
+                    </div>
+                    <div class="event-icon" style="background: #fff176; color: #1a1f2e;">
+                        📱
+                        <div class="event-timer" style="color: #fff176;">7</div>
+                    </div>
+                    <div class="event-icon" style="background: #ff8c42; color: #ffffff;">
+                        ⚡
+                        <div class="event-timer" style="color: #ff8c42;">3</div>
+                    </div>
+                </div>
+                <div style="margin-top: 12px; font-size: 14px; color: #f5f5f5;">
+                    Minor (Blue) → Standard (Yellow) → Critical (Orange)
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme Personality -->
+        <div class="theme-section">
+            <h2 class="section-title">Theme Personality</h2>
+            <div class="card">
+                <div class="card-title">"Cozy Blackout" Theme</div>
+                <div class="card-text">
+                    <strong>Emotional Impact:</strong> Warm, cozy, comforting despite darkness<br>
+                    <strong>Best For:</strong> Casual gaming, cultural connection, emotional resonance<br>
+                    <strong>Visual Style:</strong> Dark atmosphere with warm light sources, balanced, professional game UI<br><br>
+                    <strong>Rationale:</strong> The dark blues/greys create the night/blackout atmosphere, while warm yellows/oranges from light sources provide visual warmth and coziness - the emotional core of the experience. The UI uses light colors for readability against dark backgrounds, with warm accents to maintain the cozy feeling even in interface elements.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

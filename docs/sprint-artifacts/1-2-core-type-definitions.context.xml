@@ -1,0 +1,169 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>2</storyId>
+    <title>Core Type Definitions</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-21</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-2-core-type-definitions.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a developer</asA>
+    <iWant>I want TypeScript type definitions for game state, events, and progression</iWant>
+    <soThat>So that I have type safety throughout the codebase</soThat>
+    <tasks>
+      - Task 1 (AC: 1): Create `src/types/game.ts` with `GameState` interface
+      - Task 2 (AC: 2): Create `src/types/events.ts` with `GameEvent`, `EventType`, `EventPriority` types
+      - Task 3 (AC: 3): Create `src/types/progression.ts` with `ProgressionState` and `EquippedItems` types
+      - Task 4 (AC: 4, 5): Review types for TypeScript best practices and architecture alignment
+      - Task 5 (AC: 6): Verify all types are exported
+      - Task 6 (AC: 7): Add JSDoc comments for complex types
+      - Task 7: Testing & Validation - Verify TypeScript compilation succeeds
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. **Given** the project is initialized **When** I create type definition files **Then** `src/types/game.ts` defines: `GameState` interface with properties: `coziness` (number, 0-100), `timeRemaining` (number, seconds), `score` (number, points), `activeEvents` (GameEvent[]), `isPlaying` (boolean), `isPaused` (boolean), `gameOver` (boolean)
+
+    2. **Given** the project is initialized **When** I create type definition files **Then** `src/types/events.ts` defines: `GameEvent` interface with properties: `id` (string), `type` (EventType), `priority` (EventPriority), `location` (object with x, y numbers), `timer` (number, seconds), `points` (number), `cozinessReward` (number), `cozinessPenalty` (number); `EventType` union type: `'phone' | 'kettle' | 'cat' | 'candle'`; `EventPriority` union type: `'minor' | 'standard' | 'critical'`
+
+    3. **Given** the project is initialized **When** I create type definition files **Then** `src/types/progression.ts` defines: `ProgressionState` interface with properties: `level` (number), `xp` (number), `svitlyachky` (number), `purchasedItems` (string[]), `equippedItems` (object with optional `characterSkin?`, `cat?`, `candle?` strings), `achievements` (string[])
+
+    4. **Given** type definitions are created **When** I review the type files **Then** all types follow TypeScript best practices: Use interfaces for object shapes, Use type aliases for unions/primitives, No `any` types (use `unknown` if needed), Proper generic types where applicable
+
+    5. **Given** type definitions are created **When** I compare them to the architecture document **Then** types match the architecture document data structures exactly
+
+    6. **Given** type definitions are created **When** I check the exports **Then** all types are exported for use in other modules
+
+    7. **Given** type definitions are created **When** I review complex types **Then** JSDoc comments are added for complex types
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Data Architecture - State Structure</section>
+        <snippet>GameState interface with coziness (0-100), timeRemaining (seconds), score (points), activeEvents (GameEvent[]), isPlaying, isPaused, gameOver. ProgressionState interface with level, xp, svitlyachky, purchasedItems (string[]), equippedItems (optional characterSkin?, cat?, candle?), achievements (string[]).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Implementation Patterns - TypeScript Types</section>
+        <snippet>Use interfaces for object shapes (GameState, GameEvent, ProgressionState). Use type aliases for unions/primitives (EventType, EventPriority). Event data structure shows GameEvent interface with id, type, priority, location (x, y), timer (seconds), points, cozinessReward, cozinessPenalty.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>Types directory: `src/types/` with files `game.ts`, `events.ts`, `progression.ts`. File naming: kebab-case for files, PascalCase for types. Export strategy: Named exports for all types.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Naming Conventions - Types/Interfaces</section>
+        <snippet>PascalCase for types and interfaces: `GameState`, `EventType`, `ProgressionData`. Suffix types with descriptive names: `EventType`, `EventPriority`.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Epic 1: Foundation - Story 1.2: Core Type Definitions</section>
+        <snippet>Story defines requirements for type definitions: `game.ts` with GameState, `events.ts` with GameEvent/EventType/EventPriority, `progression.ts` with ProgressionState. Types must match architecture document data structures exactly. Types should be ready for use in Story 2.1 (Game State Management).</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Game Specific Requirements - Event System</section>
+        <snippet>Event types: low phone battery, boiling kettle, candle needed/going out, cat stressed. Event priorities: minor, standard, critical. Events have scoring values and «Затишок» impacts based on priority level.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-2-core-type-definitions.md</path>
+        <title>Story 1.2: Core Type Definitions</title>
+        <section>Dev Notes - Data Structure Requirements</section>
+        <snippet>GameState includes: coziness (0-100), timeRemaining (seconds), score (points), activeEvents (GameEvent[]), isPlaying, isPaused, gameOver. GameEvent includes: id, type, priority, location (x, y), timer (seconds), points, cozinessReward, cozinessPenalty. ProgressionState includes: level, xp, svitlyachky, purchasedItems (string[]), equippedItems (optional properties), achievements (string[]). EquippedItems structure: optional characterSkin?, cat?, candle? (all strings).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-2-core-type-definitions.md</path>
+        <title>Story 1.2: Core Type Definitions</title>
+        <section>Dev Notes - Type Definition Standards</section>
+        <snippet>Use interfaces for object shapes (GameState, GameEvent, ProgressionState). Use type aliases for unions/primitives (EventType, EventPriority). No `any` types - use `unknown` if truly needed. Follow PascalCase naming for types and interfaces. Export all types for use throughout codebase.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code artifacts - this is foundational type definition work -->
+      <!-- Types directory exists but is empty: src/types/ -->
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="typescript" version="~5.9.3" />
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="@types/react" version="^19.2.5" />
+        <package name="@types/react-dom" version="^19.2.3" />
+      </ecosystem>
+      <ecosystem name="build-tool">
+        <package name="vite" version="^5.4.11" />
+        <package name="@vitejs/plugin-react" version="^4.3.1" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <name>TypeScript Strict Mode</name>
+      <description>TypeScript strict mode is enabled (from Story 1.1). All types must be properly typed - no implicit any. Types should enable autocomplete and type checking in IDEs.</description>
+    </constraint>
+    <constraint>
+      <name>Type Definition Standards</name>
+      <description>Use interfaces for object shapes (GameState, GameEvent, ProgressionState). Use type aliases for unions/primitives (EventType, EventPriority). No `any` types - use `unknown` if truly needed. Follow PascalCase naming for types and interfaces. Export all types for use throughout codebase.</description>
+    </constraint>
+    <constraint>
+      <name>Architecture Alignment</name>
+      <description>Types must match architecture document "Data Architecture" section exactly. File organization: Types organized by domain: `game.ts`, `events.ts`, `progression.ts`. All type files in `src/types/` directory. Follow architecture document "Project Structure" section.</description>
+    </constraint>
+    <constraint>
+      <name>Next Story Dependency</name>
+      <description>Story 1.3 (React Context Setup) will depend on these type definitions, so they must be complete and accurate. Types should be ready for use in Story 2.1 (Game State Management).</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <!-- No existing interfaces to reuse - this story creates the foundational type definitions -->
+    <!-- Future interfaces will be built on these types -->
+  </interfaces>
+
+  <tests>
+    <standards>
+      TypeScript compilation validation: Run `npm run build` or `npx tsc --noEmit` to verify no TypeScript errors. Ensure types can be imported in other files without errors. No test files exist yet (no test framework configured), but type definitions should be validated through TypeScript compiler checks.
+    </standards>
+    <locations>
+      Type definitions: `src/types/`. Test files (when added): Co-located with source files as `*.test.ts` or `*.spec.ts` per architecture document. Currently no test framework configured - Vitest mentioned in architecture but not yet installed.
+    </locations>
+    <ideas>
+      <test id="AC1">
+        <description>Verify GameState interface compiles without errors and all required properties are present with correct types</description>
+      </test>
+      <test id="AC2">
+        <description>Verify GameEvent, EventType, and EventPriority types compile correctly and EventType/EventPriority unions work as expected</description>
+      </test>
+      <test id="AC3">
+        <description>Verify ProgressionState and EquippedItems types compile correctly with optional properties</description>
+      </test>
+      <test id="AC4">
+        <description>Verify no `any` types are used (TypeScript strict mode will catch this)</description>
+      </test>
+      <test id="AC5">
+        <description>Verify types match architecture document structure exactly by comparing interface definitions</description>
+      </test>
+      <test id="AC6">
+        <description>Verify all types are exported by attempting imports in a temporary test file</description>
+      </test>
+      <test id="AC7">
+        <description>Verify JSDoc comments are present for complex types (GameEvent, ProgressionState, EquippedItems)</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+
