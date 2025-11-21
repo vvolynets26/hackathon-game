@@ -1,0 +1,343 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>4</storyId>
+    <title>Event Spawning System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-4-event-spawning-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want events to spawn at regular intervals</iWant>
+    <soThat>So that I have time-pressured tasks to complete during the evening</soThat>
+    <tasks>
+- [ ] Task 1: Create EventManager class structure (AC: 2)
+  - [ ] Create `src/core/EventManager.ts` file
+  - [ ] Set up class with TypeScript types
+  - [ ] Define private properties: activeEvents array
+  - [ ] Follow class naming conventions [Source: docs/architecture.md#Naming-Conventions]
+  - [ ] Import event types from `src/types/events.ts` [Source: docs/sprint-artifacts/1-2-core-type-definitions.md]
+  - [ ] Import constants from `src/utils/constants.ts` [Source: docs/sprint-artifacts/1-5-game-constants-and-configuration.md]
+
+- [ ] Task 2: Implement spawnEvent method (AC: 1, 4)
+  - [ ] Check if current active events count &lt; max for level
+  - [ ] If below max, randomly select event type (phone, kettle, cat, candle)
+  - [ ] Map event type to priority (phone: standard, kettle: critical, cat: minor, candle: standard)
+  - [ ] Select random valid location from EVENT_LOCATIONS constant
+  - [ ] Get timer duration based on level using getEventTimerDuration()
+  - [ ] Get points value from EVENT_SCORING[priority]
+  - [ ] Get coziness reward/penalty from EVENT_COZINESS_IMPACT[priority]
+  - [ ] Generate unique event id (timestamp + random string)
+  - [ ] Create GameEvent object with all properties
+  - [ ] Add event to activeEvents array
+  - [ ] Return created event or null if spawn failed
+
+- [ ] Task 3: Implement getActiveEvents method (AC: 2)
+  - [ ] Return copy of activeEvents array (defensive copy)
+  - [ ] Return empty array if no active events
+
+- [ ] Task 4: Implement getMaxSimultaneousEvents method (AC: 2, 3)
+  - [ ] Use getMaxSimultaneousEvents() helper from constants.ts
+  - [ ] Return max events for given level
+  - [ ] Handle edge cases (level 0, level &gt; 5)
+
+- [ ] Task 5: Integrate with game loop (AC: 5)
+  - [ ] Add spawn timer state to game loop or EventManager
+  - [ ] Track elapsed time since last spawn
+  - [ ] When spawn interval reached (EVENT_SPAWN_INTERVAL), call spawnEvent()
+  - [ ] Reset spawn timer after successful spawn
+  - [ ] Handle spawn timer in game loop update cycle
+  - [ ] Ensure spawn timer uses delta time (frame-rate independent)
+
+- [ ] Task 6: Integrate with GameContext (AC: 3, 5)
+  - [ ] Add activeEvents to GameState interface if not present
+  - [ ] Add addEvent(event: GameEvent) function to GameContext
+  - [ ] EventManager.addEvent() should update GameContext state
+  - [ ] Ensure activeEvents array is stored in GameContext
+  - [ ] Verify state updates trigger React re-renders
+
+- [ ] Task 7: Implement event type to priority mapping (AC: 4)
+  - [ ] Create mapping: phone → standard, kettle → critical, cat → minor, candle → standard
+  - [ ] Use mapping in spawnEvent() to assign priority
+  - [ ] Store mapping as constant or helper function
+  - [ ] Reference PRD for event type specifications [Source: docs/prd.md#Event-Types]
+
+- [ ] Task 8: Testing and validation (AC: 1, 2, 3, 4, 5)
+  - [ ] Test spawnEvent() spawns event when below max
+  - [ ] Test spawnEvent() returns null when at max
+  - [ ] Test getActiveEvents() returns active events
+  - [ ] Test getMaxSimultaneousEvents() returns correct max for each level
+  - [ ] Test event properties are correctly set (type, priority, location, timer, points, coziness)
+  - [ ] Test spawn timer triggers at correct interval
+  - [ ] Test events are added to GameContext state
+  - [ ] Test spawn timer uses delta time (frame-rate independent)
+  - [ ] Test event spawning stops when game is paused or over
+  - [ ] Verify performance (60 FPS maintained)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Given** the game is running
+   **When** the event spawn timer reaches the interval (3-4 seconds)
+   **Then** a new event is spawned if:
+   - Current active events count is below maximum for player level
+   - Event is randomly selected from available event types (phone, kettle, cat, candle)
+   - Event is assigned a random valid location in the apartment
+   - Event is assigned priority (minor, standard, critical) based on event type
+   - Event timer is set based on player level (5-10 seconds)
+
+2. **Given** the EventManager class is created
+   **When** I use EventManager
+   **Then** it provides:
+   - `spawnEvent(level: number): GameEvent | null` - spawns event if conditions met
+   - `getActiveEvents(): GameEvent[]` - returns currently active events
+   - `getMaxSimultaneousEvents(level: number): number` - returns max events for level
+
+3. **Given** events are spawning
+   **When** events are created
+   **Then** events are stored in game state (activeEvents array)
+   **And** event spawning respects maximum simultaneous events per level:
+   - Level 1-2: 2 events maximum
+   - Level 3-4: 3 events maximum
+   - Level 5+: 4 events maximum
+
+4. **Given** an event is spawned
+   **When** the event is created
+   **Then** the event has correct properties:
+   - Unique id (generated for each event instance)
+   - Type (phone, kettle, cat, or candle)
+   - Priority (minor, standard, or critical) based on event type mapping
+   - Location (x, y coordinates) from valid apartment locations
+   - Timer (seconds) based on player level
+   - Points value from EVENT_SCORING constant
+   - Coziness reward/penalty from EVENT_COZINESS_IMPACT constant
+
+5. **Given** event spawning is implemented
+   **When** the game loop runs
+   **Then** event spawning is integrated with game loop:
+   - Spawn timer tracks elapsed time since last spawn
+   - Spawn timer resets after successful spawn
+   - EventManager.spawnEvent() called at spawn interval
+   - New events added to GameContext activeEvents array
+   - Game state updates trigger React re-renders
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Game Mechanics - Event Spawning</section>
+        <snippet>Events appear every 3-4 seconds. Max simultaneous events: Level 1-2: 2 events, Level 3-4: 3 events, Level 5+: 4 events. Each event has a countdown timer (5-10 seconds depending on difficulty).</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Event Types &amp; Scoring</section>
+        <snippet>Event types: phone (standard priority, +15 points, +8/-10 coziness), kettle (critical priority, +20 points, +10/-20 coziness), cat (minor priority, +10 points, +5/-5 coziness), candle (standard priority, +15 points, +8/-10 coziness).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Game Event System Pattern</section>
+        <snippet>EventManager class in core/EventManager.ts manages event lifecycle. Game loop calls EventManager.spawnEvent() every 3-4 seconds. EventManager checks max simultaneous events, creates event with timer/priority/location, adds to active events array.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Naming Conventions</section>
+        <snippet>Classes use PascalCase (EventManager). Functions use camelCase (spawnEvent, getActiveEvents). EventManager is a class (not React component) for testability.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.4: Event Spawning System</section>
+        <snippet>EventManager class provides spawnEvent(level), getActiveEvents(), getMaxSimultaneousEvents(level). Events stored in game state (activeEvents array). Event spawning respects maximum simultaneous events per level.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-2-core-type-definitions.md</path>
+        <title>Story 1.2: Core Type Definitions</title>
+        <section>Event Type Definitions</section>
+        <snippet>GameEvent interface with id, type, priority, location, timer, points, cozinessReward, cozinessPenalty. EventType union: 'phone' | 'kettle' | 'cat' | 'candle'. EventPriority union: 'minor' | 'standard' | 'critical'.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-5-game-constants-and-configuration.md</path>
+        <title>Story 1.5: Game Constants and Configuration</title>
+        <section>Event Constants</section>
+        <snippet>EVENT_SPAWN_INTERVAL (3.5 seconds), MAX_SIMULTANEOUS_EVENTS (level-based mapping), getMaxSimultaneousEvents(level), EVENT_TIMER_DURATION (level-based), getEventTimerDuration(level), EVENT_SCORING (priority-based points), EVENT_COZINESS_IMPACT (priority-based rewards/penalties), EVENT_LOCATIONS (apartment locations).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md</path>
+        <title>Story 2.1: Game State Management and Game Loop</title>
+        <section>Game Loop Implementation</section>
+        <snippet>Game loop runs at 60 FPS using requestAnimationFrame. Delta time calculation ensures frame-independent updates. EventManager spawn timer should integrate with game loop. Spawn timer should use delta time for frame-rate independence.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-2-apartment-layout-and-background-with-ukrainian-cozy-details.md</path>
+        <title>Story 2.2: Apartment Layout and Background</title>
+        <section>Event Locations</section>
+        <snippet>EVENT_LOCATIONS constant already defined in src/utils/constants.ts. Event locations are percentage-based (0.05 to 0.95 for X, 0.10 to 0.90 for Y) for responsive positioning. EventManager should use EVENT_LOCATIONS for event spawning.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-3-character-visual-and-movement-system.md</path>
+        <title>Story 2.3: Character Visual and Movement System</title>
+        <section>Game Loop Pattern</section>
+        <snippet>Character component uses independent requestAnimationFrame loop. Game loop updates at 60 FPS. Delta time calculation ensures frame-independent updates. EventManager spawn timer should use similar delta time pattern.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/types/events.ts</path>
+        <kind>type definition</kind>
+        <symbol>GameEvent, EventType, EventPriority</symbol>
+        <lines>1-86</lines>
+        <reason>Core event type definitions required for EventManager. GameEvent interface defines event structure. EventType and EventPriority unions define valid values.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/game.ts</path>
+        <kind>type definition</kind>
+        <symbol>GameState</symbol>
+        <lines>39-54</lines>
+        <reason>GameState interface includes activeEvents array. EventManager must integrate with GameState to store spawned events.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>constants</kind>
+        <symbol>EVENT_SPAWN_INTERVAL, MAX_SIMULTANEOUS_EVENTS, getMaxSimultaneousEvents, EVENT_TIMER_DURATION, getEventTimerDuration, EVENT_SCORING, EVENT_COZINESS_IMPACT, EVENT_LOCATIONS</symbol>
+        <lines>50, 93-123, 135-165, 177-208, 436-441</lines>
+        <reason>All event spawning constants are defined here. EventManager must use these constants for spawn intervals, max events, timer durations, scoring, coziness impact, and event locations.</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, addEvent, removeEvent, gameState.activeEvents</symbol>
+        <lines>123-144, 39-54</lines>
+        <reason>GameContext provides addEvent() function to add events to game state. EventManager must call addEvent() to store spawned events. activeEvents array is part of GameState.</reason>
+      </artifact>
+      <artifact>
+        <path>src/hooks/useGameLoop.ts</path>
+        <kind>hook</kind>
+        <symbol>useGameLoop, gameLoop function</symbol>
+        <lines>44-182</lines>
+        <reason>Game loop hook manages requestAnimationFrame loop. EventManager spawn timer must integrate with game loop. Spawn timer should use delta time for frame-rate independence. Game loop respects game state (isPlaying, isPaused, gameOver).</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/Apartment.tsx</path>
+        <kind>component</kind>
+        <symbol>Apartment</symbol>
+        <lines>1-96</lines>
+        <reason>Apartment component provides game container/background. Event locations are relative to apartment container. EventManager should use EVENT_LOCATIONS for spawning events at correct positions.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem>node</ecosystem>
+      <packages>
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="typescript" version="~5.9.3" />
+        <package name="vite" version="^5.4.11" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>Architecture Pattern</type>
+      <description>EventManager is a class (not React component) for testability. Follow architecture document "Event System Pattern" section. Class should be in src/core/ directory.</description>
+    </constraint>
+    <constraint>
+      <type>Naming Convention</type>
+      <description>Use PascalCase for class name (EventManager). Use camelCase for methods (spawnEvent, getActiveEvents). Match file name to class name.</description>
+    </constraint>
+    <constraint>
+      <type>Integration Pattern</type>
+      <description>EventManager integrates with game loop (call spawnEvent at intervals). EventManager updates GameContext state (addEvent function). Spawn timer should be frame-rate independent (use delta time). Spawn timer should pause when game is paused.</description>
+    </constraint>
+    <constraint>
+      <type>Performance</type>
+      <description>Spawn timer should use delta time (frame-rate independent). EventManager should be efficient (no unnecessary iterations). Active events array should be managed efficiently. Spawn checks should be fast (early returns). Maintain 60 FPS performance.</description>
+    </constraint>
+    <constraint>
+      <type>Constants Usage</type>
+      <description>Use EVENT_SPAWN_INTERVAL (3.5 seconds) from constants.ts. Use MAX_SIMULTANEOUS_EVENTS and getMaxSimultaneousEvents(level) helper. Use EVENT_TIMER_DURATION and getEventTimerDuration(level) helper. Use EVENT_LOCATIONS for event positioning. Use EVENT_SCORING for points. Use EVENT_COZINESS_IMPACT for rewards/penalties.</description>
+    </constraint>
+    <constraint>
+      <type>Event Type to Priority Mapping</type>
+      <description>phone → standard priority, kettle → critical priority, cat → minor priority, candle → standard priority. Reference PRD for event type specifications.</description>
+    </constraint>
+    <constraint>
+      <type>TypeScript</type>
+      <description>Use strict TypeScript types. Import types from src/types/events.ts. Use GameEvent interface for event objects. No any types.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>EventManager class</name>
+      <kind>TypeScript class</kind>
+      <signature>class EventManager {
+  private activeEvents: GameEvent[];
+  spawnEvent(level: number): GameEvent | null;
+  getActiveEvents(): GameEvent[];
+  getMaxSimultaneousEvents(level: number): number;
+}</signature>
+      <path>src/core/EventManager.ts</path>
+    </interface>
+    <interface>
+      <name>GameContext.addEvent</name>
+      <kind>React Context function</kind>
+      <signature>addEvent(event: GameEvent): void</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameEvent interface</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface GameEvent {
+  id: string;
+  type: EventType;
+  priority: EventPriority;
+  location: { x: number; y: number };
+  timer: number;
+  points: number;
+  cozinessReward: number;
+  cozinessPenalty: number;
+}</signature>
+      <path>src/types/events.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should use Vitest (Vite-native testing framework). EventManager is a class (not React component) making it easily testable. Tests should verify spawnEvent() spawns events when below max, returns null when at max, getActiveEvents() returns active events, getMaxSimultaneousEvents() returns correct max for each level, event properties are correctly set, spawn timer triggers at correct interval, events are added to GameContext state, spawn timer uses delta time (frame-rate independent), event spawning stops when game is paused or over, and performance (60 FPS maintained).
+    </standards>
+    <locations>
+      Test files should be co-located with source files: src/core/EventManager.test.ts
+    </locations>
+    <ideas>
+      <test>
+        <acceptanceCriteriaId>1</acceptanceCriteriaId>
+        <description>Test spawnEvent() spawns event when below max simultaneous events. Test spawnEvent() returns null when at max. Test event is randomly selected from available event types. Test event is assigned random valid location. Test event is assigned priority based on event type. Test event timer is set based on player level.</description>
+      </test>
+      <test>
+        <acceptanceCriteriaId>2</acceptanceCriteriaId>
+        <description>Test EventManager class provides spawnEvent(level), getActiveEvents(), getMaxSimultaneousEvents(level) methods. Test methods return correct types and values.</description>
+      </test>
+      <test>
+        <acceptanceCriteriaId>3</acceptanceCriteriaId>
+        <description>Test events are stored in game state (activeEvents array). Test event spawning respects maximum simultaneous events per level (Level 1-2: 2 max, Level 3-4: 3 max, Level 5+: 4 max).</description>
+      </test>
+      <test>
+        <acceptanceCriteriaId>4</acceptanceCriteriaId>
+        <description>Test spawned event has correct properties: unique id, type (phone/kettle/cat/candle), priority (minor/standard/critical), location (x, y coordinates), timer (seconds based on level), points value from EVENT_SCORING, coziness reward/penalty from EVENT_COZINESS_IMPACT.</description>
+      </test>
+      <test>
+        <acceptanceCriteriaId>5</acceptanceCriteriaId>
+        <description>Test spawn timer tracks elapsed time since last spawn. Test spawn timer resets after successful spawn. Test EventManager.spawnEvent() called at spawn interval. Test new events added to GameContext activeEvents array. Test game state updates trigger React re-renders. Test spawn timer uses delta time (frame-rate independent).</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

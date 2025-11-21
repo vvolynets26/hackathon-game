@@ -61,35 +61,35 @@ development_status:
   # Epic 2: Core Gameplay - MVP + Polish split
   epic-2: backlog
   2-1-game-state-management-and-game-loop: done  # [MVP] Core game loop - Code review approved 2025-01-21
-  2-2-apartment-layout-and-background-with-ukrainian-cozy-details: drafted  # [MVP] Game space
-  2-3-character-visual-and-movement-system: backlog  # [MVP] Character movement
-  2-4-event-spawning-system: backlog  # [MVP] Event system core
-  2-5-event-timer-management: backlog  # [MVP] Event timers
-  2-6-event-types-and-interaction-requirements: backlog  # [MVP] Event types
-  2-7-event-icons-and-visual-indicators: backlog  # [MVP] Event visual feedback
-  2-8-event-timer-display: backlog  # [MVP] Timer display
-  2-9-event-interaction-system: backlog  # [MVP] Player interaction
-  2-10-затишок-meter-system: backlog  # [MVP] Coziness mechanic
-  2-11-evening-timer-and-win-lose-conditions: backlog  # [MVP] Game end conditions
-  2-12-scoring-system: backlog  # [MVP] Score tracking
-  2-13-evening-timer-hud-component: backlog  # [MVP] Timer HUD
-  2-14-затишок-bar-hud-component: backlog  # [MVP] Coziness HUD
-  2-15-ukrainian-text-for-core-gameplay: backlog  # [ENH] Full Ukrainian localization
-  2-16-visual-polish-for-gameplay: backlog  # [POL] Visual polish
+  2-2-apartment-layout-and-background-with-ukrainian-cozy-details: done  # [MVP] Game space - Code review approved 2025-01-21
+  2-3-character-visual-and-movement-system: done  # [MVP] Character movement
+  2-4-event-spawning-system: done  # [MVP] Event system core - Code review approved 2025-01-21
+  2-5-event-timer-management: done  # [MVP] Event timers - Implementation complete 2025-01-21
+  2-6-event-types-and-interaction-requirements: done  # [MVP] Event types - Implementation complete 2025-01-21
+  2-7-event-icons-and-visual-indicators: done  # [MVP] Event visual feedback - Implementation complete 2025-01-21
+  2-8-event-timer-display: done  # [MVP] Timer display - Code review approved 2025-01-21
+  2-9-event-interaction-system: done  # [MVP] Player interaction - Implementation complete 2025-01-21
+  2-10-затишок-meter-system: done  # [MVP] Coziness mechanic - Code review approved 2025-01-21
+  2-11-evening-timer-and-win-lose-conditions: done  # [MVP] Game end conditions
+  2-12-scoring-system: done  # [MVP] Score tracking - Code review approved 2025-01-21
+  2-13-evening-timer-hud-component: done  # [MVP] Timer HUD - Code review approved 2025-01-21
+  2-14-затишок-bar-hud-component: done  # [MVP] Coziness HUD - Code review approved 2025-01-21
+  2-15-ukrainian-text-for-core-gameplay: done  # [ENH] Full Ukrainian localization
+  2-16-visual-polish-for-gameplay: done  # [POL] Visual polish
   epic-2-retrospective: optional
 
   # Epic 3: Progression System - MVP + Enhancement split
   epic-3: backlog
-  3-1-xp-and-level-system: backlog  # [MVP] XP and leveling
-  3-2-світлячки-currency-system: backlog  # [MVP] Currency system
-  3-3-level-up-bonuses: backlog  # [MVP] Level progression bonuses
-  3-4-shop-system: backlog  # [MVP] Shop core functionality
-  3-5-achievement-system: backlog  # [ENH] Achievement system (simplified for MVP: at least 1 achievement)
+  3-1-xp-and-level-system: done  # [MVP] XP and leveling
+  3-2-світлячки-currency-system: done  # [MVP] Currency system
+  3-3-level-up-bonuses: done  # [MVP] Level progression bonuses
+  3-4-shop-system: done  # [MVP] Shop core functionality - Implementation complete 2025-01-21
+  3-5-achievement-system: in-progress  # [ENH] Achievement system (simplified for MVP: at least 1 achievement)
   epic-3-retrospective: optional
 
   # Epic 4: User Interface & Experience - MVP + Enhancement + Polish split
   epic-4: backlog
-  4-1-xp-and-level-hud-display: backlog  # [MVP] HUD progression display
+  4-1-xp-and-level-hud-display: ready-for-dev  # [MVP] HUD progression display
   4-2-світлячки-hud-display-and-ukrainian-for-progression: backlog  # [MVP] Currency HUD
   4-3-results-screen: backlog  # [MVP] Results screen
   4-4-shop-screen: backlog  # [MVP] Shop UI

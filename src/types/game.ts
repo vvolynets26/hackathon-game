@@ -27,6 +27,7 @@ import type { GameEvent } from './events';
  * - Current evening metrics (coziness, time remaining, score)
  * - Active events that require player interaction
  * - Game status flags (playing, paused, game over)
+ * - Achievement progress tracking (for achievement system)
  * 
  * @property coziness - Current coziness level (0-100), represents «Затишок» meter
  * @property timeRemaining - Time remaining in the evening in seconds
@@ -35,6 +36,7 @@ import type { GameEvent } from './events';
  * @property isPlaying - Whether the game is currently active
  * @property isPaused - Whether the game is paused
  * @property gameOver - Whether the game has ended (win or lose condition met)
+ * @property achievementProgress - Achievement progress tracking for current evening
  */
 export interface GameState {
   /** Current coziness level (0-100), represents «Затишок» meter */
@@ -51,5 +53,12 @@ export interface GameState {
   isPaused: boolean;
   /** Whether the game has ended (win or lose condition met) */
   gameOver: boolean;
+  /** Achievement progress tracking for current evening */
+  achievementProgress: {
+    /** Minimum coziness value during the evening (for coziness achievement) */
+    minCoziness: number;
+    /** Number of events resolved during the evening (for events achievement) */
+    resolvedEventsCount: number;
+  };
 }
 

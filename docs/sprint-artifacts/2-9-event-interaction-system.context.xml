@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>9</storyId>
+    <title>Event Interaction System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-9-event-interaction-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want to interact with events by pressing E or clicking when near them</iWant>
+    <soThat>So that I can resolve events and earn points and «Затишок»</soThat>
+    <tasks>
+      <task id="1" description="Implement interaction range detection (AC: 2)">
+        <subtask>Create utility function to calculate distance between character and event</subtask>
+        <subtask>Add INTERACTION_RANGE constant to constants.ts (default: 50-100px)</subtask>
+        <subtask>Implement isWithinInteractionRange(characterPos, eventLocation, range) function</subtask>
+        <subtask>Test distance calculation with various positions</subtask>
+        <subtask>Reference architecture document for utility function patterns</subtask>
+      </task>
+      <task id="2" description="Implement keyboard interaction (E key) (AC: 1, 2)">
+        <subtask>Add keyboard event listener for E key in Character component or game loop</subtask>
+        <subtask>On E key press, find nearest event within interaction range</subtask>
+        <subtask>If event found, trigger interaction</subtask>
+        <subtask>Handle multiple events (select nearest or first found)</subtask>
+        <subtask>Clean up event listeners on component unmount</subtask>
+        <subtask>Reference PRD FR2 for keyboard interaction specification</subtask>
+      </task>
+      <task id="3" description="Implement mouse interaction (click on event indicator) (AC: 1, 2)">
+        <subtask>Add onClick handler to EventIndicator component</subtask>
+        <subtask>On click, check if character is within interaction range</subtask>
+        <subtask>If within range, trigger interaction</subtask>
+        <subtask>Prevent interaction if character too far</subtask>
+        <subtask>Reference Story 2.7 for EventIndicator component structure</subtask>
+      </task>
+      <task id="4" description="Implement interaction prevention logic (AC: 3)">
+        <subtask>Check character distance before allowing interaction</subtask>
+        <subtask>Check if event has expired (timer <= 0) before allowing interaction</subtask>
+        <subtask>Check if game is paused (isPaused === true) before allowing interaction</subtask>
+        <subtask>Check if game is over (gameOver === true) before allowing interaction</subtask>
+        <subtask>Return early if any prevention condition is met</subtask>
+        <subtask>Reference GameContext for game state flags</subtask>
+      </task>
+      <task id="5" description="Integrate EventManager.resolveEvent() for event resolution (AC: 1, 4)">
+        <subtask>Call EventManager.resolveEvent() with eventId, activeEvents, removeEvent callback</subtask>
+        <subtask>Handle null return (event not found)</subtask>
+        <subtask>Extract event data from resolved event</subtask>
+        <subtask>Reference EventManager.resolveEvent() method signature</subtask>
+      </task>
+      <task id="6" description="Update game state on event resolution (AC: 1, 4)">
+        <subtask>Update score: call setScore(prev => prev + resolvedEvent.points)</subtask>
+        <subtask>Update coziness: call setCoziness(prev => prev + resolvedEvent.cozinessReward)</subtask>
+        <subtask>Ensure state updates are functional (avoid stale closures)</subtask>
+        <subtask>Reference GameContext update functions</subtask>
+      </task>
+      <task id="7" description="Ensure only one event can be interacted with at a time (AC: 2)">
+        <subtask>Add interaction lock flag or debounce mechanism</subtask>
+        <subtask>Prevent multiple simultaneous interactions</subtask>
+        <subtask>Release lock after interaction completes</subtask>
+        <subtask>Test with rapid key presses or clicks</subtask>
+      </task>
+      <task id="8" description="Prepare for visual feedback integration (AC: 1, 4)">
+        <subtask>Note: Visual feedback will be implemented in Story 4.6</subtask>
+        <subtask>Ensure interaction system provides event data needed for feedback</subtask>
+        <subtask>Document what data is available for visual feedback</subtask>
+        <subtask>Reference Story 4.6 for visual feedback requirements</subtask>
+      </task>
+      <task id="9" description="Prepare for achievement progress checks (AC: 4)">
+        <subtask>Note: Achievement system will be implemented in Story 3.5</subtask>
+        <subtask>Ensure interaction system can trigger achievement checks</subtask>
+        <subtask>Document interaction events for achievement tracking</subtask>
+        <subtask>Reference Story 3.5 for achievement requirements</subtask>
+      </task>
+      <task id="10" description="Testing and validation (AC: 1, 2, 3, 4)">
+        <subtask>Test keyboard interaction (E key) with character near event</subtask>
+        <subtask>Test keyboard interaction (E key) with character far from event</subtask>
+        <subtask>Test mouse interaction (click) with character near event</subtask>
+        <subtask>Test mouse interaction (click) with character far from event</subtask>
+        <subtask>Test interaction prevention when game paused</subtask>
+        <subtask>Test interaction prevention when game over</subtask>
+        <subtask>Test interaction prevention when event expired</subtask>
+        <subtask>Test score updates on successful interaction</subtask>
+        <subtask>Test coziness updates on successful interaction</subtask>
+        <subtask>Test event removal on successful interaction</subtask>
+        <subtask>Test only one event can be interacted with at a time</subtask>
+        <subtask>Test interaction with multiple events (select nearest)</subtask>
+        <subtask>Test interaction range accuracy (50-100px)</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">
+      <given>I am near an active event (within interaction range, e.g., 50px)</given>
+      <when>I press E key or click on the event</when>
+      <then>the event is resolved: Event is removed from active events, Score increases by event's point value, «Затишок» increases by event's coziness reward, Visual feedback is shown (see Story 4.6 for details)</then>
+    </criterion>
+    <criterion id="2">
+      <given>interaction detection is implemented</given>
+      <when>I attempt to interact with an event</when>
+      <then>interaction detection: Checks if character is within interaction range of event location, Range is configurable (e.g., 50-100px distance), Works for both keyboard (E key) and mouse (click on event indicator), Only one event can be interacted with at a time</then>
+    </criterion>
+    <criterion id="3">
+      <given>interaction system is implemented</given>
+      <when>I attempt to interact</when>
+      <then>interaction is prevented if: Character is too far from event, Event has already expired, Game is paused or over</then>
+    </criterion>
+    <criterion id="4">
+      <given>an event is successfully resolved</given>
+      <when>interaction completes</when>
+      <then>interaction triggers: Event resolution logic in EventManager, Score and coziness updates in game state, Achievement progress checks (if applicable, see Story 3.5), Visual feedback animations (Story 4.6)</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Core Gameplay - FR2, FR6</section>
+        <snippet>FR2: Players can interact with events by pressing E or clicking when near an event object. FR6: Players can resolve events by reaching the event location and interacting with it before the timer expires. Interaction: Press E key or click on event indicator when character is near event location. Interaction range should be configurable (e.g., 50-100px distance).</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Event System - FR24-FR31</section>
+        <snippet>FR24: The game supports at least 4 event types: low phone battery, boiling kettle, candle needed/going out, cat stressed. FR25: Each event type has specific interaction requirements (e.g., plug phone into power bank, turn off kettle, light candle, calm cat). FR26: Events have different scoring values: minor events (+10 points), standard events (+15 points), critical events (+20 points). FR27: Events have different «Затишок» impacts: minor events (+5/-5), standard events (+8/-10), critical events (+10/-20).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Event UX, Interaction Feedback</section>
+        <snippet>Event UX: Players interact with events by pressing E key or clicking on event indicator. Interaction range should be clear (visual indicator when in range, optional). Visual feedback on interaction: Event icon briefly pops/scales up and fades out, Floating text appears above event location showing points and coziness gain, Small particle effect (optional, CSS animation). Interaction should feel immediate and responsive (within 1-2 frames).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Game Event System Pattern, Communication Patterns</section>
+        <snippet>Game Event System Pattern: EventManager.resolveEvent() method exists and handles event removal. EventManager.resolveEvent(eventId: string, activeEvents: GameEvent[], removeEventCallback: RemoveEventCallback): GameEvent | null. Returns event data for score/coziness calculation, or null if event not found. Communication Patterns: Keyboard input handling uses useEffect for event listeners. Listen for keydown/keyup events. Track which keys are currently pressed. Clean up event listeners on component unmount. Use React Context for state updates (setScore, setCoziness, removeEvent).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Project Structure</section>
+        <snippet>Project Structure: Character component at src/components/game/Character.tsx. EventIndicator component at src/components/game/EventIndicator.tsx. EventManager at src/core/EventManager.ts. GameContext at src/contexts/GameContext.tsx. Constants at src/utils/constants.ts. Utility functions in src/utils/ directory (e.g., distance calculation utility).</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.9: Event Interaction System</section>
+        <snippet>Story 2.9 focuses on implementing player interaction with events. Players can interact with events by pressing E key or clicking when near them. Interaction detection checks if character is within interaction range (50-100px). Interaction triggers EventManager.resolveEvent() to remove event and update game state (score, coziness). Interaction is prevented if character too far, event expired, game paused, or game over. Visual feedback will be implemented in Story 4.6. Achievement progress checks will be implemented in Story 3.5.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-8-event-timer-display.md</path>
+        <title>Story 2.8: Event Timer Display</title>
+        <section>Dev Notes, Implementation</section>
+        <snippet>EventIndicator component fully implemented. Component displays event icons with priority colors and circular timer ring. Component receives event object with timer, location, and all event properties. Component structure is solid, can add onClick handler for mouse interaction. Component uses CSS Modules for styling (EventIndicator.module.css). EventManager.updateEvents() updates timers every frame. Event timers decrement by deltaTime every frame. Expired events (timer <= 0) should prevent interaction.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-3-character-visual-and-movement-system.md</path>
+        <title>Story 2.3: Character Visual and Movement System</title>
+        <section>Dev Notes, Implementation</section>
+        <snippet>Character component stores position in state as { x: number, y: number }. Position updated every frame via movement. Position constrained to apartment boundaries. Character component handles keyboard input using useEffect for keyboard event listeners. Listens for keydown/keyup events. Tracks which keys are currently pressed. Can add E key handler to existing keyboard input system.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/components/game/Character.tsx</path>
+        <kind>component</kind>
+        <symbol>Character, CharacterPosition</symbol>
+        <lines>1-417</lines>
+        <reason>Main component for keyboard interaction (E key). Already handles keyboard input for movement (WASD/arrows). Can add E key handler to existing keyboard input system. Character position stored in component state as { x: number, y: number }. Position available for distance calculation. Component uses useEffect for keyboard event listeners (can add E key listener).</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/EventIndicator.tsx</path>
+        <kind>component</kind>
+        <symbol>EventIndicator, EventIndicatorProps</symbol>
+        <lines>1-276</lines>
+        <reason>Component for mouse interaction (click on event indicator). Already displays events with icons and timers. Can add onClick handler for mouse interaction. Component receives event object with location, timer, and all event properties. Component structure is solid, needs onClick handler enhancement.</reason>
+      </artifact>
+      <artifact>
+        <path>src/core/EventManager.ts</path>
+        <kind>class</kind>
+        <symbol>EventManager, resolveEvent</symbol>
+        <lines>332-349</lines>
+        <reason>Provides resolveEvent() method for event resolution. Method signature: resolveEvent(eventId: string, activeEvents: GameEvent[], removeEventCallback: RemoveEventCallback): GameEvent | null. Method removes event from active events and returns event data. Returns null if event not found. Use this method for event resolution (not manual removal).</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, GameProvider, useGame, setScore, setCoziness, removeEvent, gameState</symbol>
+        <lines>1-228</lines>
+        <reason>Provides game state and update functions. setScore(prev => prev + points) for score updates. setCoziness(prev => prev + reward) for coziness updates. removeEvent(eventId: string) for event removal. gameState provides isPaused and gameOver flags for interaction prevention. All update functions use functional updates to avoid stale closures.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>constants</kind>
+        <symbol>INTERACTION_RANGE (to be added)</symbol>
+        <lines>1-485</lines>
+        <reason>Game constants file. Should add INTERACTION_RANGE constant (default: 50-100px). Constants are typed with TypeScript. Constants match PRD specifications. Follow existing constant patterns in file.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/</path>
+        <kind>utility</kind>
+        <symbol>distance calculation utility (to be created)</symbol>
+        <lines>N/A</lines>
+        <reason>Should create distance calculation utility function. Function: isWithinInteractionRange(characterPos: { x: number, y: number }, eventLocation: { x: number, y: number }, range: number): boolean. Use Euclidean distance formula: sqrt((x2-x1)² + (y2-y1)²). Can be in new file (e.g., distance.ts) or added to existing utils file.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/events.ts</path>
+        <kind>type-definition</kind>
+        <symbol>GameEvent, EventType, EventPriority</symbol>
+        <lines>1-95</lines>
+        <reason>Type definitions for events. GameEvent interface includes location property (x, y coordinates). GameEvent includes timer property (seconds remaining, used for expiration check). GameEvent includes points and cozinessReward properties (used for score/coziness updates). EventType union: 'phone' | 'kettle' | 'cat' | 'candle'.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/game.ts</path>
+        <kind>type-definition</kind>
+        <symbol>GameState</symbol>
+        <lines>1-50</lines>
+        <reason>Type definitions for game state. GameState interface includes isPaused and gameOver flags (used for interaction prevention). GameState includes activeEvents array (used for finding events to interact with). GameState includes score and coziness (updated on interaction).</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem>node</ecosystem>
+      <packages>
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="typescript" version="~5.9.3" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <category>Architecture</category>
+      <description>Character component already handles keyboard input for movement (WASD/arrows). Can add E key handler to existing keyboard input system. Character position stored in component state as { x: number, y: number }. EventIndicator component already displays events. Can add onClick handler for mouse interaction. EventManager.resolveEvent() method already exists and handles event removal. GameContext provides all necessary state update functions (setScore, setCoziness, removeEvent). Follow architecture document "Event System Pattern" and "Communication Patterns" sections.</description>
+    </constraint>
+    <constraint>
+      <category>Distance Calculation</category>
+      <description>Use Euclidean distance formula: sqrt((x2-x1)² + (y2-y1)²). Character position available from Character component state. Event location available from GameEvent.location property. Interaction range should be configurable constant (50-100px default). Store INTERACTION_RANGE constant in constants.ts. Create utility function isWithinInteractionRange(characterPos, eventLocation, range) in src/utils/ directory.</description>
+    </constraint>
+    <constraint>
+      <category>Keyboard Input Handling</category>
+      <description>Add keyboard event listener for E key (keydown or keyup). Listener should be in Character component or game loop hook. Use useEffect for event listener setup/cleanup. Check for 'e' or 'E' key code. On E key press, find nearest event within interaction range. If event found, trigger interaction. Handle multiple events (select nearest or first found). Reference architecture document for input handling patterns.</description>
+    </constraint>
+    <constraint>
+      <category>Mouse Input Handling</category>
+      <description>Add onClick handler to EventIndicator component. Handler should check character distance before allowing interaction. Prevent default click behavior if needed. On click, check if character is within interaction range. If within range, trigger interaction. Prevent interaction if character too far. Reference Story 2.7 for EventIndicator component structure.</description>
+    </constraint>
+    <constraint>
+      <category>Interaction Prevention</category>
+      <description>Check character distance before allowing interaction (use isWithinInteractionRange). Check if event has expired (timer <= 0) before allowing interaction. Check if game is paused (isPaused === true) before allowing interaction. Check if game is over (gameOver === true) before allowing interaction. Return early if any prevention condition is met. Reference GameContext for game state flags.</description>
+    </constraint>
+    <constraint>
+      <category>Event Resolution</category>
+      <description>Call EventManager.resolveEvent(eventId, activeEvents, removeEvent) to resolve event. Handle null return (event not found). Extract event data from resolved event (points, cozinessReward). Update score: setScore(prev => prev + resolvedEvent.points). Update coziness: setCoziness(prev => prev + resolvedEvent.cozinessReward). Use functional updates to avoid stale closures. Event removal handled by EventManager.resolveEvent() via removeEvent callback.</description>
+    </constraint>
+    <constraint>
+      <category>Interaction Lock</category>
+      <description>Add interaction lock flag or debounce mechanism to prevent multiple simultaneous interactions. Only one event can be interacted with at a time. Release lock after interaction completes. Test with rapid key presses or clicks. Can use useState or useRef for lock flag.</description>
+    </constraint>
+    <constraint>
+      <category>Integration</category>
+      <description>Character component: Provides character position for distance calculation. EventIndicator component: Provides click handler for mouse interaction. EventManager: Provides resolveEvent() method for event resolution. GameContext: Provides state update functions (setScore, setCoziness, removeEvent) and game state flags (isPaused, gameOver). Game loop: May need to check for keyboard input (E key) in game loop hook. Visual feedback: Will be implemented in Story 4.6 (prepare data for feedback). Achievement checks: Will be implemented in Story 3.5 (prepare for achievement tracking).</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>Character Component</name>
+      <kind>React Component</kind>
+      <signature>export function Character(): JSX.Element</signature>
+      <path>src/components/game/Character.tsx</path>
+    </interface>
+    <interface>
+      <name>CharacterPosition Interface</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface CharacterPosition { x: number; y: number; }</signature>
+      <path>src/components/game/Character.tsx</path>
+    </interface>
+    <interface>
+      <name>EventIndicator Component Props</name>
+      <kind>React Component Interface</kind>
+      <signature>interface EventIndicatorProps { event: GameEvent; containerRef?: React.RefObject&lt;HTMLElement&gt;; stackOffset?: number; }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+    <interface>
+      <name>GameEvent Interface</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface GameEvent { id: string; type: EventType; priority: EventPriority; location: { x: number; y: number }; timer: number; points: number; cozinessReward: number; cozinessPenalty: number; interactionText: { en: string; uk: string }; }</signature>
+      <path>src/types/events.ts</path>
+    </interface>
+    <interface>
+      <name>EventManager resolveEvent</name>
+      <kind>Class Method</kind>
+      <signature>resolveEvent(eventId: string, activeEvents: GameEvent[], removeEventCallback: RemoveEventCallback): GameEvent | null</signature>
+      <path>src/core/EventManager.ts</path>
+    </interface>
+    <interface>
+      <name>GameContext setScore</name>
+      <kind>React Context Function</kind>
+      <signature>setScore: (value: number) => void - Updates score (validated >= 0)</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameContext setCoziness</name>
+      <kind>React Context Function</kind>
+      <signature>setCoziness: (value: number) => void - Updates coziness (0-100, automatically clamped)</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameContext removeEvent</name>
+      <kind>React Context Function</kind>
+      <signature>removeEvent: (eventId: string) => void - Removes event by ID</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameContext gameState</name>
+      <kind>React Context State</kind>
+      <signature>gameState: GameState - Current game state including isPaused, gameOver, activeEvents</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>Distance Calculation Utility (to be created)</name>
+      <kind>Utility Function</kind>
+      <signature>isWithinInteractionRange(characterPos: { x: number, y: number }, eventLocation: { x: number, y: number }, range: number): boolean</signature>
+      <path>src/utils/ (to be created)</path>
+    </interface>
+    <interface>
+      <name>INTERACTION_RANGE Constant (to be added)</name>
+      <kind>Constant</kind>
+      <signature>export const INTERACTION_RANGE: number = 50-100 (default value)</signature>
+      <path>src/utils/constants.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should focus on interaction functionality and integration testing. No formal test framework is currently set up, but manual testing should verify: Keyboard interaction (E key) with character near/far from events, Mouse interaction (click) with character near/far from events, Interaction prevention when game paused/over/event expired, Score and coziness updates on successful interaction, Event removal on successful interaction, Only one event can be interacted with at a time, Interaction with multiple events (select nearest), Interaction range accuracy (50-100px). Distance calculation should be tested with various positions.
+    </standards>
+    <locations>
+      Manual testing in browser during development. Visual verification of interaction feedback. Performance testing using Chrome DevTools Performance tab. No automated test files exist yet - consider adding tests in src/components/game/Character.test.tsx and src/components/game/EventIndicator.test.tsx if test framework is added.
+    </locations>
+    <ideas>
+      <test id="AC1">
+        <criterion>AC1: Event resolution on interaction</criterion>
+        <idea>Test keyboard interaction (E key) with character near event: Event is removed from active events, Score increases by event's point value, «Затишок» increases by event's coziness reward. Test mouse interaction (click) with character near event: Same verification as keyboard. Test visual feedback is prepared (Story 4.6 will implement). Verify EventManager.resolveEvent() is called correctly. Verify game state updates are functional (no stale closures).</idea>
+      </test>
+      <test id="AC2">
+        <criterion>AC2: Interaction detection and range</criterion>
+        <idea>Test interaction detection checks character distance: Character within range (50-100px) allows interaction, Character outside range prevents interaction. Test interaction range is configurable (INTERACTION_RANGE constant). Test keyboard interaction (E key) works when character near event. Test mouse interaction (click) works when character near event. Test only one event can be interacted with at a time (interaction lock). Test interaction with multiple events (select nearest). Test distance calculation accuracy with various positions.</idea>
+      </test>
+      <test id="AC3">
+        <criterion>AC3: Interaction prevention</criterion>
+        <idea>Test interaction prevention when character too far from event: Interaction is blocked, No event resolution occurs. Test interaction prevention when event expired (timer <= 0): Interaction is blocked, No event resolution occurs. Test interaction prevention when game paused (isPaused === true): Interaction is blocked, No event resolution occurs. Test interaction prevention when game over (gameOver === true): Interaction is blocked, No event resolution occurs. Test all prevention conditions work correctly.</idea>
+      </test>
+      <test id="AC4">
+        <criterion>AC4: Interaction triggers and updates</criterion>
+        <idea>Test interaction triggers EventManager.resolveEvent(): Method is called with correct parameters, Event is removed from active events, Event data is returned correctly. Test score updates on successful interaction: setScore(prev => prev + points) is called, Score increases by correct amount. Test coziness updates on successful interaction: setCoziness(prev => prev + reward) is called, Coziness increases by correct amount. Test achievement progress checks are prepared (Story 3.5 will implement). Test visual feedback animations are prepared (Story 4.6 will implement).</idea>
+      </test>
+      <test id="distance">
+        <criterion>Distance Calculation</criterion>
+        <idea>Test distance calculation utility function: Calculate distance between character and event positions, Use Euclidean distance formula: sqrt((x2-x1)² + (y2-y1)²), Test with various positions (near, far, diagonal), Test with edge cases (same position, very far positions), Test isWithinInteractionRange() returns true when distance <= range, Test isWithinInteractionRange() returns false when distance > range.</idea>
+      </test>
+      <test id="keyboard">
+        <criterion>Keyboard Interaction</criterion>
+        <idea>Test E key event listener: Listener is set up in Character component or game loop, Listener responds to 'e' or 'E' key press, Listener is cleaned up on component unmount, Listener finds nearest event within interaction range, Listener triggers interaction when event found, Listener handles multiple events (selects nearest).</idea>
+      </test>
+      <test id="mouse">
+        <criterion>Mouse Interaction</criterion>
+        <idea>Test onClick handler on EventIndicator: Handler is added to EventIndicator component, Handler checks character distance before allowing interaction, Handler triggers interaction when character within range, Handler prevents interaction when character too far, Handler works correctly with multiple events.</idea>
+      </test>
+      <test id="integration">
+        <criterion>Integration</criterion>
+        <idea>Test Character component integration: Character position is available for distance calculation, E key handler integrates with existing keyboard input system, Character position updates correctly during movement. Test EventIndicator component integration: onClick handler integrates with existing component structure, Handler receives correct event data, Handler checks character distance correctly. Test EventManager integration: resolveEvent() is called with correct parameters, Event removal works correctly, Event data is returned correctly. Test GameContext integration: setScore() updates score correctly, setCoziness() updates coziness correctly, removeEvent() removes event correctly, gameState flags (isPaused, gameOver) are checked correctly.</idea>
+      </test>
+      <test id="performance">
+        <criterion>Performance</criterion>
+        <idea>Test interaction system performance: Distance calculations are efficient, No performance impact on game loop (60 FPS maintained), Interaction handlers don't cause frame drops, Rapid key presses or clicks are handled correctly, Interaction lock prevents performance issues from multiple simultaneous interactions.</idea>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

@@ -1,0 +1,283 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>15</storyId>
+    <title>Ukrainian Text for Core Gameplay</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-15-ukrainian-text-for-core-gameplay.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a Ukrainian-speaking player</asA>
+    <iWant>I want core gameplay text in Ukrainian</iWant>
+    <soThat>So that the game feels authentic from the start</soThat>
+    <tasks>
+      <task id="1" description="Create translations constants file (AC: 2)">
+        <subtask>Create `src/utils/translations.ts` file</subtask>
+        <subtask>Define Ukrainian text constants for core gameplay:
+          - Timer labels: "Час"
+          - Coziness labels: "Затишок"
+          - Event interaction hints: "Натисніть E, щоб взаємодіяти"
+          - Event descriptions: "Телефон майже розрядився", "Кіт нервує", "Чайник кипить", "Свічка згасає"
+          - Win/lose messages: "Вечір завершено!", "Ви пережили вечір при блекауті ✨"</subtask>
+        <subtask>Use proper Ukrainian grammar and spelling</subtask>
+        <subtask>Maintain light, cozy, humorous tone</subtask>
+        <subtask>Export constants for use in components</subtask>
+        <subtask>Reference PRD FR40, FR41, FR42 for localization requirements [Source: docs/prd.md#Localization-&-Content]</subtask>
+      </task>
+      <task id="2" description="Update EventIndicator component with Ukrainian text (AC: 1, 4)">
+        <subtask>Update `src/components/game/EventIndicator.tsx`</subtask>
+        <subtask>Replace English tooltip text with Ukrainian: "Натисніть E, щоб взаємодіяти" or similar</subtask>
+        <subtask>Add Ukrainian event type descriptions for accessibility (alt text, aria-label)</subtask>
+        <subtask>Import translations from `src/utils/translations.ts`</subtask>
+        <subtask>Update title attribute with Ukrainian text</subtask>
+        <subtask>Ensure event type names are in Ukrainian (phone → "Телефон", kettle → "Чайник", cat → "Кіт", candle → "Свічка")</subtask>
+        <subtask>Reference EventIndicator component structure [Source: src/components/game/EventIndicator.tsx]</subtask>
+      </task>
+      <task id="3" description="Add Ukrainian text for event descriptions (AC: 1, 4)">
+        <subtask>Add event type descriptions to translations.ts:
+          - Phone: "Телефон майже розрядився"
+          - Kettle: "Чайник кипить"
+          - Cat: "Кіт нервує"
+          - Candle: "Свічка згасає"</subtask>
+        <subtask>Update EventIndicator or event display components to show Ukrainian descriptions</subtask>
+        <subtask>Ensure descriptions match PRD event types [Source: docs/prd.md#Event-Types-&-Scoring]</subtask>
+      </task>
+      <task id="4" description="Add win/lose messages (AC: 1)">
+        <subtask>Add win/lose message constants to translations.ts:
+          - Win: "Вечір завершено!" or "Ви пережили вечір при блекауті ✨"
+          - Lose: "Затишок закінчився" or similar</subtask>
+        <subtask>Note: Win/lose messages will be displayed in results screen (Story 4.3), but constants should be prepared now</subtask>
+        <subtask>Reference PRD for win/lose conditions [Source: docs/prd.md#Game-Mechanics]</subtask>
+      </task>
+      <task id="5" description="Verify existing Ukrainian text consistency (AC: 1, 3)">
+        <subtask>Review Timer component - already has "Час:" label (no changes needed)</subtask>
+        <subtask>Review CozinessBar component - already has "Затишок" label (no changes needed)</subtask>
+        <subtask>Review WelcomeScreen component - already has Ukrainian text (no changes needed)</subtask>
+        <subtask>Ensure all Ukrainian text uses same translation constants file for consistency</subtask>
+        <subtask>Update Timer and CozinessBar to import from translations.ts if not already done</subtask>
+      </task>
+      <task id="6" description="Testing and validation (AC: 1, 2, 3, 4)">
+        <subtask>Test all gameplay UI elements display Ukrainian text correctly</subtask>
+        <subtask>Test event interaction hints are in Ukrainian</subtask>
+        <subtask>Test event descriptions are in Ukrainian</subtask>
+        <subtask>Test translations file exports all required constants</subtask>
+        <subtask>Test components import and use translations correctly</subtask>
+        <subtask>Test Ukrainian text maintains proper grammar and tone</subtask>
+        <subtask>Test key terms remain in Ukrainian («Затишок», «Світлячки»)</subtask>
+        <subtask>Test text is readable and consistent across components</subtask>
+        <subtask>Build successful, no linting errors</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <given>I am playing the game</given>
+      <when>I view core gameplay elements</when>
+      <then>the following text is displayed in Ukrainian:
+        - Timer label: "Час" or similar (already implemented in Timer component)
+        - «Затишок» label: "Затишок" (already implemented in CozinessBar component)
+        - Event interaction hints: "Натисніть E, щоб взаємодіяти" or similar
+        - Event descriptions: "Телефон майже розрядився", "Кіт нервує", etc.
+        - Win/lose messages: "Вечір завершено!", "Ви пережили вечір при блекауті ✨"</then>
+    </criterion>
+    <criterion id="AC2">
+      <given>Ukrainian text constants are created</given>
+      <when>I examine the codebase</when>
+      <then>Ukrainian text:
+        - Is stored in `src/utils/translations.ts` or similar constants file
+        - Uses proper Ukrainian grammar and spelling
+        - Maintains light, cozy, humorous tone
+        - Is consistent across all gameplay elements</then>
+    </criterion>
+    <criterion id="AC3">
+      <given>components use Ukrainian text</given>
+      <when>I view gameplay UI elements</when>
+      <then>text integration:
+        - Replaces English placeholder text in components
+        - All gameplay UI elements use Ukrainian text
+        - Key terms remain in Ukrainian («Затишок», «Світлячки»)</then>
+    </criterion>
+    <criterion id="AC4">
+      <given>event interaction occurs</given>
+      <when>I interact with events or view event tooltips</when>
+      <then>event-related text is in Ukrainian:
+        - Event interaction hints (tooltips, accessibility text)
+        - Event type descriptions (phone, kettle, cat, candle)
+        - Event interaction feedback messages</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Localization & Content - FR40, FR41, FR42</section>
+        <snippet>FR40: All game text, UI elements, and content are displayed in Ukrainian language. FR41: Key game terms remain in Ukrainian («Вечір при блекауті», «Світлячки», «Затишок»). FR42: The game maintains a light, cozy, humorous tone throughout all content.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Event Types & Scoring</section>
+        <snippet>Event Types: Low phone battery (plug into power bank), Boiling kettle (turn off), Candle needed or going out (light it), Cat stressed (calm it). Each event type has specific interaction requirements and descriptions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Game Mechanics - Win & Lose Conditions</section>
+        <snippet>Win Condition: Evening timer reaches 0 while «Затишок» > 0. Player earns XP and «Світлячки» based on performance. Lose Condition: «Затишок» hits 0 before the timer ends → evening ends early. Player still earns partial rewards if they made progress.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.15: Ukrainian Text for Core Gameplay</section>
+        <snippet>Story 2.15 implements Ukrainian text for core gameplay elements. Creates translations constants file, updates EventIndicator component with Ukrainian tooltips, adds event descriptions, prepares win/lose messages. Timer and CozinessBar already have Ukrainian text - verify consistency.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Project Structure - Utils</section>
+        <snippet>Utils directory: `src/utils/` for utility functions. Translations file should be created at `src/utils/translations.ts` following project structure conventions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Naming Conventions</section>
+        <snippet>Files: Match component name. Utilities: `localStorage.ts`, `scoring.ts`, `constants.ts`. Use kebab-case for utility files. Export named constants for each text string.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Core User Experience</section>
+        <snippet>Cultural Authenticity: Fully Ukrainian language and setting. All game text, UI elements, and content are displayed in Ukrainian language. Key game terms remain in Ukrainian («Затишок», «Світлячки»).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-14-затишок-bar-hud-component.md</path>
+        <title>Story 2.14: «Затишок» Bar HUD Component</title>
+        <section>Dev Agent Record</section>
+        <snippet>Ukrainian Text Already Present: Timer and CozinessBar components already have Ukrainian text. Timer: "Час:" label (line 62 in Timer.tsx). CozinessBar: "Затишок" label (line 90 in CozinessBar.tsx). These should be moved to translations.ts for consistency.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-13-evening-timer-hud-component.md</path>
+        <title>Story 2.13: Evening Timer HUD Component</title>
+        <section>Dev Agent Record</section>
+        <snippet>HUD Structure: HUD component exists with three-section layout. Left section: Timer component (already has Ukrainian "Час:" label). Center section: CozinessBar component (already has Ukrainian "Затишок" label). Right section: Empty for future XP/Level (Story 4.1, 4.2).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/components/game/EventIndicator.tsx</path>
+        <kind>component</kind>
+        <symbol>EventIndicator component</symbol>
+        <lines>1-317</lines>
+        <reason>EventIndicator component currently has English tooltip text (line 177: "Click to interact"). Needs to be updated with Ukrainian text: "Натисніть E, щоб взаємодіяти". Also needs Ukrainian event type names and descriptions for accessibility (alt text, aria-label). Component imports event icons and displays them above event locations.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/Timer.tsx</path>
+        <kind>component</kind>
+        <symbol>Timer component</symbol>
+        <lines>1-70</lines>
+        <reason>Timer component already has Ukrainian text "Час:" label (line 62). Should be updated to import from translations.ts for consistency. Component reads from GameContext and displays evening timer in "MM:SS" format.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/CozinessBar.tsx</path>
+        <kind>component</kind>
+        <symbol>CozinessBar component</symbol>
+        <lines>1-111</lines>
+        <reason>CozinessBar component already has Ukrainian text "Затишок" label (line 90). Should be updated to import from translations.ts for consistency. Component reads from GameContext and displays coziness meter as horizontal bar with gradient.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/WelcomeScreen.tsx</path>
+        <kind>component</kind>
+        <symbol>WelcomeScreen component</symbol>
+        <lines>1-86</lines>
+        <reason>WelcomeScreen component already has Ukrainian text throughout (title, instructions, controls, button). No changes needed for this story, but should verify consistency with translations.ts approach.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>utility</kind>
+        <symbol>Game constants</symbol>
+        <lines>1-502</lines>
+        <reason>Reference for constants file structure. Translations.ts should follow similar pattern: TypeScript const objects or enums for type safety, named exports, organized by category. Constants file shows pattern for organizing game configuration values.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem>node</ecosystem>
+      <packages>
+        <package name="react" version="^19.2.0">React framework for component-based UI</package>
+        <package name="react-dom" version="^19.2.0">React DOM rendering</package>
+        <package name="typescript" version="~5.9.3">TypeScript for type safety</package>
+        <package name="vite" version="^5.4.11">Build tool and dev server</package>
+        <package name="@vitejs/plugin-react" version="^4.3.1">Vite React plugin</package>
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Translation Constants Structure: Create `src/utils/translations.ts` file for centralized Ukrainian text. Use TypeScript const objects or enums for type safety. Export named constants for each text string. Follow naming convention: `TRANSLATIONS` object with nested properties. Reference architecture document utils structure [Source: docs/architecture.md#Project-Structure].</constraint>
+    <constraint>Component Integration: Components import translations from `src/utils/translations.ts`. Replace hardcoded strings with translation constants. Maintain existing component structure (no major refactoring). Timer and CozinessBar already have Ukrainian text - verify consistency and move to translations.ts.</constraint>
+    <constraint>Event System Integration: EventIndicator component needs Ukrainian tooltips and accessibility text. Event type descriptions should match PRD specifications [Source: docs/prd.md#Event-Types-&-Scoring]. Event interaction hints should guide players in Ukrainian. Event type names: phone → "Телефон", kettle → "Чайник", cat → "Кіт", candle → "Свічка".</constraint>
+    <constraint>Ukrainian Language Requirements: All text must use proper Ukrainian grammar and spelling. Maintain light, cozy, humorous tone (PRD FR42) [Source: docs/prd.md#Localization-&-Content]. Key terms remain in Ukrainian: «Затишок», «Світлячки», «Вечір при блекауті». Reference PRD FR40, FR41, FR42 for localization specifications.</constraint>
+    <constraint>Text Integration Strategy: Incremental approach - Add Ukrainian text as features are built. Replace English placeholder text with Ukrainian translations. Ensure all gameplay UI elements use Ukrainian text. Prepare win/lose messages for future results screen (Story 4.3). Event descriptions should match PRD event types exactly.</constraint>
+    <constraint>Existing Ukrainian Text: Timer component already has "Час:" label (line 62 in Timer.tsx). CozinessBar component already has "Затишок" label (line 90 in CozinessBar.tsx). WelcomeScreen component already has Ukrainian text throughout. These should be moved to translations.ts for consistency, or at minimum verified to match translations.ts values.</constraint>
+    <constraint>Architecture Patterns: Follow naming conventions (PascalCase for components, camelCase for functions). Match file name to component name. Import organization: React imports, third-party imports, internal imports, type imports, CSS imports (at end). Use CSS Modules for styling (ADR-005).</constraint>
+    <constraint>Performance: No performance impact expected - text constants are static values. Translations file should be tree-shakeable (named exports). Components should import only needed translations to minimize bundle size.</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>Translations Constants API</name>
+      <kind>TypeScript Constants</kind>
+      <signature>export const TRANSLATIONS = { gameplay: { timer: "Час", coziness: "Затишок", eventInteraction: "Натисніть E, щоб взаємодіяти", ... }, events: { phone: "Телефон майже розрядився", kettle: "Чайник кипить", cat: "Кіт нервує", candle: "Свічка згасає" }, messages: { win: "Вечір завершено!", lose: "Затишок закінчився" } }</signature>
+      <path>src/utils/translations.ts</path>
+    </interface>
+    <interface>
+      <name>EventIndicator Component Props</name>
+      <kind>React Component</kind>
+      <signature>export function EventIndicator({ event, containerRef, stackOffset }: EventIndicatorProps): JSX.Element</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+    <interface>
+      <name>Timer Component</name>
+      <kind>React Component</kind>
+      <signature>export function Timer(): JSX.Element</signature>
+      <path>src/components/ui/Timer.tsx</path>
+    </interface>
+    <interface>
+      <name>CozinessBar Component</name>
+      <kind>React Component</kind>
+      <signature>export function CozinessBar(): JSX.Element</signature>
+      <path>src/components/ui/CozinessBar.tsx</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Testing approach: Manual testing during development. No automated test framework configured yet (Vitest mentioned in architecture but not installed). Test in latest Chrome browser (primary target). Test all gameplay UI elements display Ukrainian text correctly. Verify event interaction hints, event descriptions, and win/lose messages are in Ukrainian. Test translations file exports all required constants. Test components import and use translations correctly. Test Ukrainian text maintains proper grammar and tone. Test key terms remain in Ukrainian («Затишок», «Світлячки»). Test text is readable and consistent across components. Build successful, no linting errors.</standards>
+    <locations>No test files exist yet. Future test location: `src/utils/translations.test.ts` (co-located with translations file). Test organization: Co-located test files next to source files. Test files: `*.test.ts` or `*.spec.ts`.</locations>
+    <ideas>
+      <test id="AC1" description="Test all gameplay UI elements display Ukrainian text correctly">
+        <scenario>Start game, verify Timer displays "Час:" label. Verify CozinessBar displays "Затишок" label. Verify EventIndicator tooltips show Ukrainian text "Натисніть E, щоб взаємодіяти". Verify event descriptions are in Ukrainian. Verify win/lose messages are in Ukrainian (when implemented in Story 4.3).</scenario>
+      </test>
+      <test id="AC2" description="Test translations file structure and exports">
+        <scenario>Import translations.ts file. Verify TRANSLATIONS object exists with nested properties (gameplay, events, messages). Verify all required constants are exported. Verify constants use proper Ukrainian grammar and spelling. Verify tone is light, cozy, humorous.</scenario>
+      </test>
+      <test id="AC3" description="Test components import and use translations correctly">
+        <scenario>Verify Timer component imports from translations.ts. Verify CozinessBar component imports from translations.ts. Verify EventIndicator component imports from translations.ts. Verify all components use translation constants instead of hardcoded strings. Verify key terms remain in Ukrainian («Затишок», «Світлячки»).</scenario>
+      </test>
+      <test id="AC4" description="Test event-related text is in Ukrainian">
+        <scenario>Hover over event indicator, verify tooltip shows Ukrainian text "Натисніть E, щоб взаємодіяти". Verify event type names are in Ukrainian (phone → "Телефон", kettle → "Чайник", cat → "Кіт", candle → "Свічка"). Verify event descriptions are in Ukrainian. Verify accessibility text (alt, aria-label) is in Ukrainian.</scenario>
+      </test>
+      <test id="consistency" description="Test Ukrainian text consistency across components">
+        <scenario>Verify Timer, CozinessBar, EventIndicator, and WelcomeScreen all use consistent Ukrainian text. Verify all components import from same translations.ts file. Verify no English placeholder text remains in gameplay UI elements.</scenario>
+      </test>
+      <test id="build" description="Test build successful, no linting errors">
+        <scenario>Run `npm run build` command. Verify build completes successfully. Verify no TypeScript errors. Verify no linting errors. Verify translations.ts file is included in build output.</scenario>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

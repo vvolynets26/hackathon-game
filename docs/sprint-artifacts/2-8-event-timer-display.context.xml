@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>8</storyId>
+    <title>Event Timer Display</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-8-event-timer-display.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want to see countdown timers on events</iWant>
+    <soThat>So that I know how much time I have to resolve each event</soThat>
+    <tasks>
+      <task id="1" description="Enhance EventIndicator timer display with circular timer ring (AC: 1, 2, 4)">
+        <subtask>Implement circular timer ring/pie using CSS or SVG</subtask>
+        <subtask>Timer ring should shrink/fill as time decreases (visual countdown)</subtask>
+        <subtask>Ensure timer ring is visually integrated with event icon</subtask>
+        <subtask>Use CSS animations for smooth countdown animation</subtask>
+        <subtask>Reference UX design specification for timer visual style</subtask>
+        <subtask>Reference architecture document for CSS animation patterns</subtask>
+      </task>
+      <task id="2" description="Enhance timer text display (AC: 1, 4)">
+        <subtask>Verify timer text displays seconds remaining (e.g., "5s", "3s")</subtask>
+        <subtask>Ensure timer text is readable against dark background</subtask>
+        <subtask>Add text shadow or background for better visibility</subtask>
+        <subtask>Timer text should update smoothly (no flickering)</subtask>
+        <subtask>Reference Story 2.7 for timer text styling patterns</subtask>
+      </task>
+      <task id="3" description="Ensure timer synchronization with EventManager (AC: 3)">
+        <subtask>Verify timer reads from event.timer property (updated by EventManager)</subtask>
+        <subtask>Ensure timer updates every frame via React re-renders</subtask>
+        <subtask>Timer should be synchronized with EventManager.updateEvents() calls</subtask>
+        <subtask>Test timer accuracy during gameplay</subtask>
+        <subtask>Reference EventManager implementation</subtask>
+      </task>
+      <task id="4" description="Apply priority-based timer styling (AC: 2, 4)">
+        <subtask>Timer ring color should match event priority color</subtask>
+        <subtask>Minor events: soft blue (#64b5f6) timer ring</subtask>
+        <subtask>Standard events: light yellow (#fff176) timer ring</subtask>
+        <subtask>Critical events: orange/red (#ff8c42) timer ring</subtask>
+        <subtask>Ensure timer color is consistent with priority color from Story 2.7</subtask>
+        <subtask>Reference UX design for priority colors</subtask>
+      </task>
+      <task id="5" description="Implement smooth timer animations (AC: 1, 2, 3)">
+        <subtask>Timer ring animation should be smooth (no stuttering)</subtask>
+        <subtask>Use CSS transitions or animations for countdown effect</subtask>
+        <subtask>Ensure animation is GPU-accelerated (use transform, not width/height)</subtask>
+        <subtask>Test animation performance at 60 FPS</subtask>
+        <subtask>Reference architecture document for performance patterns</subtask>
+      </task>
+      <task id="6" description="Ensure timer removal on event resolution/expiration (AC: 3)">
+        <subtask>Verify timer disappears when event is resolved</subtask>
+        <subtask>Verify timer disappears when event expires</subtask>
+        <subtask>Ensure no visual artifacts remain after timer removal</subtask>
+        <subtask>Test timer removal with multiple simultaneous events</subtask>
+        <subtask>Reference Story 2.7 for event removal patterns</subtask>
+      </task>
+      <task id="7" description="Testing and validation (AC: 1, 2, 3, 4)">
+        <subtask>Test timer display for all 4 event types</subtask>
+        <subtask>Test timer display for all 3 priority levels</subtask>
+        <subtask>Test timer countdown accuracy during gameplay</subtask>
+        <subtask>Test timer synchronization with EventManager</subtask>
+        <subtask>Test timer removal on resolution and expiration</subtask>
+        <subtask>Test timer animations at 60 FPS</subtask>
+        <subtask>Test timer visibility against dark background</subtask>
+        <subtask>Test timer with multiple simultaneous events</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">
+      <given>An event is active</given>
+      <when>The event is rendered</when>
+      <then>EventIndicator displays a circular timer: Timer ring/pie that shrinks or fills as time decreases, Timer text showing seconds remaining (e.g., "5s"), Timer updates every frame smoothly</then>
+    </criterion>
+    <criterion id="2">
+      <given>Timer display is implemented</given>
+      <when>I view event indicators</when>
+      <then>Timer display: Is visually integrated with event icon, Uses color consistent with event priority, Provides clear visual feedback of urgency, Animates smoothly as time decreases</then>
+    </criterion>
+    <criterion id="3">
+      <given>Events are active</given>
+      <when>The game loop runs</when>
+      <then>Timer behavior: Counts down in real-time (synchronized with EventManager timers), Updates every frame for smooth animation, Disappears when event is resolved or expired</then>
+    </criterion>
+    <criterion id="4">
+      <given>Timer display is styled</given>
+      <when>I view event timers</when>
+      <then>Timer styling: Timer ring/pie uses CSS animations or SVG for smooth countdown, Timer text is readable against dark background, Timer visual matches UX design specifications, Timer color matches event priority color scheme</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Event System - FR4, Event UX</section>
+        <snippet>FR4: Each event displays a visual indicator (icon) above the object with a countdown timer showing time remaining. Event UX: Circular timer around the icon: A ring that slowly shrinks or a pie that fills. Visual Signalling: Icon above the object: Phone icon, kettle icon, cat icon, candle icon. Color-coded priority (subtle, not neon): Minor: soft blue, Standard: light yellow, Critical: orange/red.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Event UX, Event Priority Colors</section>
+        <snippet>Event Priority Colors: Minor Events: #64b5f6 (soft blue), Standard Events: #fff176 (light yellow), Critical Events: #ff8c42 (orange/red). Event UX: Circular timer around the icon: A ring that slowly shrinks or a pie that fills. Timer text showing seconds remaining. Visual Signalling: Icon above the object with color-coded priority.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Performance Considerations, Game Event System Pattern</section>
+        <snippet>Performance Considerations: Use CSS transforms for animations (GPU-accelerated). Avoid layout thrashing (use transform, not top/left). Timer calculations should be efficient (cache percentage if needed). Minimize re-renders (React.memo if needed, but timer updates are necessary). Game Event System Pattern: EventManager.updateEvents() called every frame in game loop. EventManager updates event.timer property (decrements by deltaTime). GameContext.activeEvents array updated (React re-renders). EventIndicator component receives updated event with new timer value.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.8: Event Timer Display</section>
+        <snippet>Story 2.8 focuses on enhancing timer display with circular timer ring visualization. EventIndicator component already displays timer text (Story 2.7). This story adds circular timer ring/pie visualization. Timer ring should be visually integrated with existing icon and priority colors. Timer ring animation should be smooth and GPU-accelerated. Timer ring color should match event priority color.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-7-event-icons-and-visual-indicators.md</path>
+        <title>Story 2.7: Event Icons and Visual Indicators</title>
+        <section>Dev Notes, Implementation</section>
+        <snippet>EventIndicator component already displays timer text: {Math.max(0, event.timer).toFixed(0)}s (line 116). Timer text displayed in .timer span with CSS module .timer class. Priority color classes already in CSS: Minor: #64b5f6 (soft blue) - CSS class .priorityMinor, Standard: #fff176 (light yellow) - CSS class .priorityStandard, Critical: #ff8c42 (orange/red) - CSS class .priorityCritical. Component structure is solid, needs timer ring enhancement.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-5-event-timer-management.md</path>
+        <title>Story 2.5: Event Timer Management</title>
+        <section>Implementation</section>
+        <snippet>EventManager.updateEvents() updates all event timers every frame. Timer updates are frame-rate independent (uses deltaTime). Expired events (timer <= 0) are automatically removed. Timer values are accurate and synchronized with game loop. EventManager.updateEvents(deltaTime: number) updates all event timers every frame.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/components/game/EventIndicator.tsx</path>
+        <kind>component</kind>
+        <symbol>EventIndicator, EventIndicators</symbol>
+        <lines>1-225</lines>
+        <reason>Main component to enhance. Already has basic timer text display (line 116: {Math.max(0, event.timer).toFixed(0)}s). Needs circular timer ring/pie visualization. Component receives event object with timer property. Timer value updates via React re-renders when event.timer changes. Priority color classes already exist from Story 2.7.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/EventIndicator.module.css</path>
+        <kind>stylesheet</kind>
+        <symbol>priorityMinor, priorityStandard, priorityCritical, timer, eventIndicator</symbol>
+        <lines>1-92</lines>
+        <reason>CSS module with priority classes already defined from Story 2.7. Has .timer class with basic styling. Needs timer ring styles, animations, and priority color integration. Timer ring should use CSS conic-gradient or SVG circle for circular visualization. Animation should be GPU-accelerated (use transform, not width/height).</reason>
+      </artifact>
+      <artifact>
+        <path>src/core/EventManager.ts</path>
+        <kind>class</kind>
+        <symbol>EventManager, updateEvents, resolveEvent, expireEvent</symbol>
+        <lines>1-431</lines>
+        <reason>Manages event lifecycle and timer updates. updateEvents(deltaTime: number) updates all event timers every frame. Timer updates are frame-rate independent (uses deltaTime). Expired events (timer <= 0) are automatically removed. Provides event data with timer property that EventIndicator reads from.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/events.ts</path>
+        <kind>type-definition</kind>
+        <symbol>GameEvent, EventType, EventPriority</symbol>
+        <lines>1-95</lines>
+        <reason>Type definitions for events. GameEvent interface includes timer property (number, seconds remaining). EventType union: 'phone' | 'kettle' | 'cat' | 'candle'. EventPriority union: 'minor' | 'standard' | 'critical'. Timer property is updated by EventManager.updateEvents().</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, GameProvider, activeEvents</symbol>
+        <lines>82-205</lines>
+        <reason>Provides activeEvents array to components. EventIndicator components read activeEvents from this context. When EventManager.updateEvents() updates timers, GameContext state updates trigger React re-renders. EventIndicators component receives updated events with new timer values.</reason>
+      </artifact>
+      <artifact>
+        <path>src/hooks/useGameLoop.ts</path>
+        <kind>hook</kind>
+        <symbol>useGameLoop</symbol>
+        <lines>1-100</lines>
+        <reason>Game loop hook that calls EventManager.updateEvents() every frame. Updates game state via GameContext. Triggers React re-renders when event timers change. Ensures timer synchronization with game loop (60 FPS).</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>constants</kind>
+        <symbol>EVENT_SCORING, EVENT_COZINESS_IMPACT, EVENT_INTERACTION_TEXT</symbol>
+        <lines>1-485</lines>
+        <reason>Game constants including event scoring, coziness impact, and interaction text. Priority values defined: 'minor', 'standard', 'critical'. Event timer durations based on level. Constants match PRD specifications.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/Apartment.tsx</path>
+        <kind>component</kind>
+        <symbol>Apartment</symbol>
+        <lines>1-104</lines>
+        <reason>Apartment container component. Event indicators are positioned relative to this container. Provides containerRef for position calculation. Dark background (#1a1f2e) requires good visibility for timer display.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem>node</ecosystem>
+      <packages>
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="typescript" version="~5.9.3" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <category>Architecture</category>
+      <description>EventIndicator component already exists at src/components/game/EventIndicator.tsx. Component receives GameEvent object with timer property (seconds remaining). Timer value is updated by EventManager.updateEvents() every frame in game loop. Timer display should read from event.timer property (already displayed as text in Story 2.7). Component uses CSS Modules for styling (EventIndicator.module.css). Follow architecture document "Event System Pattern" section.</description>
+    </constraint>
+    <constraint>
+      <category>Timer Data Flow</category>
+      <description>Timer data flow: 1. EventManager.updateEvents() called every frame in game loop, 2. EventManager updates event.timer property (decrements by deltaTime), 3. GameContext.activeEvents array updated (React re-renders), 4. EventIndicator component receives updated event with new timer value, 5. Timer display updates to show new time remaining, 6. Timer ring/pie animation reflects remaining time percentage.</description>
+    </constraint>
+    <constraint>
+      <category>Circular Timer Implementation</category>
+      <description>Use CSS conic-gradient or SVG circle for circular timer ring. Timer ring should show remaining time as filled portion (or shrinking ring). CSS approach: Use conic-gradient with angle based on remaining time percentage. SVG approach: Use circle with stroke-dasharray/stroke-dashoffset for countdown. Animation should be smooth (60 FPS) using CSS transitions or animations. Reference UX design for timer visual style.</description>
+    </constraint>
+    <constraint>
+      <category>Priority Color Integration</category>
+      <description>Timer ring color should match event priority color from Story 2.7: Minor: #64b5f6 (soft blue), Standard: #fff176 (light yellow), Critical: #ff8c42 (orange/red). Timer text color should be readable (white or light color with shadow). Priority colors already defined in CSS from Story 2.7.</description>
+    </constraint>
+    <constraint>
+      <category>Performance</category>
+      <description>Use CSS transforms for animations (GPU-accelerated). Avoid layout thrashing (use transform, not width/height changes). Timer calculations should be efficient (cache percentage if needed). Minimize re-renders (React.memo if needed, but timer updates are necessary). Reference architecture document "Performance Considerations" section.</description>
+    </constraint>
+    <constraint>
+      <category>Integration</category>
+      <description>EventIndicator integrates with GameContext (reads activeEvents). Timer reads from event.timer property (updated by EventManager). Timer display is part of EventIndicator component (enhancement of Story 2.7). Timer removal handled by GameContext state updates (same as Story 2.7). Timer synchronization already working, needs visual enhancement.</description>
+    </constraint>
+    <constraint>
+      <category>Visual</category>
+      <description>Timer ring should be visually integrated with existing icon and priority colors. Timer ring animation should be smooth and GPU-accelerated. Timer text already readable, may need minor enhancements for better visibility. Timer display should match UX design specifications for circular timer visualization.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>EventIndicator Component Props</name>
+      <kind>React Component Interface</kind>
+      <signature>interface EventIndicatorProps { event: GameEvent; containerRef?: React.RefObject&lt;HTMLElement&gt;; stackOffset?: number; }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+    <interface>
+      <name>GameEvent Interface</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface GameEvent { id: string; type: EventType; priority: EventPriority; location: { x: number; y: number }; timer: number; points: number; cozinessReward: number; cozinessPenalty: number; interactionText: { en: string; uk: string }; }</signature>
+      <path>src/types/events.ts</path>
+    </interface>
+    <interface>
+      <name>GameContext activeEvents</name>
+      <kind>React Context State</kind>
+      <signature>activeEvents: GameEvent[] (from GameContext)</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>EventManager updateEvents</name>
+      <kind>Class Method</kind>
+      <signature>updateEvents(deltaTime: number): void - Updates all event timers every frame</signature>
+      <path>src/core/EventManager.ts</path>
+    </interface>
+    <interface>
+      <name>EVENT_TYPE_ICONS Mapping</name>
+      <kind>Constant Object</kind>
+      <signature>const EVENT_TYPE_ICONS: Record&lt;GameEvent['type'], string&gt; = { phone: '📱', kettle: '☕', cat: '🐱', candle: '🕯️' }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+    <interface>
+      <name>PRIORITY_CLASSES Mapping</name>
+      <kind>Constant Object</kind>
+      <signature>const PRIORITY_CLASSES: Record&lt;GameEvent['priority'], string&gt; = { minor: styles.priorityMinor, standard: styles.priorityStandard, critical: styles.priorityCritical }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should focus on visual verification and integration testing. No formal test framework is currently set up, but manual testing should verify: Timer display for all 4 event types, Timer display for all 3 priority levels, Timer countdown accuracy during gameplay, Timer synchronization with EventManager, Timer removal on resolution/expiration, Timer animations at 60 FPS, Timer visibility against dark background, Timer with multiple simultaneous events. CSS animations should be tested for performance (GPU-accelerated transforms).
+    </standards>
+    <locations>
+      Manual testing in browser during development. Visual regression testing by comparing against UX design specifications. Performance testing using Chrome DevTools Performance tab. No automated test files exist yet - consider adding tests in src/components/game/EventIndicator.test.tsx if test framework is added.
+    </locations>
+    <ideas>
+      <test id="AC1">
+        <criterion>AC1: Circular timer display</criterion>
+        <idea>Test timer ring/pie displays correctly for all event types. Test timer ring shrinks or fills as time decreases. Test timer text shows seconds remaining (e.g., "5s", "3s"). Test timer updates every frame smoothly (no stuttering). Verify timer ring is visually integrated with event icon.</idea>
+      </test>
+      <test id="AC2">
+        <criterion>AC2: Timer visual integration and priority colors</criterion>
+        <idea>Test timer display is visually integrated with event icon. Test timer uses color consistent with event priority (minor: #64b5f6, standard: #fff176, critical: #ff8c42). Test timer provides clear visual feedback of urgency. Test timer animates smoothly as time decreases. Verify timer color matches priority color from Story 2.7.</idea>
+      </test>
+      <test id="AC3">
+        <criterion>AC3: Timer synchronization and removal</criterion>
+        <idea>Test timer counts down in real-time (synchronized with EventManager timers). Test timer updates every frame for smooth animation. Test timer disappears when event is resolved. Test timer disappears when event expires. Verify timer synchronization with EventManager.updateEvents() calls. Test timer accuracy during gameplay.</idea>
+      </test>
+      <test id="AC4">
+        <criterion>AC4: Timer styling and visual quality</criterion>
+        <idea>Test timer ring/pie uses CSS animations or SVG for smooth countdown. Test timer text is readable against dark background (#1a1f2e). Test timer visual matches UX design specifications. Test timer color matches event priority color scheme. Verify timer ring animation is GPU-accelerated (use transform, not width/height).</idea>
+      </test>
+      <test id="performance">
+        <criterion>Performance</criterion>
+        <idea>Test timer animations are GPU-accelerated (use transform, not top/left). Test timer ring animation runs smoothly at 60 FPS. Test no frame drops when multiple timers animate simultaneously. Test timer updates don't cause layout thrashing. Test timer calculations are efficient (cache percentage if needed).</idea>
+      </test>
+      <test id="integration">
+        <criterion>Integration</criterion>
+        <idea>Test EventIndicator integrates correctly with GameContext (reads activeEvents). Test timer reads from event.timer property (updated by EventManager). Test timer updates trigger React re-renders when event.timer changes. Test timer removal triggers React re-render and indicator unmounts. Test timer with multiple simultaneous events at same location (stacking).</idea>
+      </test>
+      <test id="visual">
+        <criterion>Visual Quality</criterion>
+        <idea>Test timer ring is visually integrated with existing icon and priority colors. Test timer text is readable with text shadow or background. Test timer ring animation is smooth (no stuttering). Test timer visibility against dark apartment background. Test timer with all 4 event types (phone, kettle, cat, candle). Test timer with all 3 priority levels (minor, standard, critical).</idea>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

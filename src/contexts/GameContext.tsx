@@ -21,6 +21,16 @@ import type { GameState } from '../types/game';
 import type { GameEvent } from '../types/events';
 
 /**
+ * Character position interface.
+ */
+export interface CharacterPosition {
+  /** X coordinate in pixels */
+  x: number;
+  /** Y coordinate in pixels */
+  y: number;
+}
+
+/**
  * Default initial game state (game not started).
  * 
  * Matches the default game state from architecture:
@@ -31,6 +41,8 @@ import type { GameEvent } from '../types/events';
  * - isPlaying: false (game not started)
  * - isPaused: false
  * - gameOver: false
+ * - achievementProgress: { minCoziness: 100, resolvedEventsCount: 0 } (reset for new evening)
+ * - characterPosition: null (character not positioned yet)
  */
 const DEFAULT_GAME_STATE: GameState = {
   coziness: 60,
@@ -40,6 +52,10 @@ const DEFAULT_GAME_STATE: GameState = {
   isPlaying: false,
   isPaused: false,
   gameOver: false,
+  achievementProgress: {
+    minCoziness: 100, // Start at 100, will track minimum during evening
+    resolvedEventsCount: 0, // Start at 0, will increment on event resolution
+  },
 };
 
 /**
@@ -58,6 +74,8 @@ const DEFAULT_GAME_STATE: GameState = {
  * @property setPaused - Set whether game is paused
  * @property setGameOver - Set whether game is over
  * @property updateGameState - Batch update multiple game state properties atomically
+ * @property characterPosition - Current character position (for event interaction)
+ * @property setCharacterPosition - Update character position
  */
 export interface GameStateContextValue {
   /** Current game state */
@@ -80,6 +98,10 @@ export interface GameStateContextValue {
   setGameOver: (gameOver: boolean) => void;
   /** Batch update multiple game state properties atomically */
   updateGameState: (updates: Partial<GameState>) => void;
+  /** Current character position (for event interaction) */
+  characterPosition: CharacterPosition | null;
+  /** Update character position */
+  setCharacterPosition: (position: CharacterPosition | null) => void;
 }
 
 /**
@@ -100,12 +122,25 @@ const GameContext = createContext<GameStateContextValue | null>(null);
  */
 export function GameProvider({ children }: { children: ReactNode }) {
   const [gameState, setGameState] = useState<GameState>(DEFAULT_GAME_STATE);
+  const [characterPosition, setCharacterPosition] = useState<CharacterPosition | null>(null);
 
   // Update functions using functional updates to avoid stale closures
   const setCoziness = useCallback((value: number) => {
     // Clamp coziness to valid range (0-100)
     const clamped = Math.max(0, Math.min(100, value));
-    setGameState((prev) => ({ ...prev, coziness: clamped }));
+    setGameState((prev) => {
+      // Track minimum coziness for achievement (Story 3.5)
+      // Update minimum if new coziness is lower than current minimum
+      const newMinCoziness = Math.min(prev.achievementProgress.minCoziness, clamped);
+      return {
+        ...prev,
+        coziness: clamped,
+        achievementProgress: {
+          ...prev.achievementProgress,
+          minCoziness: newMinCoziness,
+        },
+      };
+    });
   }, []);
 
   const setTimeRemaining = useCallback((value: number) => {
@@ -199,6 +234,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setPaused,
     setGameOver,
     updateGameState,
+    characterPosition,
+    setCharacterPosition,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

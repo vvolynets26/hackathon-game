@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>2</storyId>
+    <title>«Світлячки» Currency System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-2-світлячки-currency-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want to earn «Світлячки» currency based on my performance</iWant>
+    <soThat>So that I can purchase items in the shop</soThat>
+    <tasks>
+      <![CDATA[
+- [ ] Task 1: Add currency calculation method to ProgressionSystem (AC: 3)
+  - [ ] Add `calculateSvitlyachky(finalCoziness: number, survived: boolean): number` method to ProgressionSystem
+  - [ ] Implement base reward: 1 if survived (Затишок > 0)
+  - [ ] Implement performance bonus: +1 if final Затишок ≥ 50
+  - [ ] Implement performance bonus: +1 if final Затишок ≥ 80
+  - [ ] Verify maximum: 3 «Світлячки» per evening (perfect run)
+  - [ ] Reference SVITLYACHKY_REWARDS constant [Source: src/utils/constants.ts]
+  - [ ] Reference PRD FR15 for currency calculation formula [Source: docs/prd.md#Progression-&-Economy]
+
+- [ ] Task 2: Add unit tests for currency calculation (AC: 3)
+  - [ ] Test base reward: survived with Затишок > 0 = 1 «Світлячок»
+  - [ ] Test performance bonus: final Затишок ≥ 50 = +1 bonus
+  - [ ] Test performance bonus: final Затишок ≥ 80 = +1 bonus
+  - [ ] Test maximum: perfect run (Затишок ≥ 80) = 3 «Світлячки»
+  - [ ] Test edge cases: Затишок = 0 (didn't survive) = 0 «Світлячки»
+  - [ ] Test edge cases: Затишок = 49 (survived but no bonuses) = 1 «Світлячок»
+  - [ ] Test edge cases: Затишок = 50 (exact threshold) = 2 «Світлячки»
+  - [ ] Test edge cases: Затишок = 79 (just below bonus) = 2 «Світлячки»
+  - [ ] Test edge cases: Затишок = 80 (exact threshold) = 3 «Світлячки»
+  - [ ] Test edge cases: Затишок = 100 (maximum) = 3 «Світлячки»
+
+- [ ] Task 3: Integrate currency calculation into game end flow (AC: 1, 2)
+  - [ ] Add currency calculation when evening ends (win or lose)
+  - [ ] Get final coziness from GameContext
+  - [ ] Determine if player survived (Затишок > 0 at end)
+  - [ ] Calculate currency using ProgressionSystem.calculateSvitlyachky()
+  - [ ] Add currency to progression state using ProgressionContext.addSvitlyachky()
+  - [ ] Reference GameContext for final coziness [Source: src/contexts/GameContext.tsx]
+  - [ ] Reference ProgressionContext for currency updates [Source: src/contexts/ProgressionContext.tsx]
+  - [ ] Reference game end logic [Source: src/hooks/useGameLoop.ts]
+
+- [ ] Task 4: Verify localStorage persistence for currency (AC: 2)
+  - [ ] Verify localStorage utilities exist (Story 1.4)
+  - [ ] Ensure currency is saved to localStorage after evening ends
+  - [ ] Ensure currency is loaded from localStorage on game start
+  - [ ] Test persistence across browser sessions
+  - [ ] Reference localStorage utilities [Source: src/utils/localStorage.ts]
+  - [ ] Reference ProgressionContext for state management [Source: src/contexts/ProgressionContext.tsx]
+
+- [ ] Task 5: Prepare for HUD display integration (AC: 2)
+  - [ ] Verify currency accessible from ProgressionContext
+  - [ ] Prepare data structure for HUD display (Story 4.2)
+  - [ ] Ensure currency count updates in real-time
+  - [ ] Reference ProgressionContext for currency access [Source: src/contexts/ProgressionContext.tsx]
+  - [ ] Reference Story 4.2 for HUD requirements [Source: docs/epics.md#Story-4.2]
+
+- [ ] Task 6: Prepare for results screen integration (AC: 2)
+  - [ ] Ensure currency earned this evening is accessible for results screen
+  - [ ] Prepare data structure for results screen display (Story 4.3)
+  - [ ] Format currency display: "+2 ✨" format
+  - [ ] Reference Story 4.3 for results screen requirements [Source: docs/epics.md#Story-4.3]
+
+- [ ] Task 7: Prepare for shop integration (AC: 2)
+  - [ ] Ensure currency count is accessible for shop screen
+  - [ ] Prepare integration point for shop purchases (Story 3.4)
+  - [ ] Reference Story 3.4 for shop requirements [Source: docs/epics.md#Story-3.4]
+
+- [ ] Task 8: Testing and validation (AC: 1, 2, 3)
+  - [ ] Test currency calculation: survived with Затишок = 30 = 1 «Світлячок»
+  - [ ] Test currency calculation: survived with Затишок = 50 = 2 «Світлячки»
+  - [ ] Test currency calculation: survived with Затишок = 80 = 3 «Світлячки»
+  - [ ] Test currency calculation: didn't survive (Затишок = 0) = 0 «Світлячки»
+  - [ ] Test currency accumulation across multiple evenings
+  - [ ] Test localStorage persistence
+  - [ ] Test edge cases: exact thresholds (50, 80)
+  - [ ] Test edge cases: maximum values (100)
+      ]]>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <![CDATA[
+1. **Given** I complete an evening
+   **When** the evening ends
+   **Then** «Світлячки» are calculated and added:
+   - Base reward: 1 «Світлячок» if «Затишок» > 0 at end (survived)
+   - Performance bonus: +1 if final «Затишок» ≥ 50
+   - Performance bonus: +1 if final «Затишок» ≥ 80
+   - Maximum: 3 «Світлячки» per evening (perfect run)
+
+2. **Given** I earn «Світлячки» currency
+   **When** currency is calculated and added
+   **Then** «Світлячки» are:
+   - Added to total currency
+   - Displayed in HUD (Story 4.2): ✨ icon + "x 5" format
+   - Displayed in results screen (Story 4.3): "+2 ✨" format
+   - Saved to localStorage (Story 1.4)
+   - Loaded on game start
+
+3. **Given** ProgressionSystem class exists
+   **When** I use currency calculation functions
+   **Then** ProgressionSystem provides:
+   - `calculateSvitlyachky(finalCoziness: number, survived: boolean): number` - calculates currency earned
+   - Currency calculation matches PRD FR15 exactly
+    ]]>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progression &amp; Economy - «Світлячки» (In-Game Currency)</section>
+        <snippet>«Світлячки» currency system: Base reward: 1 «Світлячок» for surviving (Затишок > 0 at end). Performance bonus: +1 if final Затишок ≥ 50. Performance bonus: +1 if final Затишок ≥ 80. Maximum: 3 «Світлячки» per evening (perfect run). Players earn «Світлячки» at the end of each evening based on performance (FR15).</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Epic 3: Progression System - Story 3.2: «Світлячки» Currency System</section>
+        <snippet>Story 3.2 implements currency calculation based on final coziness and survival status. ProgressionSystem provides calculateSvitlyachky method. Currency is added to progression state at game end. Currency displayed in HUD (Story 4.2) and results screen (Story 4.3). Currency persists via localStorage.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Project Structure - Progression System</section>
+        <snippet>ProgressionSystem class at `src/core/ProgressionSystem.ts` provides pure functions for currency calculations (no React dependencies). ProgressionSystem uses constants from `src/utils/constants.ts` for currency rewards. ProgressionSystem integrates with ProgressionContext for state updates.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/3-1-xp-and-level-system.md</path>
+        <title>Story 3.1: XP and Level System</title>
+        <section>Story and Acceptance Criteria</section>
+        <snippet>ProgressionSystem class exists with XP/level methods. Game end logic established in useGameLoop.ts. Final game state stored in GameContext. Final coziness ready for currency calculation. XP calculation already integrated at game end (can follow same pattern). Integration point for currency calculation at game end.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-11-evening-timer-and-win-lose-conditions.md</path>
+        <title>Story 2.11: Evening Timer and Win/Lose Conditions</title>
+        <section>Story and Acceptance Criteria</section>
+        <snippet>Game end logic established. Win condition: timer reaches 0 AND Затишок > 0. Lose condition: Затишок reaches 0 before timer ends. Final coziness available from GameContext at game end. Player survived if coziness > 0 at end (even if timer reached 0). Ready for currency calculation based on final coziness.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-4-local-storage-utilities.md</path>
+        <title>Story 1.4: localStorage Utilities</title>
+        <section>Story and Acceptance Criteria</section>
+        <snippet>localStorage utilities exist: `saveGameState(state: ProgressionState): void` and `loadGameState(): ProgressionState | null`. localStorage key: `'hackathon-game:progression'`. Error handling for quota limits and corrupted data. Ready for currency persistence (already included in ProgressionState).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/core/ProgressionSystem.ts</path>
+        <kind>class</kind>
+        <symbol>ProgressionSystem</symbol>
+        <lines>1-205</lines>
+        <reason>ProgressionSystem class exists with XP/level methods. Need to add calculateSvitlyachky method for currency calculation. Class provides pure functions (no React dependencies), uses constants from constants.ts. Ready for currency method addition.</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/ProgressionContext.tsx</path>
+        <kind>context</kind>
+        <symbol>ProgressionContext, ProgressionProvider, useProgression, addSvitlyachky</symbol>
+        <lines>1-260</lines>
+        <reason>ProgressionContext manages progression state including svitlyachky property. Already has addSvitlyachky function (line 158-170). ProgressionContext handles localStorage persistence automatically. Currency can be added using addSvitlyachky function. Ready for currency integration.</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, GameProvider, useGame, gameState.coziness</symbol>
+        <lines>1-247</lines>
+        <reason>GameContext manages game state including final coziness (GameState.coziness). Provides access to gameState and update functions. Final coziness available at game end for currency calculation. Player survived if coziness > 0 at end.</reason>
+      </artifact>
+      <artifact>
+        <path>src/hooks/useGameLoop.ts</path>
+        <kind>hook</kind>
+        <symbol>useGameLoop, game end logic</symbol>
+        <lines>1-416</lines>
+        <reason>Game loop hook manages game state updates. Game end logic at lines 134-164 (win condition) and 175-193 (lose condition). Integration point for currency calculation when evening ends. Final coziness available from GameContext at game end. XP calculation already integrated at game end (can follow same pattern).</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>constants</kind>
+        <symbol>SVITLYACHKY_REWARDS, MAX_SVITLYACHKY_PER_EVENING</symbol>
+        <lines>307-321</lines>
+        <reason>SVITLYACHKY_REWARDS constant defines currency rewards: base (1), bonus_50 (1), bonus_80 (1). MAX_SVITLYACHKY_PER_EVENING = 3. Used by ProgressionSystem for currency calculation. Matches PRD FR15 specifications exactly.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/localStorage.ts</path>
+        <kind>utilities</kind>
+        <symbol>saveGameState, loadGameState</symbol>
+        <lines>121-198</lines>
+        <reason>localStorage utilities for progression persistence. saveGameState(state: ProgressionState): void saves to 'hackathon-game:progression'. loadGameState(): ProgressionState | null loads and validates data. Handles quota limits and corrupted data. Currency already included in ProgressionState (svitlyachky property).</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/progression.ts</path>
+        <kind>type</kind>
+        <symbol>ProgressionState, svitlyachky</symbol>
+        <lines>72-85</lines>
+        <reason>ProgressionState interface includes svitlyachky property (number) for currency storage. Currency stored in ProgressionState.svitlyachky. ProgressionState managed by ProgressionContext. Currency persists across browser sessions via localStorage.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/game.ts</path>
+        <kind>type</kind>
+        <symbol>GameState, coziness</symbol>
+        <lines>39-54</lines>
+        <reason>GameState interface includes coziness property (number, 0-100) which stores final coziness for currency calculation. Final coziness available from GameContext.gameState.coziness at game end. Player survived if coziness > 0 at end.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0"/>
+        <package name="react-dom" version="^19.2.0"/>
+        <package name="typescript" version="~5.9.3"/>
+        <package name="vite" version="^5.4.11"/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <![CDATA[
+**Progression System Architecture:**
+- ProgressionSystem class at `src/core/ProgressionSystem.ts` (exists from Story 3.1) [Source: docs/architecture.md#Project-Structure]
+- ProgressionSystem provides pure functions for currency calculations (no React dependencies)
+- ProgressionSystem uses constants from `src/utils/constants.ts` for currency rewards
+- ProgressionSystem integrates with ProgressionContext for state updates
+
+**Currency Calculation:**
+- Base reward: 1 «Світлячок» if survived (Затишок > 0 at end) [Source: docs/prd.md#Progression-&-Economy]
+- Performance bonus: +1 if final Затишок ≥ 50
+- Performance bonus: +1 if final Затишок ≥ 80
+- Maximum: 3 «Світлячки» per evening (perfect run)
+- Currency is calculated at end of evening (win or lose)
+- Final coziness comes from GameContext.gameState.coziness
+- Currency is added to total currency (cumulative across sessions)
+
+**State Management:**
+- Currency stored in ProgressionState.svitlyachky [Source: src/types/progression.ts]
+- ProgressionState managed by ProgressionContext [Source: src/contexts/ProgressionContext.tsx]
+- ProgressionContext provides `addSvitlyachky(amount: number)` function
+- ProgressionContext already has addSvitlyachky function (needs integration with game end)
+
+**localStorage Persistence:**
+- localStorage utilities exist in `src/utils/localStorage.ts` (Story 1.4) [Source: docs/architecture.md#Persistence]
+- Progression state saved with key `'hackathon-game:progression'`
+- Progression state loaded on game start
+- Currency persists across browser sessions
+
+**Game End Integration:**
+- Game end logic in `src/hooks/useGameLoop.ts` [Source: docs/architecture.md#Game-Loop]
+- Game end triggers when timer reaches 0 (win) or coziness reaches 0 (lose)
+- Final coziness available from GameContext at game end
+- Currency calculation should happen at game end, before results screen
+- Player survived if coziness > 0 at end (even if timer reached 0)
+
+**HUD Display Integration:**
+- HUD will display currency count (Story 4.2) [Source: docs/epics.md#Story-4.2]
+- Currency displayed as ✨ icon + "x 5" format
+- Currency updates in real-time when earned
+- HUD reads from ProgressionContext
+
+**Results Screen Integration:**
+- Results screen will display currency earned this evening (Story 4.3) [Source: docs/epics.md#Story-4.3]
+- Results screen shows "+2 ✨" format
+- Results screen reads from ProgressionContext and game end state
+
+**Shop Integration:**
+- Shop will use currency for purchases (Story 3.4) [Source: docs/epics.md#Story-3.4]
+- Shop reads currency count from ProgressionContext
+- Shop deducts currency when items are purchased
+
+**Project Structure Notes:**
+- ProgressionSystem at `src/core/ProgressionSystem.ts` (exists, needs currency method)
+- ProgressionContext at `src/contexts/ProgressionContext.tsx` (exists, has addSvitlyachky function)
+- Constants at `src/utils/constants.ts` (exists, has SVITLYACHKY_REWARDS)
+- localStorage utilities at `src/utils/localStorage.ts` (exists from Story 1.4)
+- GameContext at `src/contexts/GameContext.tsx` (exists, provides final coziness)
+- Game loop at `src/hooks/useGameLoop.ts` (exists, handles game end)
+
+**No Conflicts Detected:**
+- ProgressionContext already has addSvitlyachky function (needs integration with game end)
+- localStorage utilities already exist (Story 1.4)
+- GameContext already provides final coziness
+- Constants already have SVITLYACHKY_REWARDS defined
+- ProgressionSystem exists from Story 3.1 (needs currency method)
+    ]]>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ProgressionSystem</name>
+      <kind>class</kind>
+      <signature>class ProgressionSystem {
+  calculateXP(score: number): number
+  checkLevelUp(currentXP: number, currentLevel: number): { leveledUp: boolean, newLevel: number }
+  getXPForNextLevel(level: number): number
+  getXPProgress(currentXP: number, level: number): number
+  calculateSvitlyachky(finalCoziness: number, survived: boolean): number  // NEW METHOD
+}</signature>
+      <path>src/core/ProgressionSystem.ts</path>
+    </interface>
+    <interface>
+      <name>ProgressionContext API</name>
+      <kind>React Context</kind>
+      <signature>interface ProgressionStateContextValue {
+  progressionState: ProgressionState  // includes svitlyachky: number
+  addXP(amount: number): void
+  levelUp(): void
+  addSvitlyachky(amount: number): void  // EXISTS - needs integration with game end
+  purchaseItem(itemId: string): void
+  equipItem(slot: 'characterSkin' | 'cat' | 'candle', itemId: string): void
+  unequipItem(slot: 'characterSkin' | 'cat' | 'candle'): void
+  unlockAchievement(achievementId: string): void
+}</signature>
+      <path>src/contexts/ProgressionContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameContext API</name>
+      <kind>React Context</kind>
+      <signature>interface GameStateContextValue {
+  gameState: GameState  // includes coziness: number (0-100)
+  // ... other properties
+  // gameState.coziness provides final coziness for currency calculation
+}</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>localStorage API</name>
+      <kind>utility functions</kind>
+      <signature>function saveGameState(state: ProgressionState): void
+function loadGameState(): ProgressionState | null
+// ProgressionState includes svitlyachky property for currency persistence</signature>
+      <path>src/utils/localStorage.ts</path>
+    </interface>
+    <interface>
+      <name>Constants API</name>
+      <kind>constants</kind>
+      <signature>const SVITLYACHKY_REWARDS = {
+  base: 1,      // For surviving (Затишок > 0 at end)
+  bonus_50: 1,  // If final Затишок ≥ 50
+  bonus_80: 1,  // If final Затишок ≥ 80
+}
+const MAX_SVITLYACHKY_PER_EVENING = 3</signature>
+      <path>src/utils/constants.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      <![CDATA[
+Testing should use Vitest (Vite-native testing framework). Tests should be co-located with source files (e.g., `ProgressionSystem.test.ts` next to `ProgressionSystem.ts`). Test files use `*.test.ts` or `*.spec.ts` naming convention. Tests should cover unit tests for ProgressionSystem.calculateSvitlyachky method, integration tests for currency calculation flow at game end, and edge cases (exact thresholds 50 and 80, survival status, maximum values).
+      ]]>
+    </standards>
+    <locations>
+      <![CDATA[
+- `src/core/ProgressionSystem.test.ts` - Unit tests for ProgressionSystem.calculateSvitlyachky method
+- `src/hooks/useGameLoop.test.ts` - Integration tests for game end currency calculation
+- `src/contexts/ProgressionContext.test.tsx` - Tests for ProgressionContext currency integration
+      ]]>
+    </locations>
+    <ideas>
+      <![CDATA[
+**AC1 - Currency Calculation at Game End:**
+- Test base reward: survived with Затишок = 30 = 1 «Світлячок»
+- Test base reward: survived with Затишок = 49 = 1 «Світлячок»
+- Test performance bonus: survived with Затишок = 50 = 2 «Світлячки» (exact threshold)
+- Test performance bonus: survived with Затишок = 79 = 2 «Світлячки» (just below bonus_80)
+- Test performance bonus: survived with Затишок = 80 = 3 «Світлячки» (exact threshold)
+- Test maximum: survived with Затишок = 100 = 3 «Світлячки» (perfect run)
+- Test didn't survive: Затишок = 0 = 0 «Світлячки»
+
+**AC2 - Currency Persistence and Display:**
+- Test currency added to total currency (cumulative)
+- Test currency saved to localStorage after evening ends
+- Test currency loaded from localStorage on game start
+- Test currency accumulation across multiple evenings
+- Test localStorage persistence across browser sessions
+
+**AC3 - ProgressionSystem Method:**
+- Test calculateSvitlyachky: survived with Затишок = 30 returns 1
+- Test calculateSvitlyachky: survived with Затишок = 50 returns 2
+- Test calculateSvitlyachky: survived with Затишок = 80 returns 3
+- Test calculateSvitlyachky: didn't survive (Затишок = 0) returns 0
+- Test calculateSvitlyachky: edge case Затишок = 49 returns 1
+- Test calculateSvitlyachky: edge case Затишок = 79 returns 2
+- Test calculateSvitlyachky: edge case Затишок = 100 returns 3
+- Test calculateSvitlyachky: negative coziness (should handle gracefully)
+- Test calculateSvitlyachky: coziness > 100 (should handle gracefully)
+      ]]>
+    </ideas>
+  </tests>
+</story-context>
+

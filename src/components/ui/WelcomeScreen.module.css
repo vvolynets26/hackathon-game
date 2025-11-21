@@ -1,0 +1,395 @@
+/**
+ * Welcome Screen Component Styles
+ * 
+ * Styles for the welcome screen with "Cozy Blackout" theme.
+ * Dark background with warm light accents.
+ */
+
+/* ============================================================================
+   Welcome Screen Container
+   ============================================================================ */
+
+.welcomeScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    #1e2740 0%,    /* Deep Blue - shadows, depth */
+    #1a1f2e 50%,   /* Dark Night - main background */
+    #2d3442 100%   /* Dark Grey - furniture, objects */
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+/* ============================================================================
+   Content Container
+   ============================================================================ */
+
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  max-width: 600px;
+  padding: 2rem;
+  animation: fadeIn 0.6s ease-in;
+}
+
+/* ============================================================================
+   Title
+   ============================================================================ */
+
+.titleWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.title {
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 
+    0 0 14px rgba(255, 238, 170, 0.75),
+    0 4px 8px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.05em;
+  animation: titleGlow 3.5s ease-in-out infinite;
+  line-height: 1.2;
+}
+
+/* ============================================================================
+   Title Fireflies
+   ============================================================================ */
+
+.titleFirefly {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: radial-gradient(circle, #ffe9a3 0%, #ffbd4b 45%, transparent 70%);
+  filter: blur(0.5px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* First firefly */
+.firefly1 {
+  left: 15%;
+  top: 40%; /* near letters */
+  animation: fireflyDrop 4s ease-in-out infinite;
+}
+
+/* Second firefly (slightly offset & delayed) */
+.firefly2 {
+  right: 10%;
+  top: 10%; /* a bit higher */
+  animation: fireflyDrop 5s ease-in-out infinite 1.5s;
+}
+
+/* ============================================================================
+   Body / Instructions
+   ============================================================================ */
+
+.body {
+  background: rgba(26, 31, 46, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.instructionText {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.instructionList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.instructionList li {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.instructionList li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: rgba(255, 215, 0, 0.8);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* ============================================================================
+   Controls
+   ============================================================================ */
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: rgba(26, 31, 46, 0.5);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  border: 1px solid rgba(255, 140, 66, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.controlItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.controlLabel {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.controlKeys {
+  font-size: 0.95rem;
+  color: #ffeb3b;
+  background: rgba(255, 235, 59, 0.15);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  border: 1px solid rgba(255, 235, 59, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 235, 59, 0.2);
+  letter-spacing: 0.05em;
+}
+
+.controlSeparator {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+/* ============================================================================
+   Start Button
+   ============================================================================ */
+
+.startButton {
+  padding: 1.25rem 4rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #ff8c42 0%,    /* Warm Orange */
+    #ff6b35 50%,   /* Bright Orange */
+    #ff8c42 100%   /* Warm Orange */
+  );
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 16px rgba(255, 140, 66, 0.4),
+    0 0 24px rgba(255, 215, 0, 0.3);
+  transition: all 0.3s ease;
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+  min-width: 200px;
+}
+
+.startButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.startButton:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 6px 20px rgba(255, 140, 66, 0.6),
+    0 0 32px rgba(255, 215, 0, 0.5);
+}
+
+.startButton:hover::before {
+  left: 100%;
+}
+
+.startButton:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================================
+   Decorative Lights
+   ============================================================================ */
+
+.decorativeLights {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.light1,
+.light2,
+.light3 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.3) 0%,
+    rgba(244, 164, 96, 0.2) 30%,
+    rgba(255, 140, 66, 0.15) 60%,
+    transparent 100%
+  );
+  filter: blur(30px);
+  animation: flicker 4s ease-in-out infinite;
+}
+
+.light1 {
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.light2 {
+  top: 60%;
+  right: 20%;
+  animation-delay: 1.3s;
+}
+
+.light3 {
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 2.6s;
+}
+
+/* ============================================================================
+   Animations
+   ============================================================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes titleGlow {
+  0%, 100% {
+    text-shadow:
+      0 0 12px rgba(255, 238, 170, 0.7),
+      0 0 28px rgba(255, 200, 120, 0.3),
+      0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    text-shadow:
+      0 0 18px rgba(255, 246, 200, 1),
+      0 0 38px rgba(255, 210, 120, 0.7),
+      0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes fireflyDrop {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(24px) translateX(6px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(48px) translateX(-4px);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(56px) translateX(-6px);
+    opacity: 0;
+  }
+}
+
+@keyframes flicker {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  75% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+}
+
+/* ============================================================================
+   Performance Optimizations
+   ============================================================================ */
+
+.welcomeScreen,
+.content,
+.title,
+.titleFirefly,
+.startButton,
+.light1,
+.light2,
+.light3 {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+

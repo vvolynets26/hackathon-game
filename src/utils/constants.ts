@@ -24,7 +24,7 @@
  * ```
  */
 
-import type { EventPriority } from '../types/events';
+import type { EventPriority, EventType } from '../types/events';
 
 // ============================================================================
 // Timing Constants
@@ -207,6 +207,48 @@ export const EVENT_COZINESS_IMPACT: Readonly<
   },
 } as const;
 
+/**
+ * Interaction text for each event type.
+ * 
+ * Defines the interaction requirement text for each event type in both English and Ukrainian.
+ * Used for UI display to show players what action they need to take.
+ * 
+ * PRD specifies:
+ * - phone: "plug into power bank" / "Підключити до павербанку"
+ * - kettle: "turn off" / "Вимкнути"
+ * - cat: "calm it" / "Заспокоїти"
+ * - candle: "light it" / "Запалити"
+ * 
+ * @see docs/prd.md#Event-Types-&-Scoring - FR25: Interaction Requirements
+ */
+export interface EventInteractionText {
+  /** English interaction text */
+  en: string;
+  /** Ukrainian interaction text */
+  uk: string;
+}
+
+export const EVENT_INTERACTION_TEXT: Readonly<
+  Record<EventType, EventInteractionText>
+> = {
+  phone: {
+    en: 'plug into power bank',
+    uk: 'Підключити до павербанку',
+  },
+  kettle: {
+    en: 'turn off',
+    uk: 'Вимкнути',
+  },
+  cat: {
+    en: 'calm it',
+    uk: 'Заспокоїти',
+  },
+  candle: {
+    en: 'light it',
+    uk: 'Запалити',
+  },
+} as const;
+
 // ============================================================================
 // Progression Constants
 // ============================================================================
@@ -336,4 +378,575 @@ export const SHOP_ITEMS: ReadonlyArray<ShopItem> = [
     effect: 'дає +5% до швидкості руху',
   },
 ] as const;
+
+/**
+ * Get all purchased buff items from purchased items array.
+ * 
+ * Filters purchasedItems to return only items that are gameplay buffs (type: 'buff').
+ * 
+ * @param purchasedItems - Array of purchased item IDs
+ * @returns Array of ShopItem objects that are buffs
+ * 
+ * @example
+ * ```typescript
+ * const buffs = getPurchasedBuffs(['buff-speed', 'skin-cozy-sweater']); // Returns [buff-speed item]
+ * ```
+ */
+export function getPurchasedBuffs(purchasedItems: string[]): ShopItem[] {
+  return SHOP_ITEMS.filter((item) => item.type === 'buff' && purchasedItems.includes(item.id));
+}
+
+/**
+ * Get buff effect for a specific item ID.
+ * 
+ * Returns the buff effect type and value for a gameplay buff item.
+ * Currently supports:
+ * - 'buff-speed': +5% movement speed
+ * 
+ * @param itemId - Shop item ID
+ * @returns Buff effect object with type and value, or null if item is not a buff or not found
+ * 
+ * @example
+ * ```typescript
+ * const effect = getBuffEffect('buff-speed'); // Returns { type: 'speed', value: 5 }
+ * ```
+ */
+export function getBuffEffect(itemId: string): { type: string; value: number } | null {
+  const item = SHOP_ITEMS.find((shopItem) => shopItem.id === itemId);
+  
+  if (!item || item.type !== 'buff') {
+    return null;
+  }
+  
+  // Map item IDs to buff effects
+  // Currently only supports speed buff
+  if (itemId === 'buff-speed') {
+    return { type: 'speed', value: 5 }; // +5% movement speed
+  }
+  
+  // Future buffs can be added here
+  // if (itemId === 'buff-coziness') {
+  //   return { type: 'startingCoziness', value: 5 }; // +5 starting coziness
+  // }
+  
+  return null;
+}
+
+/**
+ * Check if an item has been purchased.
+ * 
+ * @param itemId - Shop item ID
+ * @param purchasedItems - Array of purchased item IDs
+ * @returns True if item is purchased, false otherwise
+ * 
+ * @example
+ * ```typescript
+ * const isPurchased = isItemPurchased('buff-speed', ['buff-speed', 'skin-cozy-sweater']); // Returns true
+ * ```
+ */
+export function isItemPurchased(itemId: string, purchasedItems: string[]): boolean {
+  return purchasedItems.includes(itemId);
+}
+
+/**
+ * Check if an item is currently equipped.
+ * 
+ * @param itemId - Shop item ID
+ * @param equippedItems - EquippedItems object with equipped cosmetic slots
+ * @returns True if item is equipped in any slot, false otherwise
+ * 
+ * @example
+ * ```typescript
+ * const isEquipped = isItemEquipped('skin-cozy-sweater', { characterSkin: 'skin-cozy-sweater' }); // Returns true
+ * ```
+ */
+export function isItemEquipped(itemId: string, equippedItems: { characterSkin?: string; cat?: string; candle?: string }): boolean {
+  return equippedItems.characterSkin === itemId || 
+         equippedItems.cat === itemId || 
+         equippedItems.candle === itemId;
+}
+
+/**
+ * Get the current state of a shop item.
+ * 
+ * Returns 'locked' if not purchased, 'purchased' if purchased but not equipped,
+ * or 'equipped' if currently equipped.
+ * 
+ * @param itemId - Shop item ID
+ * @param progressionState - ProgressionState object with purchasedItems and equippedItems
+ * @returns Item state: 'locked' | 'purchased' | 'equipped'
+ * 
+ * @example
+ * ```typescript
+ * const state = getItemState('skin-cozy-sweater', progressionState); // Returns 'purchased' or 'equipped'
+ * ```
+ */
+export function getItemState(
+  itemId: string,
+  progressionState: { purchasedItems: string[]; equippedItems: { characterSkin?: string; cat?: string; candle?: string } }
+): 'locked' | 'purchased' | 'equipped' {
+  if (isItemEquipped(itemId, progressionState.equippedItems)) {
+    return 'equipped';
+  }
+  if (isItemPurchased(itemId, progressionState.purchasedItems)) {
+    return 'purchased';
+  }
+  return 'locked';
+}
+
+/**
+ * Check if player can afford an item.
+ * 
+ * @param itemId - Shop item ID
+ * @param svitlyachky - Current currency amount
+ * @returns True if player has enough currency, false otherwise
+ * 
+ * @example
+ * ```typescript
+ * const canAfford = canAffordItem('buff-speed', 5); // Returns true (item costs 5)
+ * ```
+ */
+export function canAffordItem(itemId: string, svitlyachky: number): boolean {
+  const item = SHOP_ITEMS.find((shopItem) => shopItem.id === itemId);
+  if (!item) {
+    return false;
+  }
+  return svitlyachky >= item.price;
+}
+
+// ============================================================================
+// Achievement Constants
+// ============================================================================
+
+/**
+ * Achievement condition type.
+ * 
+ * Defines the type of condition required to unlock an achievement.
+ * - 'coziness': Coziness stayed above threshold all evening
+ * - 'events': Resolved a certain number of events in one evening
+ * - 'level': Reached a specific level
+ */
+export type AchievementConditionType = 'coziness' | 'events' | 'level';
+
+/**
+ * Achievement definition.
+ * 
+ * Represents a single achievement that can be unlocked by meeting specific conditions.
+ * 
+ * @property id - Unique achievement ID (e.g., 'achievement-coziness-50')
+ * @property name - Achievement name in Ukrainian
+ * @property description - Achievement description in Ukrainian
+ * @property conditionType - Type of condition required to unlock
+ * @property conditionValue - Value required for condition (e.g., 50 for coziness ≥ 50%, 10 for 10 events, 3 for level 3)
+ */
+export interface Achievement {
+  /** Unique achievement ID */
+  id: string;
+  /** Achievement name in Ukrainian */
+  name: string;
+  /** Achievement description in Ukrainian */
+  description: string;
+  /** Type of condition required to unlock */
+  conditionType: AchievementConditionType;
+  /** Value required for condition */
+  conditionValue: number;
+}
+
+/**
+ * Achievement definitions.
+ * 
+ * Contains all available achievements in the game.
+ * Each achievement has a unique ID, name, description, and condition.
+ * 
+ * Achievements:
+ * - `achievement-coziness-50`: Evening with «Затишок» never below 50%
+ * - `achievement-events-10`: Resolved 10 events in one evening
+ * - `achievement-level-3`: Reach level 3
+ * 
+ * @see docs/sprint-artifacts/3-5-achievement-system.md - Achievement system story
+ * @see docs/epics.md#Story-3.5 - Achievement system epic
+ */
+export const ACHIEVEMENTS: ReadonlyArray<Achievement> = [
+  {
+    id: 'achievement-coziness-50',
+    name: 'Затишна вечірка',
+    description: 'Провести вечір з «Затишок» не нижче 50%',
+    conditionType: 'coziness',
+    conditionValue: 50,
+  },
+  {
+    id: 'achievement-events-10',
+    name: 'Майстер подій',
+    description: 'Вирішити 10 подій за один вечір',
+    conditionType: 'events',
+    conditionValue: 10,
+  },
+  {
+    id: 'achievement-level-3',
+    name: 'Досвідчений гравець',
+    description: 'Досягти 3 рівня',
+    conditionType: 'level',
+    conditionValue: 3,
+  },
+] as const;
+
+/**
+ * Get achievement by ID.
+ * 
+ * @param achievementId - Achievement ID
+ * @returns Achievement object, or undefined if not found
+ * 
+ * @example
+ * ```typescript
+ * const achievement = getAchievement('achievement-coziness-50');
+ * ```
+ */
+export function getAchievement(achievementId: string): Achievement | undefined {
+  return ACHIEVEMENTS.find((achievement) => achievement.id === achievementId);
+}
+
+// ============================================================================
+// Character Movement Constants
+// ============================================================================
+
+/**
+ * Base character movement speed in pixels per second.
+ * 
+ * Represents the default movement speed for the character.
+ * This value is modified by level bonuses (Story 3.3).
+ * 
+ * Using 150 pixels per second as a reasonable default for smooth movement.
+ * This can be adjusted for balancing.
+ * 
+ * @see docs/epics.md#Story-2.3 - Character Movement System
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonuses modify this
+ */
+export const CHARACTER_MOVEMENT_SPEED = 150 as const;
+
+// ============================================================================
+// Level Bonus Constants
+// ============================================================================
+
+/**
+ * Movement speed bonus per level (percentage).
+ * 
+ * PRD specifies faster movement speed as a passive bonus when leveling up.
+ * Each level beyond level 1 increases movement speed by this percentage.
+ * Example: Level 2 = +5%, Level 3 = +10%, Level 4 = +15%
+ * 
+ * @see docs/prd.md#Progression-&-Economy - Level-Up Bonuses (FR13)
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonus system
+ */
+export const LEVEL_BONUS_MOVEMENT_SPEED_PERCENT = 5 as const;
+
+/**
+ * Event spawn interval reduction per level (percentage).
+ * 
+ * PRD specifies longer device battery life (events spawn less frequently) as a passive bonus.
+ * Each level beyond level 1 increases the spawn interval by this percentage.
+ * Longer interval = less frequent events = easier gameplay.
+ * Example: Level 2 = +10% longer interval, Level 3 = +20% longer interval
+ * 
+ * @see docs/prd.md#Progression-&-Economy - Level-Up Bonuses (FR13)
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonus system
+ */
+export const LEVEL_BONUS_EVENT_SPAWN_REDUCTION_PERCENT = 10 as const;
+
+/**
+ * Starting coziness bonus per level (absolute value).
+ * 
+ * PRD specifies higher starting «Затишок» as a passive bonus when leveling up.
+ * Each level beyond level 1 adds this value to the starting coziness.
+ * Example: Level 1 = 60, Level 2 = 65, Level 3 = 70, Level 4 = 75
+ * 
+ * Note: Starting coziness is clamped to 0-100 range.
+ * 
+ * @see docs/prd.md#Progression-&-Economy - Level-Up Bonuses (FR13)
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonus system
+ */
+export const LEVEL_BONUS_STARTING_COZINESS = 5 as const;
+
+/**
+ * Coziness decay rate reduction per level (percentage).
+ * 
+ * PRD specifies slower «Затишок» decay rate as a passive bonus when leveling up.
+ * Each level beyond level 1 reduces the decay rate by this percentage.
+ * Slower decay = easier gameplay.
+ * Example: Level 2 = -5% decay, Level 3 = -10% decay, Level 4 = -15% decay
+ * 
+ * Note: Decay rate cannot go below 0.
+ * 
+ * @see docs/prd.md#Progression-&-Economy - Level-Up Bonuses (FR13)
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonus system
+ */
+export const LEVEL_BONUS_DECAY_REDUCTION_PERCENT = 5 as const;
+
+/**
+ * Calculate movement speed with level bonuses and shop buffs applied.
+ * 
+ * Returns the movement speed with level-based bonuses and shop buffs applied.
+ * Level 1 = base speed (no bonus)
+ * Level 2+ = base speed + (level - 1) * percentage bonus
+ * Shop buffs stack additively with level bonuses.
+ * 
+ * **Shop Buff Stacking (Story 3.4):**
+ * Shop buffs stack additively with level bonuses.
+ * Example: Level 2 (+5%) + Shop buff (+5%) = +10% total bonus
+ * 
+ * @param baseSpeed - Base movement speed in pixels per second
+ * @param level - Player level (1-based)
+ * @param shopBuffPercent - Optional shop buff percentage bonus (default: 0)
+ * @returns Movement speed with bonuses applied
+ * 
+ * @example
+ * ```typescript
+ * const speed = getMovementSpeedWithBonuses(150, 2); // Returns 157.5 (150 * 1.05)
+ * const speed = getMovementSpeedWithBonuses(150, 2, 5); // Returns 165 (150 * 1.10)
+ * ```
+ * 
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonus system
+ * @see docs/sprint-artifacts/3-4-shop-system.md - Shop buff stacking (Story 3.4)
+ */
+export function getMovementSpeedWithBonuses(baseSpeed: number, level: number, shopBuffPercent: number = 0): number {
+  let bonusMultiplier = 1;
+  
+  // Level bonus
+  if (level > 1) {
+    bonusMultiplier += ((level - 1) * LEVEL_BONUS_MOVEMENT_SPEED_PERCENT) / 100;
+  }
+  
+  // Shop buff (stacks additively)
+  if (shopBuffPercent > 0) {
+    bonusMultiplier += shopBuffPercent / 100;
+  }
+  
+  return baseSpeed * bonusMultiplier;
+}
+
+/**
+ * Calculate event spawn interval with level bonuses applied.
+ * 
+ * Returns the event spawn interval with level-based bonuses applied.
+ * Level 1 = base interval (no bonus)
+ * Level 2+ = base interval + (level - 1) * percentage bonus (longer interval = less frequent)
+ * 
+ * **Shop Buff Stacking (Story 3.4):**
+ * Shop buffs that affect event spawn rate will stack additively with level bonuses.
+ * To extend this function for shop buffs, add an optional parameter:
+ * `getEventSpawnIntervalWithBonuses(baseInterval, level, shopBuffPercent = 0)`
+ * 
+ * @param baseInterval - Base spawn interval in seconds
+ * @param level - Player level (1-based)
+ * @returns Spawn interval with bonuses applied (in seconds)
+ * 
+ * @example
+ * ```typescript
+ * const interval = getEventSpawnIntervalWithBonuses(3.5, 2); // Returns 3.85 (3.5 * 1.10)
+ * const interval = getEventSpawnIntervalWithBonuses(3.5, 3); // Returns 4.2 (3.5 * 1.20)
+ * ```
+ * 
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonus system
+ * @see docs/sprint-artifacts/3-4-shop-system.md - Shop buff stacking (Story 3.4)
+ */
+export function getEventSpawnIntervalWithBonuses(baseInterval: number, level: number): number {
+  if (level <= 1) {
+    return baseInterval; // No bonus for level 1
+  }
+  const bonusMultiplier = 1 + ((level - 1) * LEVEL_BONUS_EVENT_SPAWN_REDUCTION_PERCENT) / 100;
+  return baseInterval * bonusMultiplier;
+}
+
+/**
+ * Calculate starting coziness with level bonuses and shop buffs applied.
+ * 
+ * Returns the starting coziness value with level-based bonuses and shop buffs applied.
+ * Level 1 = base coziness (no bonus)
+ * Level 2+ = base coziness + (level - 1) * bonus amount
+ * Shop buffs stack additively with level bonuses.
+ * 
+ * Result is clamped to 0-100 range.
+ * 
+ * **Shop Buff Stacking (Story 3.4):**
+ * Shop buffs that increase starting coziness stack additively with level bonuses.
+ * Example: Level 2 (+5) + Shop buff (+5) = +10 total starting coziness
+ * 
+ * @param baseCoziness - Base starting coziness (0-100)
+ * @param level - Player level (1-based)
+ * @param shopBuffAmount - Optional shop buff absolute bonus (default: 0)
+ * @returns Starting coziness with bonuses applied (clamped to 0-100)
+ * 
+ * @example
+ * ```typescript
+ * const coziness = getStartingCozinessWithBonuses(60, 1); // Returns 60
+ * const coziness = getStartingCozinessWithBonuses(60, 2); // Returns 65
+ * const coziness = getStartingCozinessWithBonuses(60, 2, 5); // Returns 70
+ * ```
+ * 
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonus system
+ * @see docs/sprint-artifacts/3-4-shop-system.md - Shop buff stacking (Story 3.4)
+ */
+export function getStartingCozinessWithBonuses(baseCoziness: number, level: number, shopBuffAmount: number = 0): number {
+  let total = baseCoziness;
+  
+  // Level bonus
+  if (level > 1) {
+    total += (level - 1) * LEVEL_BONUS_STARTING_COZINESS;
+  }
+  
+  // Shop buff (stacks additively)
+  if (shopBuffAmount > 0) {
+    total += shopBuffAmount;
+  }
+  
+  return Math.max(0, Math.min(100, total)); // Clamp to 0-100 range
+}
+
+/**
+ * Calculate coziness decay rate with level bonuses and shop buffs applied.
+ * 
+ * Returns the coziness decay rate with level-based bonuses and shop buffs applied.
+ * Level 1 = base decay rate (no bonus)
+ * Level 2+ = base decay rate - (level - 1) * percentage reduction
+ * Shop buffs stack multiplicatively with level bonuses.
+ * 
+ * Result cannot go below 0.
+ * 
+ * **Shop Buff Stacking (Story 3.4):**
+ * Shop buffs that reduce decay rate stack multiplicatively with level bonuses.
+ * Example: Level 2 (-5%) + Shop buff (-5%) = ~-10% total reduction
+ * 
+ * @param baseDecay - Base decay rate per second
+ * @param level - Player level (1-based)
+ * @param shopBuffReductionPercent - Optional shop buff percentage reduction (default: 0)
+ * @returns Decay rate with bonuses applied (cannot be negative)
+ * 
+ * @example
+ * ```typescript
+ * const decay = getCozinessDecayRateWithBonuses(0.5, 1); // Returns 0.5
+ * const decay = getCozinessDecayRateWithBonuses(0.5, 2); // Returns 0.475 (0.5 * 0.95)
+ * const decay = getCozinessDecayRateWithBonuses(0.5, 2, 5); // Returns ~0.45 (0.5 * 0.95 * 0.95)
+ * ```
+ * 
+ * @see docs/sprint-artifacts/3-3-level-up-bonuses.md - Level bonus system
+ * @see docs/sprint-artifacts/3-4-shop-system.md - Shop buff stacking (Story 3.4)
+ */
+export function getCozinessDecayRateWithBonuses(baseDecay: number, level: number, shopBuffReductionPercent: number = 0): number {
+  let reductionMultiplier = 1;
+  
+  // Level bonus reduction
+  if (level > 1) {
+    reductionMultiplier *= (1 - ((level - 1) * LEVEL_BONUS_DECAY_REDUCTION_PERCENT) / 100);
+  }
+  
+  // Shop buff reduction (stacks multiplicatively)
+  if (shopBuffReductionPercent > 0) {
+    reductionMultiplier *= (1 - shopBuffReductionPercent / 100);
+  }
+  
+  const adjusted = baseDecay * reductionMultiplier;
+  return Math.max(0, adjusted); // Ensure decay rate cannot go below 0
+}
+
+// ============================================================================
+// Apartment Layout Constants
+// ============================================================================
+
+/**
+ * Apartment boundaries for character movement constraints.
+ * 
+ * Defines the playable area where the character can move.
+ * Coordinates are relative to the apartment container (0,0 = top-left).
+ * 
+ * Used by Character component (Story 2.3) for movement constraints.
+ * 
+ * @see docs/sprint-artifacts/2-2-apartment-layout-and-background-with-ukrainian-cozy-details.md
+ */
+export interface ApartmentBoundaries {
+  /** Minimum X coordinate (left boundary) */
+  minX: number;
+  /** Maximum X coordinate (right boundary) */
+  maxX: number;
+  /** Minimum Y coordinate (top boundary) */
+  minY: number;
+  /** Maximum Y coordinate (bottom boundary) */
+  maxY: number;
+}
+
+/**
+ * Apartment boundaries configuration.
+ * 
+ * Defines the playable area as a percentage of the apartment container.
+ * Actual pixel values will be calculated based on container size.
+ * 
+ * Boundaries:
+ * - Left: 5% from left edge (padding for walls/furniture)
+ * - Right: 95% from left edge (padding for walls/furniture)
+ * - Top: 10% from top edge (padding for ceiling/HUD)
+ * - Bottom: 90% from top edge (padding for floor/furniture)
+ */
+export const APARTMENT_BOUNDARIES: ApartmentBoundaries = {
+  minX: 0.05,  // 5% from left
+  maxX: 0.95,  // 95% from left
+  minY: 0.10,  // 10% from top
+  maxY: 0.90,  // 90% from top
+} as const;
+
+/**
+ * Event object locations in the apartment.
+ * 
+ * Defines where events can spawn (phone, kettle, cat, candle positions).
+ * Coordinates are relative to the apartment container (0,0 = top-left).
+ * Values are percentages (0.0 to 1.0) for responsive positioning.
+ * 
+ * Used by EventManager (Story 2.4) for event spawning.
+ * 
+ * @see docs/sprint-artifacts/2-2-apartment-layout-and-background-with-ukrainian-cozy-details.md
+ */
+export interface EventLocations {
+  /** Phone event location (living room, near sofa) */
+  phone: { x: number; y: number };
+  /** Kettle event location (kitchen, on counter) */
+  kettle: { x: number; y: number };
+  /** Cat event location (living room, floor area) */
+  cat: { x: number; y: number };
+  /** Candle event location (living room, near light sources) */
+  candle: { x: number; y: number };
+}
+
+/**
+ * Event object locations configuration.
+ * 
+ * Positions are defined as percentages of container dimensions:
+ * - x: 0.0 = left edge, 1.0 = right edge
+ * - y: 0.0 = top edge, 1.0 = bottom edge
+ * 
+ * Locations are positioned near furniture/objects where events make sense:
+ * - Phone: Near sofa (living room)
+ * - Kettle: On kitchen counter
+ * - Cat: Floor area in living room
+ * - Candle: Near light sources (living room)
+ */
+export const EVENT_LOCATIONS: EventLocations = {
+  phone: { x: 0.25, y: 0.70 },   // Near sofa in living room
+  kettle: { x: 0.75, y: 0.65 },   // On kitchen counter
+  cat: { x: 0.40, y: 0.80 },      // Floor area in living room
+  candle: { x: 0.30, y: 0.50 },   // Near light sources in living room
+} as const;
+
+// ============================================================================
+// Interaction Constants
+// ============================================================================
+
+/**
+ * Maximum distance in pixels for event interaction.
+ * 
+ * Players can interact with events when the character is within this range.
+ * PRD specifies 50-100px distance. Default is 75px (middle value).
+ * 
+ * This range is used for both keyboard (E key) and mouse (click) interactions.
+ * 
+ * @see docs/prd.md#Core-Gameplay - FR2: Event Interaction
+ * @see docs/sprint-artifacts/2-9-event-interaction-system.md
+ */
+export const INTERACTION_RANGE = 75 as const;
 

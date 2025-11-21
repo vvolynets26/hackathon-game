@@ -1,0 +1,326 @@
+<story-context id="2-5-event-timer-management" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>5</storyId>
+    <title>Event Timer Management</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T12:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-5-event-timer-management.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want event timers to count down and expire properly</iWant>
+    <soThat>So that events have time pressure and consequences for failure</soThat>
+    <tasks>
+- [ ] Task 1: Add updateEvents method to EventManager (AC: 1, 2)
+  - [ ] Add `updateEvents(deltaTime: number, activeEvents: GameEvent[], removeEventCallback: (eventId: string) => void): GameEvent[]` method signature
+  - [ ] Update all event timers using delta time (frame-rate independent)
+  - [ ] Check for expired events (timer &lt;= 0)
+  - [ ] Return array of expired events for processing
+  - [ ] Follow frame-rate independence pattern from Story 2.1 [Source: docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md]
+
+- [ ] Task 2: Add resolveEvent method to EventManager (AC: 1, 4)
+  - [ ] Add `resolveEvent(eventId: string, activeEvents: GameEvent[], removeEventCallback: (eventId: string) => void): GameEvent | null` method signature
+  - [ ] Find event by ID in active events array
+  - [ ] Remove event from active events (via callback)
+  - [ ] Return event data for score/coziness calculation
+  - [ ] Return null if event not found
+
+- [ ] Task 3: Add expireEvent method to EventManager (AC: 1, 5)
+  - [ ] Add `expireEvent(eventId: string, activeEvents: GameEvent[], removeEventCallback: (eventId: string) => void): GameEvent | null` method signature
+  - [ ] Find event by ID in active events array
+  - [ ] Remove event from active events (via callback)
+  - [ ] Return event data for coziness penalty calculation
+  - [ ] Return null if event not found
+
+- [ ] Task 4: Integrate updateEvents with game loop (AC: 2, 3)
+  - [ ] Call `updateEvents()` every frame in game loop (useGameLoop hook)
+  - [ ] Pass delta time from game loop to updateEvents
+  - [ ] Pass activeEvents from GameContext to updateEvents
+  - [ ] Pass removeEvent callback from GameContext to updateEvents
+  - [ ] Process expired events returned from updateEvents
+  - [ ] Apply coziness penalties for expired events (Story 2.10)
+  - [ ] Ensure timer updates pause when game is paused
+
+- [ ] Task 5: Add removeEvent to GameContext (AC: 4, 5)
+  - [ ] Add `removeEvent(eventId: string): void` function to GameContext
+  - [ ] Remove event from activeEvents array in game state
+  - [ ] Update game state to trigger React re-renders
+  - [ ] Ensure removeEvent is available in context value
+
+- [ ] Task 6: Integrate resolveEvent with event interaction (AC: 4)
+  - [ ] Call `resolveEvent()` when player interacts with event (Story 2.9)
+  - [ ] Use event data returned from resolveEvent for score calculation
+  - [ ] Use event data returned from resolveEvent for coziness reward
+  - [ ] Update game state after event resolution
+
+- [ ] Task 7: Handle expired events in game loop (AC: 2, 3)
+  - [ ] Process expired events returned from updateEvents
+  - [ ] Apply coziness penalties for expired events (Story 2.10)
+  - [ ] Update game state after event expiration
+  - [ ] Ensure expired events are removed from active events
+
+- [ ] Task 8: Testing and validation (AC: 1, 2, 3, 4, 5)
+  - [ ] Test updateEvents() updates timers correctly with delta time
+  - [ ] Test updateEvents() detects expired events (timer &lt;= 0)
+  - [ ] Test resolveEvent() removes event and returns event data
+  - [ ] Test expireEvent() removes event and returns event data
+  - [ ] Test timer updates are frame-rate independent
+  - [ ] Test timer updates pause when game is paused
+  - [ ] Test expired events trigger game state updates
+  - [ ] Test resolved events trigger game state updates
+  - [ ] Verify performance (60 FPS maintained)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Given** events are active
+   **When** the game loop runs
+   **Then** the EventManager provides:
+   - `updateEvents(deltaTime: number): void` - updates all event timers every frame
+   - `resolveEvent(eventId: string): GameEvent | null` - marks event as resolved, returns event data
+   - `expireEvent(eventId: string): GameEvent | null` - marks event as expired, returns event data
+
+2. **Given** event timers are implemented
+   **When** the game loop runs
+   **Then** event timers:
+   - Count down every frame (frame-rate independent using delta time)
+   - Expire when timer reaches 0
+   - Expired events are automatically removed from active events
+   - Expired events apply coziness penalties (Story 2.10)
+
+3. **Given** EventManager is integrated with game loop
+   **When** the game is running
+   **Then** EventManager integrates with game loop:
+   - `updateEvents()` is called every frame in game loop
+   - Timer updates are synchronized with game state
+   - Expired events trigger game state updates
+   - Timer updates pause when game is paused
+
+4. **Given** event resolution is implemented
+   **When** an event is resolved
+   **Then** the event is:
+   - Removed from active events array
+   - Event data is returned for score/coziness calculation
+   - Game state is updated to reflect event removal
+
+5. **Given** event expiration is implemented
+   **When** an event expires
+   **Then** the event is:
+   - Removed from active events array
+   - Event data is returned for coziness penalty calculation
+   - Game state is updated to reflect event removal
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/2-5-event-timer-management.md</path>
+        <title>Story 2.5: Event Timer Management</title>
+        <section>Story</section>
+        <snippet>Story specification with acceptance criteria, tasks, and dev notes. Includes detailed implementation guidance for timer management, event resolution, and event expiration. Timer management uses delta time for frame-rate independence. EventManager methods should be pure where possible (testable). Methods accept activeEvents array as parameter (events stored in GameContext). Methods use callback pattern for removing events (GameContext manages state).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Game Event System Pattern</section>
+        <snippet>EventManager is a class (not React component) for testability. EventManager maintains event lifecycle but events are stored in GameContext. Timer management uses delta time for frame-rate independence. Follow architecture document "Event System Pattern" section.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Performance Considerations</section>
+        <snippet>Timer updates should be efficient (no unnecessary iterations). Expired event detection should be fast (early returns). Event removal should be efficient (use array filter or find + splice). Maintain 60 FPS performance (no frame drops).</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Game Mechanics</section>
+        <snippet>Event timers count down and expire. Events have time pressure and consequences for failure. Expired events apply coziness penalties. Event resolution triggers score/coziness updates.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.5: Event Timer Management</section>
+        <snippet>EventManager provides updateEvents(deltaTime), resolveEvent(eventId), expireEvent(eventId). Event timers count down every frame (frame-rate independent using delta time). Expired events are automatically removed from active events. EventManager integrates with game loop (call updateEvents every frame). Timer updates pause when game is paused.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md</path>
+        <title>Story 2.1: Game State Management and Game Loop</title>
+        <section>Delta Time Pattern</section>
+        <snippet>Delta time is calculated as (currentTime - lastTime) / 1000 (convert to seconds). Timer updates should use delta time: timer -= deltaTime. Frame-rate independence ensures consistent behavior at any FPS. Delta time should be passed to EventManager.updateEvents().</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-4-event-spawning-system.md</path>
+        <title>Story 2.4: Event Spawning System</title>
+        <section>Event Structure</section>
+        <snippet>Events have timer property (in seconds) that needs to be updated. Event timer is set during spawnEvent() using getEventTimerDuration(level). Timer values are in seconds (e.g., 5-10 seconds based on level). Timer needs to count down every frame using delta time. Timer should expire when it reaches 0.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-4-event-spawning-system.md</path>
+        <title>Story 2.4: Event Spawning System</title>
+        <section>GameContext Integration Pattern</section>
+        <snippet>Events are added to GameContext via addEvent callback. Events are stored in GameContext.activeEvents array. Game state updates trigger React re-renders automatically. Need to add removeEvent function to GameContext for this story.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-4-event-spawning-system.md</path>
+        <title>Story 2.4: Event Spawning System</title>
+        <section>Callback Pattern</section>
+        <snippet>EventManager uses callback pattern for state updates. addEventCallback is used to add events to GameContext. Should use similar pattern for removeEvent (removeEventCallback). Callbacks allow EventManager to remain pure (no React dependencies).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/core/EventManager.ts</path>
+        <kind>class</kind>
+        <symbol>EventManager</symbol>
+        <lines>1-269</lines>
+        <reason>EventManager class is available from Story 2.4. Need to add updateEvents(), resolveEvent(), and expireEvent() methods. EventManager uses callback pattern for state updates. Events are stored in GameContext, not in EventManager. Methods should accept activeEvents array as parameter and use callback for removing events.</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, removeEvent, gameState.activeEvents</symbol>
+        <lines>139-144, 39-54</lines>
+        <reason>GameContext already has removeEvent() function from Story 2.4. activeEvents array is part of GameState. removeEvent() removes event from activeEvents array. EventManager methods should use removeEvent callback to remove events from GameContext.</reason>
+      </artifact>
+      <artifact>
+        <path>src/hooks/useGameLoop.ts</path>
+        <kind>hook</kind>
+        <symbol>useGameLoop, gameLoop function, deltaTime</symbol>
+        <lines>102-171, 111</lines>
+        <reason>Game loop hook manages requestAnimationFrame loop. Delta time calculation ensures frame-independent updates. Game loop provides delta time for timer updates. Game loop respects game state (isPlaying, isPaused, gameOver). Timer updates should integrate with game loop similar to spawn timer. Need to call EventManager.updateEvents() every frame with delta time.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/events.ts</path>
+        <kind>type definition</kind>
+        <symbol>GameEvent, EventType, EventPriority</symbol>
+        <lines>62-84</lines>
+        <reason>GameEvent interface includes timer property (in seconds). Timer needs to be updated every frame using delta time. Event types and priorities are already defined. Event structure is complete for timer management.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/game.ts</path>
+        <kind>type definition</kind>
+        <symbol>GameState, activeEvents</symbol>
+        <lines>39-54</lines>
+        <reason>GameState interface includes activeEvents array. Events are stored in GameContext.activeEvents. EventManager methods should accept activeEvents array as parameter. Game state updates trigger React re-renders automatically.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem>node</ecosystem>
+      <packages>
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="typescript" version="~5.9.3" />
+        <package name="vite" version="^5.4.11" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>Architecture Pattern</type>
+      <description>EventManager is a class (not React component) for testability. Follow architecture document "Event System Pattern" section. EventManager maintains event lifecycle but events are stored in GameContext. Timer management uses delta time for frame-rate independence.</description>
+    </constraint>
+    <constraint>
+      <type>Method Pattern</type>
+      <description>EventManager methods should be pure where possible (testable). Methods accept activeEvents array as parameter (events stored in GameContext). Methods use callback pattern for removing events (GameContext manages state). Export EventManager methods for use in game loop.</description>
+    </constraint>
+    <constraint>
+      <type>Integration Pattern</type>
+      <description>EventManager integrates with game loop (call updateEvents every frame). EventManager uses callback pattern for state updates (removeEvent callback). Timer updates should pause when game is paused (check game state). Timer updates should be frame-rate independent (use delta time).</description>
+    </constraint>
+    <constraint>
+      <type>Delta Time Pattern</type>
+      <description>Use delta time from game loop for frame-rate independent updates. Calculate timer decrease: timer -= deltaTime (in seconds). Timer values are in seconds, delta time is in seconds. Frame-rate independence ensures consistent timer behavior at any FPS.</description>
+    </constraint>
+    <constraint>
+      <type>Performance</type>
+      <description>Timer updates should be efficient (no unnecessary iterations). Expired event detection should be fast (early returns). Event removal should be efficient (use array filter or find + splice). Maintain 60 FPS performance (no frame drops).</description>
+    </constraint>
+    <constraint>
+      <type>Integration Points</type>
+      <description>EventManager integrates with game loop (Story 2.1) for timer updates. Events stored in GameContext (Story 1.3) for state management. Event resolution triggers score/coziness updates (Story 2.9, 2.10). Event expiration triggers coziness penalties (Story 2.10). Timer display uses timer values from events (Story 2.8).</description>
+    </constraint>
+    <constraint>
+      <type>TypeScript</type>
+      <description>Use strict TypeScript types. Import types from src/types/events.ts. Use GameEvent interface for event objects. No any types. Methods should have proper type signatures.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>EventManager.updateEvents</name>
+      <kind>TypeScript method</kind>
+      <signature>updateEvents(deltaTime: number, activeEvents: GameEvent[], removeEventCallback: (eventId: string) => void): GameEvent[]</signature>
+      <path>src/core/EventManager.ts</path>
+    </interface>
+    <interface>
+      <name>EventManager.resolveEvent</name>
+      <kind>TypeScript method</kind>
+      <signature>resolveEvent(eventId: string, activeEvents: GameEvent[], removeEventCallback: (eventId: string) => void): GameEvent | null</signature>
+      <path>src/core/EventManager.ts</path>
+    </interface>
+    <interface>
+      <name>EventManager.expireEvent</name>
+      <kind>TypeScript method</kind>
+      <signature>expireEvent(eventId: string, activeEvents: GameEvent[], removeEventCallback: (eventId: string) => void): GameEvent | null</signature>
+      <path>src/core/EventManager.ts</path>
+    </interface>
+    <interface>
+      <name>GameContext.removeEvent</name>
+      <kind>React Context function</kind>
+      <signature>removeEvent(eventId: string): void</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameEvent interface</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface GameEvent {
+  id: string;
+  type: EventType;
+  priority: EventPriority;
+  location: { x: number; y: number };
+  timer: number;
+  points: number;
+  cozinessReward: number;
+  cozinessPenalty: number;
+}</signature>
+      <path>src/types/events.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should use Vitest (Vite-native testing framework). EventManager is a class (not React component) making it easily testable. Tests should verify updateEvents() updates timers correctly with delta time, updateEvents() detects expired events (timer &lt;= 0), resolveEvent() removes event and returns event data, expireEvent() removes event and returns event data, timer updates are frame-rate independent, timer updates pause when game is paused, expired events trigger game state updates, resolved events trigger game state updates, and performance (60 FPS maintained).
+    </standards>
+    <locations>
+      Test files should be co-located with source files: src/core/EventManager.test.ts
+    </locations>
+    <ideas>
+      <test>
+        <acceptanceCriteriaId>1</acceptanceCriteriaId>
+        <description>Test EventManager provides updateEvents(deltaTime), resolveEvent(eventId), and expireEvent(eventId) methods. Test methods have correct signatures and return types. Test methods accept required parameters (deltaTime, activeEvents, removeEventCallback).</description>
+      </test>
+      <test>
+        <acceptanceCriteriaId>2</acceptanceCriteriaId>
+        <description>Test updateEvents() updates all event timers using delta time (frame-rate independent). Test updateEvents() detects expired events (timer &lt;= 0). Test expired events are automatically removed from active events (via callback). Test expired events are returned for processing. Test timer countdown is accurate (timer decreases by deltaTime each frame).</description>
+      </test>
+      <test>
+        <acceptanceCriteriaId>3</acceptanceCriteriaId>
+        <description>Test updateEvents() is called every frame in game loop. Test timer updates are synchronized with game state. Test expired events trigger game state updates. Test timer updates pause when game is paused (no timer updates when isPaused is true).</description>
+      </test>
+      <test>
+        <acceptanceCriteriaId>4</acceptanceCriteriaId>
+        <description>Test resolveEvent() finds event by ID in active events array. Test resolveEvent() removes event from active events (via callback). Test resolveEvent() returns event data for score/coziness calculation. Test resolveEvent() returns null if event not found. Test game state is updated to reflect event removal.</description>
+      </test>
+      <test>
+        <acceptanceCriteriaId>5</acceptanceCriteriaId>
+        <description>Test expireEvent() finds event by ID in active events array. Test expireEvent() removes event from active events (via callback). Test expireEvent() returns event data for coziness penalty calculation. Test expireEvent() returns null if event not found. Test game state is updated to reflect event removal.</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

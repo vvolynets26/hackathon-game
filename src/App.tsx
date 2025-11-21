@@ -1,20 +1,32 @@
+import { useState } from 'react';
 import { GameProvider } from './contexts/GameContext';
 import { ProgressionProvider } from './contexts/ProgressionContext';
+import { Apartment } from './components/game/Apartment';
+import { WelcomeScreen } from './components/ui/WelcomeScreen';
 import './App.css';
 
 /**
  * Root App component.
  * 
  * Wraps the application with GameProvider and ProgressionProvider contexts.
- * Game UI components will be added in future stories (Epic 2+).
+ * Manages navigation between welcome screen and game.
  */
 function App() {
+  const [gameStarted, setGameStarted] = useState(false);
+
+  const handleStartGame = () => {
+    setGameStarted(true);
+  };
+
   return (
     <GameProvider>
       <ProgressionProvider>
         <div className="app">
-          <h1>Вечір при блекауті</h1>
-          <p>Game UI will be implemented in Epic 2 (Core Gameplay)</p>
+          {!gameStarted ? (
+            <WelcomeScreen onStart={handleStartGame} />
+          ) : (
+            <Apartment />
+          )}
         </div>
       </ProgressionProvider>
     </GameProvider>

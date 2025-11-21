@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context>
+  <metadata>
+    <story-key>2-13-evening-timer-hud-component</story-key>
+    <story-title>Story 2.13: Evening Timer HUD Component</story-title>
+    <status>drafted</status>
+    <created-date>2025-01-21</created-date>
+    <epic>Epic 2: Core Gameplay</epic>
+    <priority>MVP</priority>
+  </metadata>
+
+  <story-documentation>
+    <story-file>
+      <path>docs/sprint-artifacts/2-13-evening-timer-hud-component.md</path>
+      <content>
+        <![CDATA[
+# Story 2.13: Evening Timer HUD Component
+
+Status: drafted
+
+## Story
+
+As a player,
+I want to see the evening timer in the HUD,
+So that I know how much time I have remaining.
+
+## Acceptance Criteria
+
+1. **Given** I am playing the game
+   **When** the gameplay screen is active
+   **Then** `Timer.tsx` component displays:
+   - Evening timer in "MM:SS" format (e.g., "01:30")
+   - Timer icon next to time display
+   - Timer updates every second
+   - Timer color changes based on time remaining (optional: red when < 10 seconds)
+
+2. **Given** the timer component is rendered
+   **When** the game is running
+   **Then** timer component:
+   - Is positioned in HUD left section
+   - Reads timer value from GameContext
+   - Updates in real-time as timer counts down
+   - Styled according to UX design (light text, readable)
+
+3. **Given** the timer is displayed
+   **When** I view the timer text
+   **Then** timer text is in Ukrainian: "Час: 01:30" or similar format
+
+## Tasks / Subtasks
+
+- [ ] Task 1: Create Timer component structure (AC: 1, 2)
+  - [ ] Create `src/components/ui/Timer.tsx` component
+  - [ ] Import GameContext and useGame hook
+  - [ ] Read timeRemaining from GameContext
+  - [ ] Format time as "MM:SS" (minutes:seconds)
+  - [ ] Display timer icon (⏱️ or clock SVG)
+  - [ ] Position component in HUD left section
+  - [ ] Reference GameContext for timer value [Source: src/contexts/GameContext.tsx]
+  - [ ] Reference UX design for HUD layout [Source: docs/prd.md#Main-Game-Screen-Layout]
+
+- [ ] Task 2: Implement timer formatting and updates (AC: 1)
+  - [ ] Create formatTime function to convert seconds to "MM:SS" format
+  - [ ] Handle edge cases (0 seconds, > 60 minutes)
+  - [ ] Update timer display every second (use useEffect with interval or read from game loop)
+  - [ ] Ensure timer updates smoothly without flickering
+  - [ ] Reference timeRemaining from GameState [Source: src/types/game.ts]
+
+- [ ] Task 3: Add timer color transitions (AC: 1)
+  - [ ] Implement color change when time < 10 seconds (optional)
+  - [ ] Use CSS transitions for smooth color changes
+  - [ ] Default color: light text (readable on dark background)
+  - [ ] Warning color: red/orange when time is low
+  - [ ] Reference UX design for color specifications [Source: docs/prd.md#User-Experience-Principles]
+
+- [ ] Task 4: Integrate Timer into HUD layout (AC: 2)
+  - [ ] Create or update `src/components/ui/HUD.tsx` component
+  - [ ] Position Timer component in HUD left section
+  - [ ] Ensure HUD layout matches UX design (left: timer, center: coziness bar, right: XP/level)
+  - [ ] Style HUD with dark background, light text, warm accents
+  - [ ] Ensure HUD is always visible during gameplay
+  - [ ] Reference architecture for HUD structure [Source: docs/architecture.md#Project-Structure]
+
+- [ ] Task 5: Add Ukrainian text (AC: 3)
+  - [ ] Add Ukrainian label "Час:" before timer value
+  - [ ] Format: "Час: 01:30" or similar
+  - [ ] Store Ukrainian text in translation constants (if translation system exists)
+  - [ ] Reference PRD for Ukrainian localization [Source: docs/prd.md#Localization-&-Content]
+
+- [ ] Task 6: Testing and validation (AC: 1, 2, 3)
+  - [ ] Test timer displays correct time format
+  - [ ] Test timer updates every second
+  - [ ] Test timer reads from GameContext correctly
+  - [ ] Test timer color changes when time < 10 seconds (if implemented)
+  - [ ] Test timer positioned correctly in HUD left section
+  - [ ] Test Ukrainian text displays correctly
+  - [ ] Test timer works during gameplay
+  - [ ] Test timer handles edge cases (0 seconds, game over)
+
+## Dev Notes
+
+### Relevant Architecture Patterns and Constraints
+
+**Component Structure:**
+- Timer component at `src/components/ui/Timer.tsx` [Source: docs/architecture.md#Project-Structure]
+- HUD component at `src/components/ui/HUD.tsx` (may need to be created or updated)
+- Components use React functional components with hooks
+- CSS Modules for styling (Timer.module.css)
+
+**State Management:**
+- Timer reads from GameContext.timeRemaining [Source: src/contexts/GameContext.tsx]
+- GameContext provides timeRemaining as number (seconds)
+- Timer updates automatically when GameContext updates (React re-render)
+- No need for local state if reading directly from context
+
+**Time Formatting:**
+- Format seconds to "MM:SS" format (e.g., 90 seconds = "01:30")
+- Handle edge cases: 0 seconds = "00:00", > 60 minutes = "MM:SS" format
+- Use helper function: `formatTime(seconds: number): string`
+
+**HUD Layout:**
+- HUD positioned at top of screen [Source: docs/prd.md#Main-Game-Screen-Layout]
+- Left section: Evening timer (this story)
+- Center section: «Затишок» bar (Story 2.14)
+- Right section: XP & Level + «Світлячки» (Story 4.1, 4.2)
+- HUD styled with dark background, light text, warm accents
+- HUD always visible during gameplay
+
+**Styling:**
+- Use CSS Modules for component styles [Source: docs/architecture.md#ADR-005]
+- Light text color for readability on dark background
+- Optional: Red/orange color when time < 10 seconds
+- Smooth CSS transitions for color changes
+- Timer icon: Unicode ⏱️ or SVG icon
+
+**Ukrainian Localization:**
+- Timer label: "Час:" (Time:)
+- Format: "Час: 01:30" or "01:30" (label optional if icon is clear)
+- Ukrainian text added incrementally (Story 2.15 for full localization)
+- Reference PRD FR40, FR41, FR42 for localization [Source: docs/prd.md#Localization-&-Content]
+
+### Project Structure Notes
+
+**Alignment with Unified Project Structure:**
+- Timer component at `src/components/ui/Timer.tsx` (matches architecture document)
+- HUD component at `src/components/ui/HUD.tsx` (matches architecture document)
+- CSS Modules: `src/components/ui/Timer.module.css`
+- GameContext at `src/contexts/GameContext.tsx` (matches architecture document)
+
+**Source Tree Components to Touch:**
+- `src/components/ui/Timer.tsx` - CREATE (new component)
+- `src/components/ui/Timer.module.css` - CREATE (component styles)
+- `src/components/ui/HUD.tsx` - CREATE or UPDATE (integrate Timer into HUD)
+- `src/components/ui/HUD.module.css` - CREATE or UPDATE (HUD layout styles)
+- `src/contexts/GameContext.tsx` - NO CHANGES (read-only access to timeRemaining)
+
+**No Conflicts Detected:**
+- Timer component is new, no existing implementation
+- HUD component may need to be created (check if exists)
+- GameContext already provides timeRemaining (no changes needed)
+
+### Learnings from Previous Story
+
+**From Story 2-12-scoring-system (Status: done)**
+- **Game State Management**: GameContext provides all game state values [Source: docs/sprint-artifacts/2-12-scoring-system.md]
+  - GameContext.timeRemaining available for timer display
+  - GameContext updates trigger React re-renders automatically
+  - No need for local state if reading directly from context
+  - Timer value updates every frame in game loop (Story 2.1)
+
+- **Component Integration**: Components read from GameContext via useGame hook [Source: docs/sprint-artifacts/2-12-scoring-system.md]
+  - Use `const { gameState } = useGame()` to access game state
+  - gameState.timeRemaining provides timer value in seconds
+  - Component re-renders when timeRemaining changes
+
+- **HUD Preparation**: HUD structure needs to be created for this story [Source: docs/sprint-artifacts/2-12-scoring-system.md]
+  - HUD component should be created in `src/components/ui/HUD.tsx`
+  - HUD should integrate Timer, CozinessBar (Story 2.14), and future XP/Level displays
+  - HUD layout follows UX design: left (timer), center (coziness), right (XP/level)
+
+**From Story 2-11-evening-timer-and-win-lose-conditions (Status: done)**
+- **Timer Management**: Evening timer implemented in game loop [Source: docs/sprint-artifacts/2-11-evening-timer-and-win-lose-conditions.md]
+  - Timer counts down in game loop (useGameLoop.ts)
+  - Timer stored in GameState.timeRemaining (seconds)
+  - Timer updates every frame (frame-rate independent)
+  - Timer reaches 0 triggers win condition
+
+- **Game State**: Timer value accessible from GameContext [Source: docs/sprint-artifacts/2-11-evening-timer-and-win-lose-conditions.md]
+  - timeRemaining property in GameState interface
+  - Timer value updates via setTimeRemaining in GameContext
+  - Timer value ready for HUD display
+
+**Implementation Notes:**
+- Timer component should read directly from GameContext (no local state needed)
+- Timer formatting function needed: convert seconds to "MM:SS" format
+- HUD component needs to be created to integrate Timer
+- Timer updates automatically when GameContext updates (React re-render)
+- Optional color change when time < 10 seconds for urgency feedback
+
+[Source: docs/sprint-artifacts/2-12-scoring-system.md#Dev-Agent-Record]
+[Source: docs/sprint-artifacts/2-11-evening-timer-and-win-lose-conditions.md#Dev-Agent-Record]
+
+### References
+
+- [Source: docs/epics.md#Story-2.13] - Story acceptance criteria and technical notes
+- [Source: docs/prd.md#Main-Game-Screen-Layout] - HUD layout specifications (left: timer)
+- [Source: docs/prd.md#User-Experience-Principles] - Color and styling guidelines
+- [Source: docs/prd.md#Localization-&-Content] - Ukrainian text requirements (FR40, FR41, FR42)
+- [Source: docs/architecture.md#Project-Structure] - Component structure and file locations
+- [Source: docs/architecture.md#ADR-005] - CSS Modules styling approach
+- [Source: src/contexts/GameContext.tsx] - GameContext state management and timeRemaining property
+- [Source: src/types/game.ts] - GameState interface including timeRemaining
+- [Source: docs/sprint-artifacts/2-12-scoring-system.md] - GameContext usage patterns
+- [Source: docs/sprint-artifacts/2-11-evening-timer-and-win-lose-conditions.md] - Timer implementation in game loop
+
+## Dev Agent Record
+
+### Context Reference
+
+<!-- Path(s) to story context XML will be added here by context workflow -->
+
+### Agent Model Used
+
+{{agent_model_name_version}}
+
+### Debug Log References
+
+### Completion Notes List
+
+### File List
+        ]]>
+      </content>
+    </story-file>
+  </story-documentation>
+
+  <product-requirements>
+    <prd-section>
+      <title>Main Game Screen Layout - HUD</title>
+      <content>
+        <![CDATA[
+**HUD Layout:**
+- HUD positioned at top of screen
+- Left section: Evening timer (MM:SS format)
+- Center section: «Затишок» bar (horizontal bar with gradient)
+- Right section: XP & Level + «Світлячки» currency
+
+**Timer Display:**
+- Timer in "MM:SS" format (e.g., "01:30")
+- Timer icon next to time display
+- Timer updates every second
+- Timer color changes based on time remaining (optional: red when < 10 seconds)
+- Ukrainian label: "Час:" before timer value
+        ]]>
+      </content>
+    </prd-section>
+    <prd-section>
+      <title>Functional Requirements - FR8</title>
+      <content>
+        <![CDATA[
+**FR8:** The game tracks and displays the evening timer showing remaining time (60-90 seconds per evening)
+        ]]>
+      </content>
+    </prd-section>
+    <prd-section>
+      <title>Localization & Content - FR40, FR41, FR42</title>
+      <content>
+        <![CDATA[
+**FR40:** All game text, UI elements, and content are displayed in Ukrainian language
+**FR41:** Key game terms remain in Ukrainian («Вечір при блекауті», «Світлячки», «Затишок»)
+**FR42:** The game maintains a light, cozy, humorous tone throughout all content
+
+**Timer Text:**
+- Timer label: "Час:" (Time:)
+- Format: "Час: 01:30" or similar
+- Ukrainian text added incrementally (Story 2.15 for full localization)
+        ]]>
+      </content>
+    </prd-section>
+  </product-requirements>
+
+  <ux-design>
+    <ux-section>
+      <title>Main Game Screen Layout</title>
+      <content>
+        <![CDATA[
+**HUD Layout:**
+- HUD positioned at top of screen with 8px padding
+- Dark background with light text and warm accents
+- Always visible during gameplay
+
+**Left Section - Timer:**
+- Evening timer in "MM:SS" format (e.g., "01:30")
+- Timer icon (⏱️ or clock SVG) next to time display
+- Light text color (readable on dark background)
+- Optional: Red/orange color when time < 10 seconds
+- Ukrainian label: "Час:" before timer value
+- Smooth CSS transitions for color changes
+        ]]>
+      </content>
+    </ux-section>
+    <ux-section>
+      <title>Visual Foundation - Color System</title>
+      <content>
+        <![CDATA[
+**HUD Colors:**
+- Background: Dark Night `#1a1f2e` or darker
+- Text: Light text `#f5f5f5` or `#ffffff` (readable on dark)
+- Accents: Warm Orange `#ff8c42` or Candle Yellow `#f4a460`
+- Warning: Red `#f44336` when time < 10 seconds (optional)
+
+**Timer Styling:**
+- Light text for readability on dark background
+- Smooth CSS transitions for color changes
+- Timer icon matches overall game aesthetic
+        ]]>
+      </content>
+    </ux-section>
+  </ux-design>
+
+  <architecture>
+    <architecture-section>
+      <title>Project Structure - UI Components</title>
+      <content>
+        <![CDATA[
+**Component Structure:**
+```
+src/
+├── components/
+│   ├── ui/
+│   │   ├── HUD.tsx                 # Top HUD bar (timer, coziness, XP)
+│   │   ├── Timer.tsx               # Evening timer display
+│   │   ├── CozinessBar.tsx         # «Затишок» meter component
+│   │   └── Timer.module.css        # Timer component styles
+│   └── game/
+│       └── (game components)
+├── contexts/
+│   └── GameContext.tsx             # Game state context
+└── types/
+    └── game.ts                     # GameState interface
+```
+
+**Component Location:**
+- Timer component: `src/components/ui/Timer.tsx`
+- HUD component: `src/components/ui/HUD.tsx` (may need to be created)
+- CSS Modules: `src/components/ui/Timer.module.css`
+        ]]>
+      </content>
+    </architecture-section>
+    <architecture-section>
+      <title>Data Architecture - GameState</title>
+      <content>
+        <![CDATA[
+**Game State:**
+```typescript
+interface GameState {
+  // Current evening state
+  coziness: number;           // 0-100
+  timeRemaining: number;      // seconds
+  score: number;              // points
+  activeEvents: GameEvent[];  // currently active events
+  
+  // Game status
+  isPlaying: boolean;
+  isPaused: boolean;
+  gameOver: boolean;
+}
+```
+
+**Timer Access:**
+- Timer reads from `GameContext.gameState.timeRemaining`
+- timeRemaining is a number (seconds)
+- Timer updates automatically when GameContext updates (React re-render)
+        ]]>
+      </content>
+    </architecture-section>
+    <architecture-section>
+      <title>State Management - GameContext</title>
+      <content>
+        <![CDATA[
+**GameContext Usage:**
+```typescript
+// In Timer component:
+import { useGame } from '../contexts/GameContext';
+
+const { gameState } = useGame();
+const timeRemaining = gameState.timeRemaining; // number in seconds
+```
+
+**State Updates:**
+- Timer value updated in game loop (useGameLoop.ts)
+- setTimeRemaining called every frame (frame-rate independent)
+- Component re-renders automatically when timeRemaining changes
+- No local state needed if reading directly from context
+        ]]>
+      </content>
+    </architecture-section>
+    <architecture-section>
+      <title>Styling Approach - CSS Modules</title>
+      <content>
+        <![CDATA[
+**CSS Modules:**
+- Use CSS Modules for component styles (ADR-005)
+- Component styles in `Timer.module.css`
+- Scoped styles prevent conflicts
+- Use CSS variables for consistent colors
+- Smooth CSS transitions for color changes
+        ]]>
+      </content>
+    </architecture-section>
+  </architecture>
+
+  <epic-context>
+    <epic-section>
+      <title>Epic 2: Core Gameplay - Story 2.13</title>
+      <content>
+        <![CDATA[
+### Story 2.13: Evening Timer HUD Component
+
+As a player,
+I want to see the evening timer in the HUD,
+So that I know how much time I have remaining.
+
+**Acceptance Criteria:**
+
+**Given** I am playing the game
+**When** the gameplay screen is active
+**Then** `Timer.tsx` component displays:
+- Evening timer in "MM:SS" format (e.g., "01:30")
+- Timer icon next to time display
+- Timer updates every second
+- Timer color changes based on time remaining (optional: red when < 10 seconds)
+
+**And** timer component:
+- Is positioned in HUD left section
+- Reads timer value from GameContext
+- Updates in real-time as timer counts down
+- Styled according to UX design (light text, readable)
+
+**And** timer text is in Ukrainian: "Час: 01:30" or similar format
+
+**Prerequisites:** Story 2.11 (Evening Timer), Story 2.1 (Game Loop)
+
+**Technical Notes:**
+- Follow UX design document "Main Game Screen Layout" section
+- Component reads from GameContext.timeRemaining
+- Use CSS for styling and color transitions
+- Ukrainian text added incrementally (Story 2.15)
+        ]]>
+      </content>
+    </epic-section>
+  </epic-context>
+
+  <code-artifacts>
+    <code-file>
+      <path>src/contexts/GameContext.tsx</path>
+      <purpose>Game state management and timeRemaining property</purpose>
+      <relevant-sections>
+        <section>
+          <lines>39-54</lines>
+          <description>GameState interface with timeRemaining property</description>
+        </section>
+        <section>
+          <lines>46-54</lines>
+          <description>DEFAULT_GAME_STATE with timeRemaining: 75 seconds</description>
+        </section>
+        <section>
+          <lines>75-100</lines>
+          <description>GameStateContextValue interface with gameState and update functions</description>
+        </section>
+        <section>
+          <lines>129-133</lines>
+          <description>setTimeRemaining function for updating timer value</description>
+        </section>
+        <section>
+          <lines>240-245</lines>
+          <description>useGame hook for accessing GameContext</description>
+        </section>
+      </relevant-sections>
+    </code-file>
+
+    <code-file>
+      <path>src/types/game.ts</path>
+      <purpose>GameState type definition with timeRemaining property</purpose>
+      <relevant-sections>
+        <section>
+          <lines>39-54</lines>
+          <description>GameState interface with timeRemaining: number (seconds)</description>
+        </section>
+      </relevant-sections>
+    </code-file>
+
+    <code-file>
+      <path>src/hooks/useGameLoop.ts</path>
+      <purpose>Game loop hook that updates timeRemaining every frame</purpose>
+      <relevant-sections>
+        <section>
+          <lines>45-55</lines>
+          <description>useGameLoop hook setup with useGame hook</description>
+        </section>
+        <section>
+          <lines>129-142</lines>
+          <description>Timer countdown logic in game loop (updates timeRemaining every frame)</description>
+        </section>
+      </relevant-sections>
+    </code-file>
+
+    <code-file>
+      <path>src/utils/constants.ts</path>
+      <purpose>Game constants including EVENING_DURATION</purpose>
+      <relevant-sections>
+        <section>
+          <lines>EVENING_DURATION</lines>
+          <description>Evening duration constant (60-90 seconds, configurable)</description>
+        </section>
+      </relevant-sections>
+    </code-file>
+  </code-artifacts>
+
+  <related-stories>
+    <story>
+      <key>2-11-evening-timer-and-win-lose-conditions</key>
+      <title>Evening Timer and Win/Lose Conditions</title>
+      <status>done</status>
+      <relationship>Timer countdown implemented in game loop (useGameLoop.ts), timeRemaining stored in GameState</relationship>
+    </story>
+    <story>
+      <key>2-12-scoring-system</key>
+      <title>Scoring System</title>
+      <status>done</status>
+      <relationship>GameContext provides all game state values, components read via useGame hook</relationship>
+    </story>
+    <story>
+      <key>2-14-затишок-bar-hud-component</key>
+      <title>«Затишок» Bar HUD Component</title>
+      <status>backlog</status>
+      <relationship>CozinessBar will be positioned in HUD center section (next to Timer in left section)</relationship>
+    </story>
+    <story>
+      <key>2-15-ukrainian-text-for-core-gameplay</key>
+      <title>Ukrainian Text for Core Gameplay</title>
+      <status>backlog</status>
+      <relationship>Full Ukrainian localization will be added incrementally (timer text is early Ukrainian text)</relationship>
+    </story>
+    <story>
+      <key>4-1-xp-and-level-hud-display</key>
+      <title>XP and Level HUD Display</title>
+      <status>backlog</status>
+      <relationship>XP/Level display will be positioned in HUD right section (completes HUD layout)</relationship>
+    </story>
+  </related-stories>
+
+  <implementation-notes>
+    <note>
+      <title>Timer Component Structure</title>
+      <content>
+        Timer component should be created at `src/components/ui/Timer.tsx`.
+        Component reads from GameContext via useGame hook:
+        `const { gameState } = useGame();`
+        `const timeRemaining = gameState.timeRemaining; // number in seconds`
+        
+        No local state needed - component re-renders automatically when GameContext updates.
+      </content>
+    </note>
+    <note>
+      <title>Time Formatting</title>
+      <content>
+        Create formatTime function to convert seconds to "MM:SS" format:
+        - Input: number (seconds, e.g., 90)
+        - Output: string ("MM:SS", e.g., "01:30")
+        - Handle edge cases: 0 seconds = "00:00", > 60 minutes = "MM:SS" format
+        - Use Math.floor for minutes, modulo for seconds
+      </content>
+    </note>
+    <note>
+      <title>HUD Integration</title>
+      <content>
+        HUD component needs to be created or updated at `src/components/ui/HUD.tsx`.
+        HUD layout:
+        - Left section: Timer component (this story)
+        - Center section: CozinessBar component (Story 2.14)
+        - Right section: XP/Level display (Story 4.1)
+        
+        HUD should be positioned at top of screen with dark background, light text, warm accents.
+        HUD is always visible during gameplay.
+      </content>
+    </note>
+    <note>
+      <title>Ukrainian Text</title>
+      <content>
+        Add Ukrainian label "Час:" before timer value.
+        Format: "Час: 01:30" or "01:30" (label optional if icon is clear).
+        Ukrainian text added incrementally - this is early Ukrainian text (full localization in Story 2.15).
+        Reference PRD FR40, FR41, FR42 for localization requirements.
+      </content>
+    </note>
+    <note>
+      <title>Color Transitions</title>
+      <content>
+        Optional: Implement color change when time < 10 seconds.
+        Default color: Light text (readable on dark background).
+        Warning color: Red/orange when time is low (< 10 seconds).
+        Use CSS transitions for smooth color changes.
+        Reference UX design for color specifications.
+      </content>
+    </note>
+    <note>
+      <title>Timer Updates</title>
+      <content>
+        Timer updates automatically when GameContext updates (React re-render).
+        No need for useEffect with interval - GameContext already updates every frame in game loop.
+        Timer value updates smoothly (frame-rate independent) in useGameLoop.ts.
+        Component re-renders when timeRemaining changes, displaying updated time.
+      </content>
+    </note>
+  </implementation-notes>
+
+</story-context>
+

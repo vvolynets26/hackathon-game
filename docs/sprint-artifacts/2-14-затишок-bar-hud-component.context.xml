@@ -1,0 +1,293 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>14</storyId>
+    <title>«Затишок» Bar HUD Component</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-14-затишок-bar-hud-component.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want to see the «Затишок» meter in the HUD</iWant>
+    <soThat>So that I always know my current coziness level</soThat>
+    <tasks>
+      <task id="1" description="Create CozinessBar component structure (AC: 1, 2)">
+        <subtask>Create `src/components/ui/CozinessBar.tsx` component</subtask>
+        <subtask>Import GameContext and useGame hook</subtask>
+        <subtask>Read coziness value from GameContext</subtask>
+        <subtask>Display horizontal bar with gradient fill</subtask>
+        <subtask>Position component in HUD center section</subtask>
+        <subtask>Reference GameContext for coziness value [Source: src/contexts/GameContext.tsx]</subtask>
+        <subtask>Reference UX design for HUD layout [Source: docs/ux-design-specification.md#Main-Game-Screen-Layout]</subtask>
+      </task>
+      <task id="2" description="Implement gradient bar with value-based colors (AC: 1, 3)">
+        <subtask>Create gradient function to map coziness value (0-100) to gradient colors</subtask>
+        <subtask>Implement red → yellow → green gradient based on value:
+          - Low (0-33): Red #f44336 → Orange #ff9800
+          - Medium (34-66): Orange #ff9800 → Yellow #ffeb3b
+          - High (67-100): Yellow #ffeb3b → Green #4caf50</subtask>
+        <subtask>Set bar fill width based on coziness percentage (0-100%)</subtask>
+        <subtask>Use CSS linear-gradient or background-color transitions</subtask>
+        <subtask>Ensure smooth transitions when value changes</subtask>
+        <subtask>Reference UX design for gradient specifications [Source: docs/ux-design-specification.md#Color-System]</subtask>
+      </task>
+      <task id="3" description="Add label and value display (AC: 1, 4)">
+        <subtask>Add Ukrainian label "Затишок" above or inside bar</subtask>
+        <subtask>Optionally display current value (percentage or number, e.g., "65%")</subtask>
+        <subtask>Style label with light text color (readable on dark background)</subtask>
+        <subtask>Position label relative to bar (above or inside)</subtask>
+        <subtask>Reference PRD for Ukrainian localization [Source: docs/prd.md#Localization-&-Content]</subtask>
+      </task>
+      <task id="4" description="Implement smooth bar animations (AC: 1, 2, 3)">
+        <subtask>Use CSS transitions for smooth bar fill/empty animations</subtask>
+        <subtask>Ensure bar updates smoothly when coziness value changes</subtask>
+        <subtask>Add pulse/glow effect when value changes significantly (optional, Story 4.9)</subtask>
+        <subtask>Use CSS transforms or width transitions for performance</subtask>
+        <subtask>Reference architecture for performance considerations [Source: docs/architecture.md#Performance-Considerations]</subtask>
+      </task>
+      <task id="5" description="Integrate CozinessBar into HUD layout (AC: 2)">
+        <subtask>Update `src/components/ui/HUD.tsx` component</subtask>
+        <subtask>Add CozinessBar component to HUD center section</subtask>
+        <subtask>Ensure HUD layout matches UX design (left: timer, center: coziness bar, right: XP/level)</subtask>
+        <subtask>Style HUD center section appropriately</subtask>
+        <subtask>Ensure bar is readable against dark background</subtask>
+        <subtask>Reference architecture for HUD structure [Source: docs/architecture.md#Project-Structure]</subtask>
+      </task>
+      <task id="6" description="Testing and validation (AC: 1, 2, 3, 4)">
+        <subtask>Test bar displays correct gradient colors for different values (0, 33, 50, 66, 100)</subtask>
+        <subtask>Test bar fills/empties smoothly when value changes</subtask>
+        <subtask>Test bar reads from GameContext correctly</subtask>
+        <subtask>Test bar updates in real-time as coziness changes</subtask>
+        <subtask>Test bar positioned correctly in HUD center section</subtask>
+        <subtask>Test Ukrainian text displays correctly</subtask>
+        <subtask>Test bar works during gameplay</subtask>
+        <subtask>Test bar handles edge cases (0, 100, negative values clamped)</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <given>I am playing the game</given>
+      <when>the gameplay screen is active</when>
+      <then>`CozinessBar.tsx` component displays:
+        - Horizontal bar with gradient (red → yellow → green based on value)
+        - Label "Затишок" above or inside bar
+        - Bar fills/empties smoothly as value changes
+        - Current value visible (percentage or number, optional)</then>
+    </criterion>
+    <criterion id="AC2">
+      <given>the coziness bar component is rendered</given>
+      <when>the game is running</when>
+      <then>coziness bar:
+        - Is positioned in HUD center section
+        - Reads coziness value from GameContext
+        - Updates in real-time as value changes
+        - Shows visual feedback when value changes significantly (pulse/glow, Story 4.9)</then>
+    </criterion>
+    <criterion id="AC3">
+      <given>the coziness bar is displayed</given>
+      <when>I view the bar styling</when>
+      <then>bar styling:
+        - Gradient colors match UX design (red #f44336 → yellow #ffeb3b → green #4caf50)
+        - Smooth CSS transitions for value changes
+        - Readable against dark background</then>
+    </criterion>
+    <criterion id="AC4">
+      <given>the coziness bar is displayed</given>
+      <when>I view the label text</when>
+      <then>label text is in Ukrainian: "Затишок"</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Game Mechanics - «Затишок» Range</section>
+        <snippet>«Затишок» Range: 0-100 (starts at 60 on early levels). Decreases over time (decay rate). Increases when events are resolved successfully. Decreases when events expire or fail.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>User Experience Principles - Main Game Screen Layout</section>
+        <snippet>Top Bar - Center: «Затишок» bar: Horizontal bar with gradient from red → yellow → green. Label inside or above: "Затишок".</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Functional Requirements - FR7</section>
+        <snippet>FR7: The game tracks and displays the «Затишок» meter (0-100) which decreases over time and changes based on event outcomes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Localization & Content - FR40-FR42</section>
+        <snippet>FR40: All game text, UI elements, and content are displayed in Ukrainian language. FR41: Key game terms remain in Ukrainian («Вечір при блекауті», «Світлячки», «Затишок»).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Color System - «Затишок» Bar Gradient</section>
+        <snippet>«Затишок» Bar Gradient: Low (0-33): Red #f44336 → Orange #ff9800. Medium (34-66): Orange #ff9800 → Yellow #ffeb3b. High (67-100): Yellow #ffeb3b → Green #4caf50.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Main Game Screen Layout - Top Bar</section>
+        <snippet>Top Bar - Center: «Затишок» bar: Horizontal bar with gradient from red → yellow → green. Label inside or above: "Затишок".</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Project Structure - Components</section>
+        <snippet>Components: ui/CozinessBar.tsx - «Затишок» meter component. HUD.tsx - Top HUD bar (timer, coziness, XP).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>ADR-005: CSS Modules for Styling</section>
+        <snippet>Decision: Use CSS Modules for component styling. Rationale: Scoped styles prevent conflicts, good organization, no runtime overhead, standard approach with Vite.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Performance Considerations</section>
+        <snippet>Rendering Optimization: CSS transforms for animations (GPU-accelerated). Avoid layout thrashing (use `transform` not `top/left`). Debounce localStorage writes (every 2-3 seconds).</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.14: «Затишок» Bar HUD Component</section>
+        <snippet>Story 2.14 implements the coziness bar HUD component. Component reads from GameContext.coziness, displays horizontal bar with gradient, positioned in HUD center section. Ukrainian label "Затишок" required.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-13-evening-timer-hud-component.md</path>
+        <title>Story 2.13: Evening Timer HUD Component</title>
+        <section>Dev Agent Record</section>
+        <snippet>HUD Structure Created: HUD component already exists with three-section layout. Left section: Timer component (already implemented). Center section: Empty div ready for CozinessBar (this story). Right section: Empty div ready for XP/Level (Story 4.1, 4.2).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-10-затишок-meter-system.md</path>
+        <title>Story 2.10: «Затишок» Meter System</title>
+        <section>Dev Agent Record</section>
+        <snippet>Coziness System: Coziness meter implemented in game loop. Coziness value stored in GameState.coziness (0-100). Coziness value accessible from GameContext.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, useGame, GameState</symbol>
+        <lines>1-247</lines>
+        <reason>Provides game state including coziness value. CozinessBar component will use `useGame()` hook to read `gameState.coziness` (0-100). Context provides `setCoziness` function for updates, but component only needs read access.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/game.ts</path>
+        <kind>type</kind>
+        <symbol>GameState interface</symbol>
+        <lines>39-54</lines>
+        <reason>Defines GameState interface with coziness property (number, 0-100). CozinessBar reads this value from GameContext.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/HUD.tsx</path>
+        <kind>component</kind>
+        <symbol>HUD component</symbol>
+        <lines>1-52</lines>
+        <reason>HUD component with three-section layout. Center section (styles.centerSection) is currently empty and ready for CozinessBar component. Component needs to import and render CozinessBar in center section.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/Timer.tsx</path>
+        <kind>component</kind>
+        <symbol>Timer component</symbol>
+        <lines>1-70</lines>
+        <reason>Reference implementation for HUD component. Shows pattern: uses `useGame()` hook, reads from `gameState`, uses CSS Modules for styling, positioned in HUD left section. CozinessBar should follow similar pattern in center section.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/HUD.module.css</path>
+        <kind>style</kind>
+        <symbol>HUD styles</symbol>
+        <lines>N/A</lines>
+        <reason>HUD CSS Module defines styles for three-section layout (leftSection, centerSection, rightSection). Center section styles may need updates when CozinessBar is added.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem>node</ecosystem>
+      <packages>
+        <package name="react" version="^19.2.0">React framework for component-based UI</package>
+        <package name="react-dom" version="^19.2.0">React DOM rendering</package>
+        <package name="typescript" version="~5.9.3">TypeScript for type safety</package>
+        <package name="vite" version="^5.4.11">Build tool and dev server</package>
+        <package name="@vitejs/plugin-react" version="^4.3.1">Vite React plugin</package>
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Component Structure: CozinessBar component at `src/components/ui/CozinessBar.tsx`. HUD component at `src/components/ui/HUD.tsx` (already exists, needs update). Components use React functional components with hooks. CSS Modules for styling (CozinessBar.module.css).</constraint>
+    <constraint>State Management: CozinessBar reads from GameContext.coziness. GameContext provides coziness as number (0-100). Bar updates automatically when GameContext updates (React re-render). No need for local state if reading directly from context.</constraint>
+    <constraint>Gradient Implementation: Coziness value (0-100) maps to gradient colors: Low (0-33): Red #f44336 → Orange #ff9800. Medium (34-66): Orange #ff9800 → Yellow #ffeb3b. High (67-100): Yellow #ffeb3b → Green #4caf50. Use CSS linear-gradient or background-color with transitions. Bar fill width = (coziness / 100) * 100% (clamped 0-100%).</constraint>
+    <constraint>HUD Layout: HUD positioned at top of screen. Left section: Evening timer (Story 2.13 - already implemented). Center section: «Затишок» bar (this story). Right section: XP & Level + «Світлячки» (Story 4.1, 4.2). HUD styled with dark background, light text, warm accents. HUD always visible during gameplay.</constraint>
+    <constraint>Styling: Use CSS Modules for component styles (ADR-005). Gradient colors match UX design exactly. Light text color for label (readable on dark background). Smooth CSS transitions for value changes (GPU-accelerated). Bar fill animation uses width or transform for performance.</constraint>
+    <constraint>Ukrainian Localization: Label: "Затишок" (Coziness). Format: "Затишок" above bar, optionally "65%" inside or below bar. Ukrainian text added incrementally (Story 2.15 for full localization). Reference PRD FR40, FR41, FR42 for localization.</constraint>
+    <constraint>Performance: Use CSS transitions (not JavaScript) for smooth animations. GPU-accelerated transforms for bar fill animation. Ensure 60 FPS maintained during gameplay. No layout thrashing (use transform/width, not top/left).</constraint>
+    <constraint>Architecture Patterns: Follow naming conventions (PascalCase for components, camelCase for functions). Match file name to component name. Import organization: React imports, third-party imports, internal imports, type imports, CSS imports (at end).</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>GameContext API</name>
+      <kind>React Context</kind>
+      <signature>const { gameState } = useGame(); gameState.coziness: number (0-100)</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameState Interface</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface GameState { coziness: number; timeRemaining: number; score: number; activeEvents: GameEvent[]; isPlaying: boolean; isPaused: boolean; gameOver: boolean; }</signature>
+      <path>src/types/game.ts</path>
+    </interface>
+    <interface>
+      <name>HUD Component Props</name>
+      <kind>React Component</kind>
+      <signature>export function HUD(): JSX.Element</signature>
+      <path>src/components/ui/HUD.tsx</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>Testing approach: Manual testing during development. No automated test framework configured yet (Vitest mentioned in architecture but not installed). Test in latest Chrome browser (primary target). Test component in isolation and integrated with HUD. Verify visual appearance, gradient colors, animations, and real-time updates. Test edge cases: coziness values 0, 33, 50, 66, 100, and rapid value changes.</standards>
+    <locations>No test files exist yet. Future test location: `src/components/ui/CozinessBar.test.tsx` (co-located with component). Test organization: Co-located test files next to source files. Test files: `*.test.ts` or `*.spec.ts`.</locations>
+    <ideas>
+      <test id="AC1" description="Test bar displays correct gradient colors for different coziness values">
+        <scenario>Set coziness to 0, verify red gradient. Set to 33, verify red-orange transition. Set to 50, verify orange-yellow. Set to 66, verify yellow transition. Set to 100, verify green gradient.</scenario>
+      </test>
+      <test id="AC1" description="Test bar fill width matches coziness percentage">
+        <scenario>Set coziness to 50, verify bar fill is 50% width. Set to 75, verify 75% width. Set to 0, verify 0% width. Set to 100, verify 100% width.</scenario>
+      </test>
+      <test id="AC2" description="Test bar reads from GameContext correctly">
+        <scenario>Render CozinessBar component. Verify it reads gameState.coziness from GameContext. Update GameContext coziness value, verify bar updates automatically.</scenario>
+      </test>
+      <test id="AC2" description="Test bar positioned correctly in HUD center section">
+        <scenario>Render HUD component with CozinessBar. Verify CozinessBar is in center section. Verify layout matches UX design (left: timer, center: coziness bar, right: empty for now).</scenario>
+      </test>
+      <test id="AC3" description="Test smooth CSS transitions for value changes">
+        <scenario>Set coziness to 50, then rapidly change to 75. Verify bar fill animates smoothly (no stuttering). Verify transition duration is reasonable (&lt; 300ms).</scenario>
+      </test>
+      <test id="AC4" description="Test Ukrainian label displays correctly">
+        <scenario>Render CozinessBar component. Verify label text is "Затишок" (not English). Verify label is readable against dark background. Verify label positioned correctly (above or inside bar).</scenario>
+      </test>
+      <test id="edge" description="Test edge cases: 0, 100, negative values clamped">
+        <scenario>Set coziness to 0, verify bar shows empty (0% fill) with red gradient. Set to 100, verify bar shows full (100% fill) with green gradient. Set to -10, verify clamped to 0. Set to 150, verify clamped to 100.</scenario>
+      </test>
+      <test id="edge" description="Test bar works during gameplay">
+        <scenario>Start game, verify coziness bar displays. Resolve events, verify bar increases smoothly. Let events expire, verify bar decreases smoothly. Verify bar updates in real-time during active gameplay.</scenario>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

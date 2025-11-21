@@ -1,0 +1,142 @@
+/**
+ * Event Indicator Styles
+ * 
+ * Styles for event visual indicators displayed on the apartment layout.
+ * Color-coded by priority: minor (blue), standard (yellow), critical (orange/red).
+ */
+
+.eventIndicator {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Smooth GPU-accelerated transitions for position changes */
+  transform: translate3d(-50%, -50%, 0); /* Force GPU acceleration */
+  transition: transform 0.1s ease-out;
+  will-change: transform; /* GPU acceleration hint */
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Timer ring container - holds both ring and icon */
+.timerRingContainer {
+  position: relative;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Circular timer ring - uses conic-gradient for countdown visualization */
+.timerRing {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  /* Mask to create ring effect (not filled circle) */
+  mask: radial-gradient(circle, transparent 60%, black 60%);
+  -webkit-mask: radial-gradient(circle, transparent 60%, black 60%);
+  /* Smooth GPU-accelerated animation for countdown */
+  transition: background 0.1s linear;
+  /* Ensure GPU acceleration */
+  will-change: background;
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Performance optimization */
+}
+
+.icon {
+  position: relative;
+  z-index: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  /* GPU-accelerated pulse animation to draw attention */
+  animation: pulse 2s ease-in-out infinite;
+  /* Ensure animation uses transform without conflicting with parent */
+  transform-origin: center;
+  will-change: transform; /* GPU acceleration hint */
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Performance optimization */
+}
+
+.timer {
+  font-size: 0.75rem; /* 12px - Tiny size from UX design specification */
+  font-weight: bold;
+  margin-top: 0.25rem; /* 4px - xs spacing from 8px grid system */
+  color: #ffffff; /* Light Text from UX design specification */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 4px rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.125rem 0.375rem; /* 2px 6px - follows 8px grid (xs spacing) */
+  border-radius: 0.5rem; /* 8px - consistent with UX design specification */
+  /* Smooth GPU-accelerated text updates */
+  transition: opacity 0.1s ease-out;
+  will-change: opacity; /* GPU acceleration hint for transitions */
+}
+
+/* Priority color coding */
+.priorityMinor {
+  /* Soft blue for minor events */
+}
+
+.priorityMinor .icon {
+  filter: drop-shadow(0 0 8px rgba(100, 181, 246, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.priorityStandard {
+  /* Light yellow for standard events */
+}
+
+.priorityStandard .icon {
+  filter: drop-shadow(0 0 8px rgba(255, 241, 118, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.priorityCritical {
+  /* Orange/red for critical events */
+}
+
+.priorityCritical .icon {
+  filter: drop-shadow(0 0 8px rgba(255, 140, 66, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  /* Faster GPU-accelerated pulse for critical events */
+  animation: pulse 1s ease-in-out infinite;
+  will-change: transform; /* GPU acceleration hint */
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+/* Priority-based timer ring colors are applied via inline styles in component */
+/* Timer ring inherits smooth transitions from .timerRing class */
+
+/* GPU-accelerated pulse animation to draw attention */
+@keyframes pulse {
+  0%, 100% {
+    transform: translateZ(0) scale(1); /* GPU-accelerated */
+  }
+  50% {
+    transform: translateZ(0) scale(1.1); /* GPU-accelerated */
+  }
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .eventIndicator {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  
+  .timerRingContainer {
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+  
+  .icon {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .timer {
+    font-size: 0.625rem;
+  }
+}
+

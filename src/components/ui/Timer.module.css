@@ -1,0 +1,63 @@
+/**
+ * Timer Component Styles
+ *
+ * Styles for the evening timer display in the HUD.
+ * Uses light text on dark background with optional warning color.
+ */
+
+.timer {
+  display: flex;
+  gap: 0.5rem; /* 8px - sm spacing from 8px grid system (UX Design Specification) */
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #f5f5f5; /* Near-White from UX design specification */
+  /* Smooth GPU-accelerated transitions for color changes */
+  transition: color 0.3s ease;
+  will-change: color; /* GPU acceleration hint */
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Performance optimization */
+  align-items: baseline;
+}
+
+.icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.label {
+  font-size: 1rem; /* 16px - Body size from UX design specification */
+  opacity: 0.9;
+}
+
+.time {
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  /* Smooth GPU-accelerated transitions for color changes */
+  transition: color 0.3s ease;
+  will-change: color; /* GPU acceleration hint */
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Performance optimization */
+}
+
+/* Warning color when time is low (< 10 seconds) */
+.time.lowTime {
+  color: #f44336; /* Red - warning color */
+  animation: pulse 1s ease-in-out infinite;
+  will-change: opacity; /* GPU acceleration hint */
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+/* GPU-accelerated pulse animation for low time warning */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: translateZ(0); /* GPU-accelerated */
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateZ(0); /* GPU-accelerated */
+  }
+}
+

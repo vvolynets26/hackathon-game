@@ -25,9 +25,10 @@
 import { useEffect, useRef } from 'react';
 import type { GameState } from '../types/game';
 import { useGame } from '../contexts/GameContext';
-// Note: useProgression will be used in Story 3.3 for level-based bonuses
-// import { useProgression } from '../contexts/ProgressionContext';
-import { EVENING_DURATION, COZINESS_START, COZINESS_DECAY_RATE } from '../utils/constants';
+import { useProgression } from '../contexts/ProgressionContext';
+import { EVENING_DURATION, COZINESS_START, COZINESS_DECAY_RATE, EVENT_SPAWN_INTERVAL, getEventSpawnIntervalWithBonuses, getStartingCozinessWithBonuses, getCozinessDecayRateWithBonuses, getPurchasedBuffs, getBuffEffect } from '../utils/constants';
+import { EventManager } from '../core/EventManager';
+import { ProgressionSystem } from '../core/ProgressionSystem';
 
 /**
  * Game loop hook.
@@ -47,11 +48,27 @@ export function useGameLoop(): void {
     setTimeRemaining,
     setCoziness,
     setPaused,
+    setPlaying,
+    setGameOver,
+    addEvent,
+    updateGameState,
   } = useGame();
   
-  // Note: progressionState will be used in Story 3.3 for level-based bonuses
-  // For now, we just ensure the hook is ready for that integration
-  // const { progressionState } = useProgression();
+  // Progression context for XP calculation, currency calculation, level tracking, and achievement unlocking
+  // Level is used for level-based bonuses (Story 3.3)
+  const { addXP, addSvitlyachky, progressionState, unlockAchievement } = useProgression();
+  
+  // ProgressionSystem instance for XP calculation
+  const progressionSystemRef = useRef<ProgressionSystem | null>(null);
+  // Initialize ProgressionSystem once (using null check pattern to avoid ref access during render)
+  if (progressionSystemRef.current == null) {
+    progressionSystemRef.current = new ProgressionSystem();
+  }
+  
+  // Track if XP has been calculated for this game session (prevent duplicate calculations)
+  const xpCalculatedRef = useRef<boolean>(false);
+  // Track if currency has been calculated for this game session (prevent duplicate calculations)
+  const currencyCalculatedRef = useRef<boolean>(false);
 
   // Use refs to track animation frame and last frame time
   const animationFrameRef = useRef<number | null>(null);
@@ -62,13 +79,51 @@ export function useGameLoop(): void {
   const gameStateRef = useRef<GameState>(gameState);
   const setTimeRemainingRef = useRef(setTimeRemaining);
   const setCozinessRef = useRef(setCoziness);
+  const setPlayingRef = useRef(setPlaying);
+  const setGameOverRef = useRef(setGameOver);
+  const updateGameStateRef = useRef(updateGameState);
+  
+  // EventManager instance (created once, reused across renders)
+  const eventManagerRef = useRef<EventManager | null>(null);
+  
+  // Spawn timer state (tracks elapsed time since last spawn)
+  const spawnTimerRef = useRef<number>(0);
+  
+  // Player level from ProgressionContext (used for level-based bonuses - Story 3.3)
+  // Store level in ref to avoid closure issues in game loop
+  const playerLevelRef = useRef<number>(progressionState.level);
+  
+  // ProgressionState ref for shop buffs (used for shop buff calculations - Story 3.4)
+  const progressionStateRef = useRef(progressionState);
 
+  // Initialize EventManager once
+  useEffect(() => {
+    if (!eventManagerRef.current) {
+      eventManagerRef.current = new EventManager(addEvent);
+    } else {
+      // Update callback if it changes
+      eventManagerRef.current.setAddEventCallback(addEvent);
+    }
+  }, [addEvent]);
+  
+  // Update EventManager active events count when game state changes
+  useEffect(() => {
+    if (eventManagerRef.current) {
+      eventManagerRef.current.setActiveEventsCount(gameState.activeEvents.length);
+    }
+  }, [gameState.activeEvents.length]);
+  
   // Update refs when values change
   useEffect(() => {
     gameStateRef.current = gameState;
     setTimeRemainingRef.current = setTimeRemaining;
     setCozinessRef.current = setCoziness;
-  }, [gameState, setTimeRemaining, setCoziness]);
+    setPlayingRef.current = setPlaying;
+    setGameOverRef.current = setGameOver;
+    updateGameStateRef.current = updateGameState;
+    playerLevelRef.current = progressionState.level; // Update level ref for bonuses
+    progressionStateRef.current = progressionState; // Update progression state ref for shop buffs
+  }, [gameState, setTimeRemaining, setCoziness, setPlaying, setGameOver, updateGameState, progressionState]);
 
   // Game loop function that runs every frame
   const gameLoop = (currentTime: number) => {
@@ -95,27 +150,258 @@ export function useGameLoop(): void {
 
         // Check if timer reached 0 (evening ended)
         if (newTimeRemaining === 0) {
-          // Timer ended - game over condition will be handled by game logic
-          // This will be implemented in Story 2.11
+          // Win condition: timer reached 0 AND coziness > 0 (Story 2.11)
+          if (currentState.coziness > 0) {
+            // Player won - timer ended with coziness remaining
+            setGameOverRef.current(true);
+            setPlayingRef.current(false);
+            
+            // Calculate and add XP (Story 3.1)
+            if (!xpCalculatedRef.current && progressionSystemRef.current) {
+              const xpEarned = progressionSystemRef.current.calculateXP(currentState.score);
+              if (xpEarned > 0) {
+                // Use setTimeout to ensure state updates happen after game over state is set
+                setTimeout(() => {
+                  addXP(xpEarned);
+                }, 0);
+              }
+              xpCalculatedRef.current = true;
+            }
+
+            // Calculate and add currency (Story 3.2)
+            if (!currencyCalculatedRef.current && progressionSystemRef.current) {
+              const finalCoziness = currentState.coziness;
+              const survived = finalCoziness > 0;
+              const currencyEarned = progressionSystemRef.current.calculateSvitlyachky(finalCoziness, survived);
+              if (currencyEarned > 0) {
+                // Use setTimeout to ensure state updates happen after game over state is set
+                setTimeout(() => {
+                  addSvitlyachky(currencyEarned);
+                }, 0);
+              }
+              currencyCalculatedRef.current = true;
+            }
+
+            // Check achievements at end of evening (Story 3.5)
+            if (progressionSystemRef.current) {
+              const newlyUnlocked = progressionSystemRef.current.checkAchievements(
+                progressionStateRef.current,
+                currentState
+              );
+              // Unlock each newly unlocked achievement
+              newlyUnlocked.forEach((achievementId) => {
+                setTimeout(() => {
+                  unlockAchievement(achievementId);
+                }, 0);
+              });
+            }
+            // Game loop will stop automatically when isPlaying becomes false
+          }
         }
       }
 
       // Update «Затишок» meter (decay)
       // Decay rate is per second, so multiply by deltaTime for frame-independent updates
+      // Apply level-based bonuses and shop buffs to decay rate (Story 3.3, 3.4)
       if (currentState.coziness > 0) {
-        const cozinessDecay = COZINESS_DECAY_RATE * deltaTime;
+        // Calculate shop buff for decay rate (Story 3.4)
+        // Note: Currently no decay rate buff in shop items, but structure is ready
+        const purchasedBuffs = getPurchasedBuffs(progressionStateRef.current.purchasedItems);
+        const decayBuff = purchasedBuffs.find((buff) => {
+          const effect = getBuffEffect(buff.id);
+          return effect?.type === 'decayReduction';
+        });
+        const decayBuffPercent = decayBuff ? getBuffEffect(decayBuff.id)?.value ?? 0 : 0;
+        
+        const decayRate = getCozinessDecayRateWithBonuses(
+          COZINESS_DECAY_RATE,
+          playerLevelRef.current,
+          decayBuffPercent
+        );
+        const cozinessDecay = decayRate * deltaTime;
         const newCoziness = Math.max(0, currentState.coziness - cozinessDecay);
         setCozinessRef.current(newCoziness);
 
+        // Track minimum coziness for achievement (Story 3.5)
+        // Update achievement progress with new minimum coziness
+        const currentMinCoziness = currentState.achievementProgress.minCoziness;
+        if (newCoziness < currentMinCoziness) {
+          updateGameStateRef.current({
+            achievementProgress: {
+              ...currentState.achievementProgress,
+              minCoziness: newCoziness,
+            },
+          });
+        }
+
         // Check if coziness reached 0 (lose condition)
         if (newCoziness === 0) {
-          // Coziness reached 0 - game over condition will be handled by game logic
-          // This will be implemented in Story 2.11
+          // Coziness reached 0 - lose condition (Story 2.10)
+          setGameOverRef.current(true);
+          setPlayingRef.current(false);
+          
+          // Calculate and add XP even on loss (Story 3.1)
+          if (!xpCalculatedRef.current && progressionSystemRef.current) {
+            const xpEarned = progressionSystemRef.current.calculateXP(currentState.score);
+            if (xpEarned > 0) {
+              // Use setTimeout to ensure state updates happen after game over state is set
+              setTimeout(() => {
+                addXP(xpEarned);
+              }, 0);
+            }
+            xpCalculatedRef.current = true;
+          }
+
+          // Calculate and add currency (Story 3.2)
+          if (!currencyCalculatedRef.current && progressionSystemRef.current) {
+            const finalCoziness = newCoziness; // Use newCoziness which is 0 at this point
+            const survived = false; // Coziness reached 0, so didn't survive
+            const currencyEarned = progressionSystemRef.current.calculateSvitlyachky(finalCoziness, survived);
+            if (currencyEarned > 0) {
+              // Use setTimeout to ensure state updates happen after game over state is set
+              setTimeout(() => {
+                addSvitlyachky(currencyEarned);
+              }, 0);
+            }
+            currencyCalculatedRef.current = true;
+          }
+
+          // Check achievements at end of evening (Story 3.5)
+          if (progressionSystemRef.current) {
+            const newlyUnlocked = progressionSystemRef.current.checkAchievements(
+              progressionStateRef.current,
+              currentState
+            );
+            // Unlock each newly unlocked achievement
+            newlyUnlocked.forEach((achievementId) => {
+              setTimeout(() => {
+                unlockAchievement(achievementId);
+              }, 0);
+            });
+          }
+          // Game loop will stop automatically when isPlaying becomes false
         }
       }
 
-      // Note: Active event timers will be updated in Story 2.5 (Event Timer Management)
-      // For now, we just ensure the game loop is ready for that integration
+      // Update event spawn timer (frame-rate independent using delta time)
+      if (eventManagerRef.current) {
+        spawnTimerRef.current += deltaTime;
+        
+        // Calculate spawn interval with level bonuses (Story 3.3)
+        const spawnInterval = getEventSpawnIntervalWithBonuses(
+          EVENT_SPAWN_INTERVAL,
+          playerLevelRef.current
+        );
+        
+        // Check if spawn interval is reached
+        if (spawnTimerRef.current >= spawnInterval) {
+          // Try to spawn an event
+          const activeEventsCount = currentState.activeEvents.length;
+          eventManagerRef.current.spawnEvent(
+            playerLevelRef.current,
+            activeEventsCount
+          );
+          
+          // Reset spawn timer after spawn attempt
+          // This ensures we check for spawn opportunities every spawn interval
+          // even when at max events (in case an event expires)
+          spawnTimerRef.current = 0;
+        }
+
+        // Update active event timers (frame-rate independent using delta time)
+        // This updates all event timers and detects expired events
+        // Note: updateEvents mutates event timers in-place, so we need to update
+        // GameContext state to trigger React re-renders for timer display
+        if (currentState.activeEvents.length > 0) {
+          // Update timers and get expired events
+          // We'll handle removal ourselves to avoid state update conflicts
+          const expiredEvents = eventManagerRef.current.updateEvents(
+            deltaTime,
+            currentState.activeEvents,
+            () => {
+              // Don't call removeEvent here - we'll handle removal in batch below
+              // This prevents race conditions with state updates
+            }
+          );
+
+          // Filter out expired events (timer <= 0) and update state
+          // This ensures expired events are removed and timer updates trigger re-renders
+          const remainingEvents = currentState.activeEvents.filter(
+            (event) => event.timer > 0
+          );
+
+          // Update GameContext with remaining events (creates new array reference, triggers re-render)
+          // This ensures timer displays update in real-time (Story 2.8) and expired events are removed
+          updateGameStateRef.current({
+            activeEvents: remainingEvents,
+          });
+
+          // Process expired events (apply coziness penalties)
+          // Apply penalties from all expired events and check for lose condition
+          if (expiredEvents.length > 0) {
+            // Calculate total penalty from all expired events
+            const totalPenalty = expiredEvents.reduce(
+              (sum, event) => sum + event.cozinessPenalty,
+              0
+            );
+            
+            // Calculate new coziness after applying all penalties
+            // Note: setCoziness internally clamps to 0-100, but we calculate here to check for lose condition
+            const currentCoziness = currentState.coziness;
+            const newCoziness = Math.max(0, Math.min(100, currentCoziness + totalPenalty));
+            
+            // Apply total penalty
+            setCozinessRef.current(newCoziness);
+            
+            // Check if coziness reached 0 (lose condition)
+            if (newCoziness === 0) {
+              setGameOverRef.current(true);
+              setPlayingRef.current(false);
+              
+              // Calculate and add XP even on loss (Story 3.1)
+              if (!xpCalculatedRef.current && progressionSystemRef.current) {
+                const xpEarned = progressionSystemRef.current.calculateXP(currentState.score);
+                if (xpEarned > 0) {
+                  // Use setTimeout to ensure state updates happen after game over state is set
+                  setTimeout(() => {
+                    addXP(xpEarned);
+                  }, 0);
+                }
+                xpCalculatedRef.current = true;
+              }
+
+              // Calculate and add currency (Story 3.2)
+              if (!currencyCalculatedRef.current && progressionSystemRef.current) {
+                const finalCoziness = newCoziness; // Use newCoziness which is 0 at this point
+                const survived = false; // Coziness reached 0, so didn't survive
+                const currencyEarned = progressionSystemRef.current.calculateSvitlyachky(finalCoziness, survived);
+                if (currencyEarned > 0) {
+                  // Use setTimeout to ensure state updates happen after game over state is set
+                  setTimeout(() => {
+                    addSvitlyachky(currencyEarned);
+                  }, 0);
+                }
+                currencyCalculatedRef.current = true;
+              }
+
+              // Check achievements at end of evening (Story 3.5)
+              if (progressionSystemRef.current) {
+                const newlyUnlocked = progressionSystemRef.current.checkAchievements(
+                  progressionStateRef.current,
+                  currentState
+                );
+                // Unlock each newly unlocked achievement
+                newlyUnlocked.forEach((achievementId) => {
+                  setTimeout(() => {
+                    unlockAchievement(achievementId);
+                  }, 0);
+                });
+              }
+              // Game loop will stop automatically when isPlaying becomes false
+            }
+          }
+        }
+      }
     }
 
     // Continue loop (will be cancelled in cleanup or when conditions change)
@@ -128,6 +414,13 @@ export function useGameLoop(): void {
     if (gameState.isPlaying && !gameState.isPaused && !gameState.gameOver) {
       // Reset frame time tracking when starting/resuming
       lastFrameTimeRef.current = null;
+      // Reset spawn timer when starting/resuming
+      spawnTimerRef.current = 0;
+      // Reset XP and currency calculation flags when starting a new game
+      if (gameState.score === 0) {
+        xpCalculatedRef.current = false;
+        currencyCalculatedRef.current = false;
+      }
       // Start the loop
       animationFrameRef.current = requestAnimationFrame(gameLoop);
     } else {
@@ -137,6 +430,11 @@ export function useGameLoop(): void {
         animationFrameRef.current = null;
       }
       lastFrameTimeRef.current = null;
+      // Don't reset spawn timer on pause - resume from where we left off
+      // Only reset on game over or when game stops
+      if (gameState.gameOver || !gameState.isPlaying) {
+        spawnTimerRef.current = 0;
+      }
     }
 
     // Cleanup: cancel animation frame on unmount or when conditions change
@@ -146,6 +444,7 @@ export function useGameLoop(): void {
         animationFrameRef.current = null;
       }
       lastFrameTimeRef.current = null;
+      spawnTimerRef.current = 0;
     };
   }, [gameState.isPlaying, gameState.isPaused, gameState.gameOver]);
 
@@ -210,21 +509,24 @@ export function initializeGameState(
     setPaused: (paused: boolean) => void;
     setGameOver: (gameOver: boolean) => void;
   },
-  _playerLevel: number = 1
+  playerLevel: number = 1, // Used for level-based bonuses (Story 3.3)
+  purchasedItems: string[] = [] // Used for shop buffs (Story 3.4)
 ): void {
-  // Initial coziness (can be modified by level bonuses in Story 3.3)
-  // For now, use default starting value
-  let initialCoziness = COZINESS_START;
+  // Calculate shop buff for starting coziness (Story 3.4)
+  // Note: Currently no starting coziness buff in shop items, but structure is ready
+  const purchasedBuffs = getPurchasedBuffs(purchasedItems);
+  const cozinessBuff = purchasedBuffs.find((buff) => {
+    const effect = getBuffEffect(buff.id);
+    return effect?.type === 'startingCoziness';
+  });
+  const cozinessBuffAmount = cozinessBuff ? getBuffEffect(cozinessBuff.id)?.value ?? 0 : 0;
+  
+  // Initial coziness with level bonuses and shop buffs applied (Story 3.3, 3.4)
+  const initialCoziness = getStartingCozinessWithBonuses(COZINESS_START, playerLevel, cozinessBuffAmount);
 
-  // TODO: Apply level-based bonuses here when Story 3.3 is implemented
-  // Example: if level > 2, increase initial coziness by 5
-
-  // Initial time remaining (can be modified by level bonuses in Story 3.3)
+  // Initial time remaining (can be modified by level bonuses in future stories)
   // For now, use default evening duration
-  let initialTimeRemaining = EVENING_DURATION;
-
-  // TODO: Apply level-based bonuses here when Story 3.3 is implemented
-  // Example: if level > 3, increase evening duration by 10 seconds
+  const initialTimeRemaining = EVENING_DURATION;
 
   // Initialize game state atomically
   contextValue.updateGameState({
@@ -232,6 +534,10 @@ export function initializeGameState(
     timeRemaining: initialTimeRemaining,
     score: 0,
     activeEvents: [],
+    achievementProgress: {
+      minCoziness: initialCoziness, // Start tracking from initial coziness
+      resolvedEventsCount: 0, // Reset resolved events count
+    },
     // Status flags will be set separately to ensure correct order
   });
 

@@ -1,0 +1,196 @@
+<story-context id="2-3-character-visual-and-movement-system" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>3</storyId>
+    <title>Character Visual and Movement System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T12:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-3-character-visual-and-movement-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want to see my character and move it around the apartment using keyboard controls</iWant>
+    <soThat>so that I can reach events and interact with them</soThat>
+    <tasks>
+      <task id="1" ac="3">Create Character component structure
+        - Create `src/components/game/Character.tsx` file
+        - Set up component with TypeScript types
+        - Create CSS module file `src/components/game/Character.module.css`
+        - Follow component naming conventions [Source: docs/architecture.md#Naming-Conventions]
+        - Import and use `APARTMENT_BOUNDARIES` from `src/utils/constants.ts` [Source: docs/sprint-artifacts/2-2-apartment-layout-and-background-with-ukrainian-cozy-details.md]
+      </task>
+      <task id="2" ac="3">Implement character visual
+        - Create simple character visual (CSS-styled div or basic sprite)
+        - Style character with appropriate size and appearance
+        - Position character using CSS transforms (translate)
+        - Ensure character is visible against apartment background
+        - Prepare for equipped skin support (Story 4.5) - structure for future enhancement
+      </task>
+      <task id="3" ac="1,5">Implement keyboard input handling
+        - Create keyboard event listeners using React useEffect
+        - Track pressed keys state (WASD and arrow keys)
+        - Handle keydown events to add keys to pressed set
+        - Handle keyup events to remove keys from pressed set
+        - Clean up event listeners on component unmount
+        - Support both WASD and arrow key mappings
+      </task>
+      <task id="4" ac="1,2,4">Implement movement logic
+        - Calculate movement direction from pressed keys
+        - Support diagonal movement (multiple keys pressed)
+        - Normalize diagonal movement vectors (prevent faster diagonal movement)
+        - Use delta time for frame-rate independent movement
+        - Get delta time from game loop or calculate from frame timestamps
+        - Apply movement speed constant from `src/utils/constants.ts` [Source: docs/sprint-artifacts/1-5-game-constants-and-configuration.md]
+        - Prepare for level bonuses (Story 3.3) - structure for speed modifiers
+      </task>
+      <task id="5" ac="2">Implement boundary constraints
+        - Load `APARTMENT_BOUNDARIES` from `src/utils/constants.ts`
+        - Calculate actual pixel boundaries based on apartment container size
+        - Clamp character position to boundaries after movement
+        - Ensure character cannot move outside play area
+        - Handle boundary detection smoothly (no jitter at edges)
+      </task>
+      <task id="6" ac="2,4">Implement position storage and updates
+        - Store character position in component state or GameContext
+        - Update position every frame during movement
+        - Use CSS `transform: translate()` for GPU-accelerated positioning
+        - Avoid using `top/left` CSS properties (performance)
+        - Ensure position updates trigger smooth re-renders
+      </task>
+      <task id="7" ac="2,3">Integration with game loop and apartment
+        - Integrate character component into game container (Apartment or GameCanvas)
+        - Ensure character renders above apartment background
+        - Verify character position updates smoothly during game loop
+        - Test character movement maintains 60 FPS performance
+        - Verify character respects apartment boundaries
+      </task>
+      <task id="8" ac="1,2,3,4,5,6">Testing and validation
+        - Test all movement directions (WASD and arrow keys)
+        - Test diagonal movement (multiple keys)
+        - Test boundary constraints (character stops at edges)
+        - Test frame-rate independence (movement speed consistent at different frame rates)
+        - Test smooth movement (no jitter or lag)
+        - Test cleanup (event listeners removed on unmount)
+        - Verify performance (60 FPS maintained)
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Given the game is running, When I press WASD or arrow keys, Then the character moves smoothly in the corresponding direction: W/↑: Move up, S/↓: Move down, A/←: Move left, D/→: Move right, Diagonal movement works when multiple keys pressed</criterion>
+    <criterion id="2">Given character movement is implemented, When the character moves, Then movement is: Smooth and responsive (no lag, immediate response to key press), Frame-rate independent (uses delta time, not fixed pixels per frame), Constrained to apartment boundaries (character cannot move outside play area), Uses CSS `transform: translate()` for GPU-accelerated movement (not top/left)</criterion>
+    <criterion id="3">Given the character component is created, When the character is rendered, Then character component (`src/components/game/Character.tsx`): Renders character visual (simple shape, sprite, or CSS-styled element), Displays at correct position in apartment, Updates position smoothly during movement, Character visual matches equipped skin (if any, Story 4.5)</criterion>
+    <criterion id="4">Given character position is tracked, When the game state is updated, Then character position is stored in game state, And movement speed is configurable (base speed + level bonuses from Story 3.3)</criterion>
+    <criterion id="5">Given keyboard input handling is implemented, When keys are pressed or released, Then keyboard input handling: Listens for keydown/keyup events, Tracks which keys are currently pressed, Updates movement direction accordingly, Cleans up event listeners on unmount</criterion>
+    <criterion id="6">Given movement system is complete, When I interact with the game, Then movement works with both keyboard and is ready for mouse interaction (click to move - optional future enhancement)</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/sprint-artifacts/2-3-character-visual-and-movement-system.md" title="Story 2.3: Character Visual and Movement System" section="Story">
+        Story specification with acceptance criteria, tasks, and dev notes. Includes detailed implementation guidance for character component, keyboard input handling, movement logic, boundary constraints, and integration with game loop and apartment.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Naming Conventions">
+        Component naming patterns: PascalCase for component files (`Character.tsx`), PascalCase for component names (`Character`), match file name to component name. CSS Modules: `Character.module.css` for `Character.tsx`, camelCase class names.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Structure Patterns">
+        Component organization: By feature/domain (`components/game/`), CSS Modules for styling (`Character.module.css`), component structure follows established patterns. Project structure: `src/components/game/Character.tsx` matches architecture document.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Performance Considerations">
+        Performance requirements: Use CSS transforms (GPU-accelerated) for movement, frame-rate independent updates using delta time, maintain 60 FPS performance (no frame drops), avoid layout thrashing (use `transform` not `top/left`). Memory management: clean up event listeners on unmount.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="Project Structure">
+        Project structure showing component locations: `src/components/game/Character.tsx` for character component, `src/components/game/Character.module.css` for styling. Directory structure: `src/components/game/` already exists (created in Story 1.1 setup).
+      </doc>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="FR1">
+        PRD functional requirement FR1: Players can move their character around the apartment using keyboard controls (WASD or arrow keys). Movement must be smooth and responsive.
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 2.3">
+        Epic-level story definition with acceptance criteria and technical notes. Prerequisites: Story 2.2 (Apartment Layout), Story 2.1 (Game Loop). Follow architecture document "Character Movement" section. Use React useEffect for keyboard event listeners. Store character position in GameContext or local component state. Use CSS transforms for performance (GPU-accelerated). Movement speed constant from Story 1.5, modified by level bonuses.
+      </doc>
+      <doc path="docs/sprint-artifacts/2-2-apartment-layout-and-background-with-ukrainian-cozy-details.md" title="Story 2.2: Apartment Layout and Background with Ukrainian Cozy Details" section="Dev Agent Record">
+        Previous story learnings: Apartment component available at `src/components/game/Apartment.tsx`. Apartment boundaries exported as `APARTMENT_BOUNDARIES` constant in `src/utils/constants.ts`. Boundaries are percentage-based (0.05 to 0.95 for X, 0.10 to 0.90 for Y) for responsive positioning. Character component should render inside Apartment component. Character movement constrained to apartment boundaries. CSS Modules pattern established. Performance pattern: 60 FPS requirement, use CSS transforms (GPU-accelerated) for movement.
+      </doc>
+      <doc path="docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md" title="Story 2.1: Game State Management and Game Loop" section="Dev Agent Record">
+        Previous story learnings: Game loop available at `src/hooks/useGameLoop.ts`. Game loop runs at 60 FPS using `requestAnimationFrame`. Delta time calculation ensures frame-independent updates. Character movement should use delta time from game loop or calculate independently. GameContext available with all update functions. Character position can be stored in GameContext if needed for global access. Local state is simpler, but global state enables easier event interaction checks (Story 2.9).
+      </doc>
+      <doc path="docs/sprint-artifacts/1-5-game-constants-and-configuration.md" title="Story 1.5: Game Constants and Configuration" section="Dev Agent Record">
+        Previous story learnings: Constants file ready for use. `APARTMENT_BOUNDARIES` constant available for character movement constraints. Movement speed constant should be added to constants.ts (not yet defined, needs to be created). Import pattern: Use named exports. Constants are typed with TypeScript.
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/components/game/Apartment.tsx" kind="component" symbol="Apartment" lines="31-73" reason="Apartment component provides the game container/background where character will be rendered. Character component should render inside Apartment component. Apartment defines boundaries for character movement. Character renders above apartment background." />
+      <artifact path="src/utils/constants.ts" kind="constant" symbol="APARTMENT_BOUNDARIES" lines="377-382" reason="APARTMENT_BOUNDARIES constant defines playable area as percentages (minX: 0.05, maxX: 0.95, minY: 0.10, maxY: 0.90). Actual pixel boundaries must be calculated based on apartment container size. Used for character movement constraints." />
+      <artifact path="src/utils/constants.ts" kind="interface" symbol="ApartmentBoundaries" lines="354-363" reason="ApartmentBoundaries interface defines boundary structure with minX, maxX, minY, maxY properties. Used for type-safe boundary calculations." />
+      <artifact path="src/hooks/useGameLoop.ts" kind="hook" symbol="useGameLoop" lines="44-244" reason="Game loop hook provides delta time calculation for frame-independent updates. Character movement should use delta time from game loop or calculate independently. Game loop runs at 60 FPS using requestAnimationFrame. Movement updates should happen every frame during game loop." />
+      <artifact path="src/contexts/GameContext.tsx" kind="context" symbol="GameContext" lines="90-227" reason="GameContext provides game state and update functions. Character position can be stored in GameContext if needed for global access (enables easier event interaction checks in Story 2.9). Local state is simpler, but global state enables easier event interaction checks. Context provides updateGameState for batch updates." />
+      <artifact path="src/contexts/GameContext.tsx" kind="interface" symbol="GameStateContextValue" lines="62-83" reason="GameStateContextValue interface defines context value structure. If storing character position in GameContext, add character position to GameState interface and use context update functions." />
+      <artifact path="src/types/game.ts" kind="type-definition" symbol="GameState" lines="39-54" reason="GameState interface defines game state structure. If storing character position globally, add character position property to GameState interface. Currently does not include character position - can be added or stored locally in component." />
+      <artifact path="src/components/game" kind="directory" symbol="" lines="" reason="Game components directory location. Currently contains Apartment.tsx. Will contain Character.tsx file. CSS Modules pattern established for component styling." />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+      </ecosystem>
+      <ecosystem name="dev">
+        <package name="typescript" version="~5.9.3" />
+        <package name="@types/react" version="^19.2.5" />
+        <package name="@types/react-dom" version="^19.2.3" />
+      </ecosystem>
+      <ecosystem name="browser">
+        <package name="KeyboardEvent API" version="native" />
+        <package name="CSS Transforms" version="native" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Component Pattern: Create `Character.tsx` in `src/components/game/` directory [Source: docs/architecture.md#Project-Structure]. Use CSS Modules for styling: `Character.module.css` [Source: docs/architecture.md#Structure-Patterns]. Follow PascalCase naming for component: `Character` [Source: docs/architecture.md#Naming-Conventions]. Component should be a functional React component with TypeScript types.</constraint>
+    <constraint>Movement Pattern: Use CSS `transform: translate()` for GPU-accelerated movement [Source: docs/architecture.md#Performance-Considerations]. Avoid using `top/left` CSS properties (causes layout thrashing). Use delta time for frame-rate independent movement [Source: docs/architecture.md#Performance-Considerations]. Movement speed from constants, modified by level bonuses (Story 3.3).</constraint>
+    <constraint>Input Handling Pattern: Use React useEffect for keyboard event listeners [Source: docs/epics.md#Story-2.3]. Track pressed keys in component state. Clean up event listeners in useEffect cleanup function. Support both WASD and arrow key mappings.</constraint>
+    <constraint>State Management Pattern: Character position can be stored in component state (local) or GameContext (global). If stored in GameContext, add character position to GameState interface. If stored locally, ensure position is accessible for event interaction (Story 2.9). Consider: Local state is simpler, but global state enables easier event interaction checks.</constraint>
+    <constraint>Performance Considerations: Use CSS transforms (GPU-accelerated) for movement [Source: docs/architecture.md#Performance-Considerations]. Frame-rate independent updates using delta time. Maintain 60 FPS performance (no frame drops). Clean up event listeners to prevent memory leaks.</constraint>
+    <constraint>Boundary Constraints: Load `APARTMENT_BOUNDARIES` from `src/utils/constants.ts`. Boundaries are percentage-based (0.05 to 0.95 for X, 0.10 to 0.90 for Y). Calculate actual pixel boundaries based on apartment container size. Clamp character position to boundaries after movement. Handle boundary detection smoothly (no jitter at edges).</constraint>
+    <constraint>Diagonal Movement: Support diagonal movement when multiple keys pressed. Normalize diagonal movement vectors (prevent faster diagonal movement). Calculate movement direction from pressed keys. Use vector normalization: divide by sqrt(2) for diagonal movement to maintain consistent speed.</constraint>
+    <constraint>Delta Time: Use delta time for frame-rate independent movement. Get delta time from game loop (`useGameLoop` hook) or calculate from frame timestamps. Calculate movement distance: `distance = speed * deltaTime`. Ensure movement speed is consistent at different frame rates.</constraint>
+    <constraint>Movement Speed: Movement speed should be configurable (base speed + level bonuses from Story 3.3). Add movement speed constant to `src/utils/constants.ts` if not already present. Base speed should be reasonable default (e.g., 100-200 pixels per second). Prepare for level bonuses (Story 3.3) - structure for speed modifiers.</constraint>
+    <constraint>Integration Points: Character component renders inside Apartment component (game container). Character position used for event interaction detection (Story 2.9). Movement speed affected by level bonuses (Story 3.3). Character visual affected by equipped skins (Story 4.5).</constraint>
+    <constraint>TypeScript Strict Mode: TypeScript strict mode is enabled - all types must be properly defined. Use `import type` for type-only imports. No `any` types allowed. Component props must have proper TypeScript types.</constraint>
+    <constraint>Keyboard Mappings: Support WASD keys: W (up), A (left), S (down), D (right). Support arrow keys: ↑ (up), ← (left), ↓ (down), → (right). Map both key sets to same movement directions. Handle keydown to add keys to pressed set. Handle keyup to remove keys from pressed set.</constraint>
+    <constraint>Character Visual: Create simple character visual (CSS-styled div or basic sprite). Style character with appropriate size and appearance. Ensure character is visible against apartment background (dark blues/greys). Character visual can be simple CSS-styled div or sprite. Prepare for equipped skin support (Story 4.5) - structure for future enhancement.</constraint>
+  </constraints>
+
+  <learnings>
+    <learning from="2-2-apartment-layout-and-background-with-ukrainian-cozy-details">
+      <summary>Apartment Component Available</summary>
+      <details>Apartment component is available at `src/components/game/Apartment.tsx`. Apartment component provides the game container/background. Apartment defines boundaries for character movement. Apartment boundaries exported as `APARTMENT_BOUNDARIES` constant in `src/utils/constants.ts`. Boundaries are percentage-based (0.05 to 0.95 for X, 0.10 to 0.90 for Y) for responsive positioning. Event locations also defined in constants.ts for future use (Story 2.4).</details>
+      <details>Apartment Boundaries Pattern: Boundaries are defined as percentages, not pixels. Actual pixel boundaries must be calculated based on apartment container size. Use `APARTMENT_BOUNDARIES` constant from `src/utils/constants.ts`. Boundaries: minX: 0.05, maxX: 0.95, minY: 0.10, maxY: 0.90. Character position should be clamped to these boundaries after movement.</details>
+      <details>CSS Styling Pattern: Story 2.2 established CSS Modules pattern. Use CSS Modules for component styling (`Character.module.css`). Follow "Cozy Blackout" theme colors (dark blues/greys background). Use CSS animations for performance (not JavaScript). Keep styling simple for hackathon scope.</details>
+      <details>Performance Pattern: Story 2.2 emphasized 60 FPS performance requirement. All animations must maintain smooth frame rates. Use CSS transforms (GPU-accelerated) for movement. Test animations don't cause frame drops. Character movement should use `transform: translate()`, not `top/left`.</details>
+      <details>Integration Note: Character component should render inside Apartment component. Apartment provides the game container/background. Character renders above apartment background. Character position relative to apartment container. Character movement constrained to apartment boundaries.</details>
+    </learning>
+    <learning from="2-1-game-state-management-and-game-loop">
+      <summary>Game Loop Available</summary>
+      <details>Game loop hook is available at `src/hooks/useGameLoop.ts`. Game loop runs at 60 FPS using `requestAnimationFrame`. Delta time calculation ensures frame-independent updates. Character movement should use delta time from game loop or calculate independently. Game loop updates GameContext state every frame.</details>
+      <details>GameContext Integration: GameContext is available at `src/contexts/GameContext.tsx` with all update functions. Character position can be stored in GameContext if needed for global access. GameContext provides `updateGameState` for batch updates. Consider: Local state vs global state for character position. Local state is simpler, but global state enables easier event interaction checks (Story 2.9).</details>
+      <details>Delta Time Pattern: Story 2.1 established delta time calculation. Movement should be frame-rate independent using delta time. Calculate movement distance: `distance = speed * deltaTime`. Use delta time from game loop or calculate from frame timestamps.</details>
+      <details>Implementation Notes: Character movement is the foundation for event interaction (Story 2.9). Character position will be used to check proximity to events. Movement speed will be affected by level bonuses in Story 3.3. Character visual will be affected by equipped skins in Story 4.5. This story establishes the player's ability to navigate the apartment.</details>
+    </learning>
+  </learnings>
+
+  <references>
+    <reference type="epic" path="docs/epics.md" section="Story-2.3">Story acceptance criteria and technical notes</reference>
+    <reference type="prd" path="docs/prd.md" section="Product-Scope">Character movement requirements (FR1: keyboard controls)</reference>
+    <reference type="architecture" path="docs/architecture.md" section="Naming-Conventions">Component naming patterns (PascalCase)</reference>
+    <reference type="architecture" path="docs/architecture.md" section="Structure-Patterns">CSS Modules pattern and component organization</reference>
+    <reference type="architecture" path="docs/architecture.md" section="Project-Structure">Project structure and component locations</reference>
+    <reference type="architecture" path="docs/architecture.md" section="Performance-Considerations">60 FPS performance requirements, CSS transforms</reference>
+    <reference type="story" path="docs/sprint-artifacts/2-2-apartment-layout-and-background-with-ukrainian-cozy-details.md">Apartment component and boundaries</reference>
+    <reference type="story" path="docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md">Game loop implementation and delta time patterns</reference>
+    <reference type="story" path="docs/sprint-artifacts/1-5-game-constants-and-configuration.md">Game constants including movement speed</reference>
+  </references>
+</story-context>
+

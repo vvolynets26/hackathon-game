@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>10</storyId>
+    <title>«Затишок» Meter System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-10-затишок-meter-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want the «Затишок» meter to decrease over time and change based on event outcomes</iWant>
+    <soThat>So that I have a resource to manage during the evening</soThat>
+    <tasks>
+      <task id="1" description="Implement coziness decay in game loop (AC: 1, 4)">
+        <subtask>Add coziness decay calculation using COZINESS_DECAY_RATE constant</subtask>
+        <subtask>Update coziness in game loop using delta time (frame-rate independent)</subtask>
+        <subtask>Ensure decay rate is configurable from constants</subtask>
+        <subtask>Note: Level-based decay rate modification will be added in Story 3.3</subtask>
+        <subtask>Reference constants.ts for COZINESS_DECAY_RATE</subtask>
+        <subtask>Reference game loop hook for delta time</subtask>
+      </task>
+      <task id="2" description="Integrate coziness changes from event resolution (AC: 2, 4)">
+        <subtask>Update coziness when event is resolved (add cozinessReward)</subtask>
+        <subtask>Use functional update: setCoziness(prev => prev + reward)</subtask>
+        <subtask>Ensure event resolution already updates coziness (from Story 2.9)</subtask>
+        <subtask>Verify integration with useEventInteraction hook</subtask>
+        <subtask>Reference Story 2.9 for event interaction system</subtask>
+      </task>
+      <task id="3" description="Integrate coziness changes from event expiration (AC: 2, 4)">
+        <subtask>Update coziness when event expires (subtract cozinessPenalty)</subtask>
+        <subtask>Use functional update: setCoziness(prev => prev - penalty)</subtask>
+        <subtask>Hook into EventManager event expiration logic</subtask>
+        <subtask>Ensure expired events trigger coziness penalty</subtask>
+        <subtask>Reference EventManager for event expiration handling</subtask>
+      </task>
+      <task id="4" description="Implement coziness clamping (0-100 range) (AC: 2)">
+        <subtask>Clamp coziness value to minimum 0 (no negative values)</subtask>
+        <subtask>Clamp coziness value to maximum 100 (no overflow)</subtask>
+        <subtask>Apply clamping after all coziness updates (decay, rewards, penalties)</subtask>
+        <subtask>Use Math.max(0, Math.min(100, value)) for clamping</subtask>
+        <subtask>Reference PRD for coziness range specification</subtask>
+      </task>
+      <task id="5" description="Implement lose condition check (AC: 3)">
+        <subtask>Check if coziness reaches 0 in game loop</subtask>
+        <subtask>If coziness <= 0: set gameOver = true, isPlaying = false</subtask>
+        <subtask>Stop game loop when lose condition is met</subtask>
+        <subtask>Note: Win condition will be implemented in Story 2.11</subtask>
+        <subtask>Reference GameContext for game state flags</subtask>
+      </task>
+      <task id="6" description="Ensure starting coziness uses constants (AC: 3)">
+        <subtask>Use COZINESS_START constant for initial coziness value</subtask>
+        <subtask>Set coziness to COZINESS_START when evening starts</subtask>
+        <subtask>Note: Level-based starting coziness will be added in Story 3.3</subtask>
+        <subtask>Reference constants.ts for COZINESS_START</subtask>
+      </task>
+      <task id="7" description="Prepare for HUD display integration (AC: 4)">
+        <subtask>Ensure coziness value is accessible from GameContext</subtask>
+        <subtask>Document coziness value format (0-100 number)</subtask>
+        <subtask>Note: HUD display will be implemented in Story 2.14</subtask>
+        <subtask>Reference Story 2.14 for HUD requirements</subtask>
+      </task>
+      <task id="8" description="Testing and validation (AC: 1, 2, 3, 4)">
+        <subtask>Test coziness decay over time (decreases by decay rate per second)</subtask>
+        <subtask>Test coziness increases on event resolution</subtask>
+        <subtask>Test coziness decreases on event expiration</subtask>
+        <subtask>Test coziness clamping (doesn't go below 0 or above 100)</subtask>
+        <subtask>Test lose condition triggers when coziness reaches 0</subtask>
+        <subtask>Test starting coziness uses COZINESS_START constant</subtask>
+        <subtask>Test frame-rate independence (decay works correctly with different frame rates)</subtask>
+        <subtask>Test coziness updates are synchronized with game loop</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">
+      <given>the game is running</given>
+      <when>time passes</when>
+      <then>«Затишок» decreases by decay rate every second: Decay rate is configurable (from constants), Decay rate is affected by player level (slower at higher levels, Story 3.3), Decay is frame-rate independent (uses delta time)</then>
+    </criterion>
+    <criterion id="2">
+      <given>events are resolved or expire</given>
+      <when>an event outcome occurs</when>
+      <then>«Затишок» changes accordingly: Resolved events: «Затишок» increases by event's coziness reward, Expired events: «Затишок» decreases by event's coziness penalty, «Затишок» is clamped between 0 and 100</then>
+    </criterion>
+    <criterion id="3">
+      <given>«Затишок» meter system is implemented</given>
+      <when>«Затишок» value changes</when>
+      <then>«Затишок» affects game state: If «Затишок» reaches 0: game ends (lose condition, Story 2.11), Starting «Затишок» is affected by level bonuses (Story 3.3), «Затишок» value is stored in GameState</then>
+    </criterion>
+    <criterion id="4">
+      <given>«Затишок» meter system is implemented</given>
+      <when>the game loop runs</when>
+      <then>«Затишок» updates are: Integrated with game loop (updates every frame), Frame-rate independent (uses delta time), Synchronized with event resolution/expiration, Ready for HUD display (Story 2.14)</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progression &amp; Economy - «Затишок» Range</section>
+        <snippet>«Затишок» Range: 0-100 (starts at 60 on early levels), Decreases over time (decay rate), Increases when events are resolved successfully, Decreases when events expire or fail. Event Types &amp; Scoring: Minor Events: «Затишок» on resolve: +5, «Затишок» on failure: -5. Standard Events: «Затишок» on resolve: +8, «Затишок» on failure: -10. Critical Events: «Затишок» on resolve: +10, «Затишок» on failure: -20.</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Core Gameplay - FR7</section>
+        <snippet>FR7: The game tracks and displays the «Затишок» meter (0-100) which decreases over time and changes based on event outcomes. The «Затишок» meter is a core resource that players must manage during the evening. It decreases over time (decay rate) and changes based on event outcomes (rewards for resolved events, penalties for expired events).</snippet>
+      </doc>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Core Gameplay - FR10</section>
+        <snippet>FR10: The game ends the evening when either the timer reaches 0 (win) or «Затишок» reaches 0 (lose). Lose condition: When «Затишок» reaches 0 before timer ends, the game ends with lose state, results screen is shown, partial rewards are calculated (if player made progress).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Game Loop</section>
+        <snippet>Game Loop: Uses requestAnimationFrame for 60 FPS gameplay. Updates game state every frame using delta time for frame-rate independence. Game loop updates coziness every frame using delta time. Coziness decay calculation: coziness -= COZINESS_DECAY_RATE * deltaTime. Follow architecture document "Game Loop" section for frame-rate independent updates.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Data Architecture</section>
+        <snippet>Data Architecture: GameState interface includes coziness property (number, 0-100 range). GameState.coziness is a number (0-100 range). GameContext provides coziness state and setCoziness update function. Coziness value stored in GameState interface.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.10: «Затишок» Meter System</section>
+        <snippet>Story 2.10 focuses on implementing the «Затишок» meter system. The meter decreases over time (decay rate) and changes based on event outcomes. Resolved events increase coziness by event's coziness reward. Expired events decrease coziness by event's coziness penalty. Coziness is clamped between 0 and 100. If coziness reaches 0, game ends (lose condition). Starting coziness is affected by level bonuses (Story 3.3). Coziness updates are integrated with game loop (updates every frame, frame-rate independent).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-9-event-interaction-system.md</path>
+        <title>Story 2.9: Event Interaction System</title>
+        <section>Dev Notes, Implementation</section>
+        <snippet>Event interaction system fully implemented. Event resolution already updates coziness: setCoziness(prev => prev + resolvedEvent.cozinessReward). Event resolution data includes cozinessReward value. Integration point: coziness updates on event resolution are already working. No changes needed to event interaction system for this story. GameContext provides coziness state and update functions. Use functional updates: setCoziness(prev => prev + value) to avoid stale closures.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-1-game-state-management-and-game-loop.md</path>
+        <title>Story 2.1: Game State Management and Game Loop</title>
+        <section>Dev Notes, Implementation</section>
+        <snippet>Game loop hook implemented. useGameLoop hook wraps requestAnimationFrame. Game loop updates every frame (~60 FPS). Delta time calculation available for frame-rate independent updates. Game loop integrates with GameContext for state updates. Add coziness decay calculation to game loop update function. GameState interface includes coziness property. GameState.coziness: number (0-100 range). Initial game state sets coziness to COZINESS_START.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/hooks/useGameLoop.ts</path>
+        <kind>hook</kind>
+        <symbol>useGameLoop, gameLoop, deltaTime</symbol>
+        <lines>1-341</lines>
+        <reason>Main game loop hook that updates game state every frame. Already implements coziness decay calculation in game loop (lines 134-146). Uses delta time for frame-rate independent updates. Updates coziness every frame: const cozinessDecay = COZINESS_DECAY_RATE * deltaTime; const newCoziness = Math.max(0, currentState.coziness - cozinessDecay); setCozinessRef.current(newCoziness); Already handles expired events and applies coziness penalties (lines 195-206). Need to ensure lose condition check is implemented when coziness reaches 0 (currently has comment for Story 2.11).</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, GameProvider, useGame, setCoziness, gameState, setGameOver, setPlaying</symbol>
+        <lines>1-248</lines>
+        <reason>Provides game state and update functions. setCoziness function available for state updates (lines 123-127). Automatically clamps coziness to 0-100 range: const clamped = Math.max(0, Math.min(100, value)); setGameState((prev) => ({ ...prev, coziness: clamped })); gameState provides coziness value (0-100 number). setGameOver and setPlaying functions available for lose condition. All update functions use functional updates to avoid stale closures. updateGameState function also clamps coziness (lines 181-182).</reason>
+      </artifact>
+      <artifact>
+        <path>src/core/EventManager.ts</path>
+        <kind>class</kind>
+        <symbol>EventManager, updateEvents, expireEvent</symbol>
+        <lines>260-391</lines>
+        <reason>Provides event expiration handling. updateEvents() method updates event timers and detects expired events (lines 260-310). Returns array of expired events. Expired events have timer <= 0. expireEvent() method provides explicit expiration handling (lines 374-391). EventManager.updateEvents() is called every frame in game loop. Expired events are already processed in game loop (lines 195-206 in useGameLoop.ts). Need to ensure coziness penalties are applied correctly from expired events.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>constants</kind>
+        <symbol>COZINESS_START, COZINESS_DECAY_RATE, EVENT_COZINESS_IMPACT</symbol>
+        <lines>56-208</lines>
+        <reason>Game constants file. COZINESS_START = 60 (starting coziness value, line 64). COZINESS_DECAY_RATE = 0.5 per second (decay rate, line 75). EVENT_COZINESS_IMPACT constant provides rewards and penalties per priority (lines 193-208): minor: { reward: 5, penalty: -5 }, standard: { reward: 8, penalty: -10 }, critical: { reward: 10, penalty: -20 }. All constants are typed with TypeScript and match PRD specifications.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/game.ts</path>
+        <kind>type-definition</kind>
+        <symbol>GameState, coziness</symbol>
+        <lines>1-56</lines>
+        <reason>Type definitions for game state. GameState interface includes coziness property (line 41): coziness: number (0-100 range). GameState includes isPlaying, isPaused, and gameOver flags (used for lose condition). GameState includes activeEvents array (used for event expiration handling).</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/events.ts</path>
+        <kind>type-definition</kind>
+        <symbol>GameEvent, cozinessReward, cozinessPenalty</symbol>
+        <lines>1-95</lines>
+        <reason>Type definitions for events. GameEvent interface includes cozinessReward property (line 83): cozinessReward: number (coziness gained when event is resolved). GameEvent includes cozinessPenalty property (line 85): cozinessPenalty: number (coziness lost when event expires). Event coziness values come from EVENT_COZINESS_IMPACT constant based on event priority.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/</path>
+        <kind>component</kind>
+        <symbol>CozinessBar (to be created in Story 2.14)</symbol>
+        <lines>N/A</lines>
+        <reason>HUD component for displaying coziness meter. Will be implemented in Story 2.14. Component will read coziness value from GameContext. Component will display horizontal bar with gradient (red → yellow → green). Component will update in real-time as coziness value changes. This story ensures coziness value is accessible from GameContext for HUD display.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem>node</ecosystem>
+      <packages>
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="typescript" version="~5.9.3" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <category>Architecture</category>
+      <description>Game loop already implements coziness decay calculation using delta time (frame-rate independent). GameContext provides setCoziness function that automatically clamps coziness to 0-100 range. Event resolution already updates coziness (from Story 2.9). Event expiration already processes expired events in game loop. Need to ensure lose condition check is implemented when coziness reaches 0. Follow architecture document "Game Loop" and "Data Architecture" sections.</description>
+    </constraint>
+    <constraint>
+      <category>Coziness Decay</category>
+      <description>Coziness decay is already implemented in game loop (useGameLoop.ts lines 134-146). Decay calculation: const cozinessDecay = COZINESS_DECAY_RATE * deltaTime; const newCoziness = Math.max(0, currentState.coziness - cozinessDecay); Decay is frame-rate independent (uses delta time, not fixed per frame). Decay rate constant: COZINESS_DECAY_RATE = 0.5 per second (from constants.ts). Decay rate will be modified by level bonuses in Story 3.3. Current implementation already handles decay correctly.</description>
+    </constraint>
+    <constraint>
+      <category>Event Resolution Coziness Updates</category>
+      <description>Event resolution coziness updates are already working (from Story 2.9). Event interaction system updates coziness: setCoziness(prev => prev + resolvedEvent.cozinessReward). Event resolution data includes cozinessReward value from EVENT_COZINESS_IMPACT constant. No changes needed to event interaction system for this story. Integration point: coziness updates on event resolution are already working.</description>
+    </constraint>
+    <constraint>
+      <category>Event Expiration Coziness Updates</category>
+      <description>Event expiration coziness updates are already implemented in game loop (useGameLoop.ts lines 195-206). Expired events are processed: expiredEvents.forEach((event) => { const newCoziness = Math.max(0, Math.min(100, currentCoziness + event.cozinessPenalty)); setCozinessRef.current(newCoziness); }); Event expiration already applies coziness penalties correctly. EventManager.updateEvents() returns expired events. Expired events have cozinessPenalty value from EVENT_COZINESS_IMPACT constant.</description>
+    </constraint>
+    <constraint>
+      <category>Coziness Clamping</category>
+      <description>Coziness clamping is already implemented in GameContext.setCoziness() function (lines 123-127). Automatically clamps to 0-100 range: const clamped = Math.max(0, Math.min(100, value)); Clamping is applied in setCoziness function and updateGameState function. No additional clamping needed in game loop or event handlers. Clamping ensures coziness never goes below 0 or above 100.</description>
+    </constraint>
+    <constraint>
+      <category>Lose Condition</category>
+      <description>Lose condition check needs to be implemented when coziness reaches 0. Game loop already checks if coziness reaches 0 (line 142), but only has comment for Story 2.11. Need to implement: if (newCoziness === 0) { setGameOver(true); setPlaying(false); } Lose condition should stop game loop when coziness reaches 0. Win condition will be implemented in Story 2.11 (timer reaches 0). Reference GameContext for game state flags (setGameOver, setPlaying).</description>
+    </constraint>
+    <constraint>
+      <category>Starting Coziness</category>
+      <description>Starting coziness uses COZINESS_START constant (60). initializeGameState() function sets initial coziness to COZINESS_START (useGameLoop.ts line 315). Starting coziness will be modified by level bonuses in Story 3.3. Current implementation already uses COZINESS_START constant correctly. No changes needed for this story.</description>
+    </constraint>
+    <constraint>
+      <category>Game Loop Integration</category>
+      <description>Coziness updates are already integrated with game loop. Game loop updates coziness every frame using delta time (frame-rate independent). Coziness decay is calculated in game loop (lines 134-146). Event expiration coziness penalties are applied in game loop (lines 195-206). Coziness updates are synchronized with game loop. Game loop stops when game is paused or over (lines 121, 218). Need to ensure lose condition stops game loop when coziness reaches 0.</description>
+    </constraint>
+    <constraint>
+      <category>HUD Display Preparation</category>
+      <description>Coziness value is accessible from GameContext (gameState.coziness). Coziness value format: number (0-100 range). HUD display will be implemented in Story 2.14 (CozinessBar component). This story ensures coziness value is properly maintained and accessible for HUD display. No changes needed to prepare for HUD display - coziness value is already accessible from GameContext.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>GameContext setCoziness</name>
+      <kind>React Context Function</kind>
+      <signature>setCoziness: (value: number) => void - Updates coziness (0-100, automatically clamped)</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameContext gameState</name>
+      <kind>React Context State</kind>
+      <signature>gameState: GameState - Current game state including coziness (0-100 number)</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameContext setGameOver</name>
+      <kind>React Context Function</kind>
+      <signature>setGameOver: (gameOver: boolean) => void - Sets game over flag</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>GameContext setPlaying</name>
+      <kind>React Context Function</kind>
+      <signature>setPlaying: (playing: boolean) => void - Sets playing flag</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>useGameLoop Hook</name>
+      <kind>React Hook</kind>
+      <signature>useGameLoop(): void - Game loop hook that updates game state every frame</signature>
+      <path>src/hooks/useGameLoop.ts</path>
+    </interface>
+    <interface>
+      <name>EventManager updateEvents</name>
+      <kind>Class Method</kind>
+      <signature>updateEvents(deltaTime: number, activeEvents: GameEvent[], removeEventCallback: RemoveEventCallback): GameEvent[] - Updates event timers and returns expired events</signature>
+      <path>src/core/EventManager.ts</path>
+    </interface>
+    <interface>
+      <name>GameState Interface</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface GameState { coziness: number; timeRemaining: number; score: number; activeEvents: GameEvent[]; isPlaying: boolean; isPaused: boolean; gameOver: boolean; }</signature>
+      <path>src/types/game.ts</path>
+    </interface>
+    <interface>
+      <name>GameEvent Interface</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface GameEvent { id: string; type: EventType; priority: EventPriority; location: { x: number; y: number }; timer: number; points: number; cozinessReward: number; cozinessPenalty: number; interactionText: { en: string; uk: string }; }</signature>
+      <path>src/types/events.ts</path>
+    </interface>
+    <interface>
+      <name>COZINESS_START Constant</name>
+      <kind>Constant</kind>
+      <signature>export const COZINESS_START: number = 60</signature>
+      <path>src/utils/constants.ts</path>
+    </interface>
+    <interface>
+      <name>COZINESS_DECAY_RATE Constant</name>
+      <kind>Constant</kind>
+      <signature>export const COZINESS_DECAY_RATE: number = 0.5</signature>
+      <path>src/utils/constants.ts</path>
+    </interface>
+    <interface>
+      <name>EVENT_COZINESS_IMPACT Constant</name>
+      <kind>Constant</kind>
+      <signature>export const EVENT_COZINESS_IMPACT: Readonly&lt;Record&lt;EventPriority, { reward: number; penalty: number }&gt;&gt;</signature>
+      <path>src/utils/constants.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should focus on coziness meter functionality and integration testing. No formal test framework is currently set up, but manual testing should verify: Coziness decay over time (decreases by decay rate per second), Coziness increases on event resolution, Coziness decreases on event expiration, Coziness clamping (doesn't go below 0 or above 100), Lose condition triggers when coziness reaches 0, Starting coziness uses COZINESS_START constant, Frame-rate independence (decay works correctly with different frame rates), Coziness updates are synchronized with game loop.
+    </standards>
+    <locations>
+      Manual testing in browser during development. Visual verification of coziness meter updates. Performance testing using Chrome DevTools Performance tab. No automated test files exist yet - consider adding tests in src/hooks/useGameLoop.test.ts if test framework is added.
+    </locations>
+    <ideas>
+      <test id="AC1">
+        <criterion>AC1: Coziness decay over time</criterion>
+        <idea>Test coziness decreases by decay rate every second: Start game with coziness = 60, Wait 1 second, Verify coziness decreased by COZINESS_DECAY_RATE (0.5), Test decay is frame-rate independent (works correctly with different frame rates), Test decay rate is configurable from constants, Test decay stops when game is paused, Test decay stops when game is over, Test decay rate will be affected by level bonuses in Story 3.3 (note for future).</idea>
+      </test>
+      <test id="AC2">
+        <criterion>AC2: Coziness changes from event outcomes</criterion>
+        <idea>Test coziness increases on event resolution: Resolve a minor event (cozinessReward = 5), Verify coziness increased by 5, Resolve a standard event (cozinessReward = 8), Verify coziness increased by 8, Resolve a critical event (cozinessReward = 10), Verify coziness increased by 10, Test coziness decreases on event expiration: Let a minor event expire (cozinessPenalty = -5), Verify coziness decreased by 5, Let a standard event expire (cozinessPenalty = -10), Verify coziness decreased by 10, Let a critical event expire (cozinessPenalty = -20), Verify coziness decreased by 20, Test coziness clamping: Resolve events when coziness is near 100, Verify coziness doesn't exceed 100, Let events expire when coziness is near 0, Verify coziness doesn't go below 0, Test coziness stays within 0-100 range after all updates.</idea>
+      </test>
+      <test id="AC3">
+        <criterion>AC3: Coziness affects game state</criterion>
+        <idea>Test lose condition when coziness reaches 0: Start game with low coziness, Let events expire to reduce coziness to 0, Verify gameOver = true, Verify isPlaying = false, Verify game loop stops updating, Test starting coziness uses COZINESS_START constant: Start new evening, Verify initial coziness = COZINESS_START (60), Test starting coziness will be affected by level bonuses in Story 3.3 (note for future), Test coziness value is stored in GameState: Verify gameState.coziness is accessible from GameContext, Verify coziness value is a number (0-100 range).</idea>
+      </test>
+      <test id="AC4">
+        <criterion>AC4: Coziness updates integrated with game loop</criterion>
+        <idea>Test coziness updates are integrated with game loop: Verify coziness updates every frame during gameplay, Verify coziness updates are frame-rate independent (uses delta time), Verify coziness updates are synchronized with event resolution, Verify coziness updates are synchronized with event expiration, Test coziness updates stop when game is paused: Pause game, Verify coziness doesn't change, Resume game, Verify coziness resumes updating, Test coziness updates stop when game is over: Trigger lose condition, Verify coziness doesn't change after game over, Test coziness value is ready for HUD display: Verify coziness value is accessible from GameContext, Verify coziness value format is number (0-100 range), Note: HUD display will be implemented in Story 2.14.</idea>
+      </test>
+      <test id="decay">
+        <criterion>Coziness Decay</criterion>
+        <idea>Test coziness decay calculation: Verify decay uses COZINESS_DECAY_RATE constant (0.5 per second), Verify decay is frame-rate independent (uses delta time, not fixed per frame), Test decay over multiple seconds: Start with coziness = 60, Wait 2 seconds, Verify coziness decreased by 1.0 (0.5 * 2), Test decay stops when coziness reaches 0: Start with coziness = 0.5, Wait 1 second, Verify coziness = 0 (clamped, not negative), Test decay rate is configurable from constants, Test decay will be modified by level bonuses in Story 3.3 (note for future).</idea>
+      </test>
+      <test id="event-resolution">
+        <criterion>Event Resolution Coziness Updates</criterion>
+        <idea>Test coziness increases on event resolution: Resolve minor event, Verify coziness increased by 5 (from EVENT_COZINESS_IMPACT.minor.reward), Resolve standard event, Verify coziness increased by 8 (from EVENT_COZINESS_IMPACT.standard.reward), Resolve critical event, Verify coziness increased by 10 (from EVENT_COZINESS_IMPACT.critical.reward), Test coziness updates use functional updates: Verify setCoziness(prev => prev + reward) pattern is used, Verify no stale closure issues, Test coziness updates are synchronized with event resolution: Verify coziness updates immediately after event resolution, Verify coziness value is correct after multiple event resolutions.</idea>
+      </test>
+      <test id="event-expiration">
+        <criterion>Event Expiration Coziness Updates</criterion>
+        <idea>Test coziness decreases on event expiration: Let minor event expire, Verify coziness decreased by 5 (from EVENT_COZINESS_IMPACT.minor.penalty), Let standard event expire, Verify coziness decreased by 10 (from EVENT_COZINESS_IMPACT.standard.penalty), Let critical event expire, Verify coziness decreased by 20 (from EVENT_COZINESS_IMPACT.critical.penalty), Test coziness updates use functional updates: Verify setCoziness(prev => prev - penalty) pattern is used, Verify no stale closure issues, Test coziness updates are synchronized with event expiration: Verify coziness updates immediately after event expiration, Verify coziness value is correct after multiple event expirations, Test expired events are processed correctly: Verify EventManager.updateEvents() returns expired events, Verify expired events are removed from active events, Verify coziness penalties are applied correctly.</idea>
+      </test>
+      <test id="clamping">
+        <criterion>Coziness Clamping</criterion>
+        <idea>Test coziness clamping to 0-100 range: Resolve events when coziness is 95, Verify coziness doesn't exceed 100, Let events expire when coziness is 5, Verify coziness doesn't go below 0, Test clamping is applied after all updates: Verify clamping after decay, Verify clamping after event resolution, Verify clamping after event expiration, Test clamping uses Math.max(0, Math.min(100, value)): Verify clamping is implemented in setCoziness function, Verify clamping is implemented in updateGameState function, Test coziness stays within valid range: Verify coziness never goes below 0, Verify coziness never exceeds 100, Test edge cases: Start with coziness = 0, resolve event, verify coziness increases, Start with coziness = 100, let event expire, verify coziness decreases.</idea>
+      </test>
+      <test id="lose-condition">
+        <criterion>Lose Condition</criterion>
+        <idea>Test lose condition triggers when coziness reaches 0: Start game with low coziness, Let events expire to reduce coziness to 0, Verify gameOver = true, Verify isPlaying = false, Verify game loop stops updating, Test lose condition stops coziness updates: Verify coziness doesn't change after game over, Verify decay stops after game over, Test lose condition is checked in game loop: Verify lose condition check happens every frame, Verify lose condition check happens after coziness updates, Test lose condition doesn't trigger when coziness > 0: Start game with coziness = 1, Let events expire, Verify game doesn't end until coziness reaches 0, Test win condition will be implemented in Story 2.11 (note for future).</idea>
+      </test>
+      <test id="starting-coziness">
+        <criterion>Starting Coziness</criterion>
+        <idea>Test starting coziness uses COZINESS_START constant: Start new evening, Verify initial coziness = COZINESS_START (60), Test starting coziness is set correctly: Verify coziness is set to COZINESS_START when evening starts, Verify coziness is set in initializeGameState() function, Test starting coziness will be affected by level bonuses in Story 3.3 (note for future): Level-based starting coziness will be added in Story 3.3, Current implementation uses COZINESS_START constant correctly.</idea>
+      </test>
+      <test id="integration">
+        <criterion>Integration</criterion>
+        <idea>Test game loop integration: Verify coziness decay is calculated in game loop, Verify coziness updates are synchronized with game loop, Verify coziness updates stop when game is paused, Verify coziness updates stop when game is over, Test GameContext integration: Verify setCoziness function updates coziness correctly, Verify gameState.coziness is accessible from GameContext, Verify coziness clamping is applied automatically, Test EventManager integration: Verify EventManager.updateEvents() returns expired events, Verify expired events trigger coziness penalties, Verify event resolution triggers coziness rewards (from Story 2.9), Test frame-rate independence: Verify coziness decay works correctly with different frame rates, Verify coziness updates are frame-rate independent (uses delta time).</idea>
+      </test>
+      <test id="performance">
+        <criterion>Performance</criterion>
+        <idea>Test coziness system performance: Verify coziness updates don't cause frame drops, Verify coziness calculations are efficient, Verify 60 FPS is maintained during gameplay, Test coziness updates with many events: Spawn many events, Resolve/expire events rapidly, Verify coziness updates are still smooth, Test coziness clamping performance: Verify clamping doesn't cause performance issues, Verify clamping is efficient (Math.max/Math.min operations).</idea>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

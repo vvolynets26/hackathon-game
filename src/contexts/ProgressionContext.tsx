@@ -17,8 +17,11 @@
  * ```
  */
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import type { ProgressionState } from '../types/progression';
+import { ProgressionSystem } from '../core/ProgressionSystem';
+import { saveGameState, loadGameState } from '../utils/localStorage';
+import { SHOP_ITEMS } from '../utils/constants';
 
 /**
  * Default initial progression state.
@@ -64,10 +67,10 @@ export interface ProgressionStateContextValue {
   levelUp: () => void;
   /** Add currency («Світлячки») */
   addSvitlyachky: (amount: number) => void;
-  /** Add item ID to purchasedItems array */
-  purchaseItem: (itemId: string) => void;
-  /** Equip a cosmetic item (characterSkin, cat, or candle) */
-  equipItem: (slot: 'characterSkin' | 'cat' | 'candle', itemId: string) => void;
+  /** Purchase an item from the shop (validates currency and deducts cost) */
+  purchaseItem: (itemId: string) => { success: boolean; error?: string };
+  /** Equip a cosmetic item (validates purchase and cosmetic type) */
+  equipItem: (slot: 'characterSkin' | 'cat' | 'candle', itemId: string) => { success: boolean; error?: string };
   /** Unequip a cosmetic item by slot */
   unequipItem: (slot: 'characterSkin' | 'cat' | 'candle') => void;
   /** Add achievement ID to achievements array */
@@ -93,9 +96,30 @@ const ProgressionContext = createContext<ProgressionStateContextValue | null>(nu
  * @param props.children - Child components to wrap
  */
 export function ProgressionProvider({ children }: { children: ReactNode }) {
-  const [progressionState, setProgressionState] = useState<ProgressionState>(
-    DEFAULT_PROGRESSION_STATE
-  );
+  // Load initial state from localStorage on mount
+  const [progressionState, setProgressionState] = useState<ProgressionState>(() => {
+    const loaded = loadGameState();
+    return loaded ?? DEFAULT_PROGRESSION_STATE;
+  });
+
+  // Ref to access current state synchronously (for purchaseItem validation)
+  const progressionStateRef = useRef<ProgressionState>(progressionState);
+  
+  // Update ref when state changes
+  useEffect(() => {
+    progressionStateRef.current = progressionState;
+  }, [progressionState]);
+
+  // ProgressionSystem instance for XP/level calculations
+  const progressionSystemRef = useRef<ProgressionSystem | null>(null);
+  if (!progressionSystemRef.current) {
+    progressionSystemRef.current = new ProgressionSystem();
+  }
+
+  // Save to localStorage whenever progression state changes
+  useEffect(() => {
+    saveGameState(progressionState);
+  }, [progressionState]);
 
   // Update functions using functional updates to avoid stale closures
   const addXP = useCallback((amount: number) => {
@@ -106,10 +130,53 @@ export function ProgressionProvider({ children }: { children: ReactNode }) {
       }
       return;
     }
-    setProgressionState((prev) => ({
-      ...prev,
-      xp: prev.xp + amount,
-    }));
+    
+    setProgressionState((prev) => {
+      // Calculate new XP
+      const newXP = prev.xp + amount;
+      
+      // Check for level up using ProgressionSystem
+      if (progressionSystemRef.current) {
+        const levelUpResult = progressionSystemRef.current.checkLevelUp(newXP, prev.level);
+        
+        // If level up occurred, update level and check level-based achievements (Story 3.5)
+        if (levelUpResult.leveledUp) {
+          const newState = {
+            ...prev,
+            xp: newXP,
+            level: levelUpResult.newLevel,
+          };
+          
+          // Check level-based achievements (Story 3.5)
+          // Note: gameState not required for level-based achievements
+          const newlyUnlocked = progressionSystemRef.current.checkAchievements(newState);
+          // Unlock each newly unlocked achievement
+          newlyUnlocked.forEach((achievementId) => {
+            // Use setTimeout to ensure state update happens first
+            setTimeout(() => {
+              setProgressionState((current) => {
+                // Avoid duplicates
+                if (current.achievements.includes(achievementId)) {
+                  return current;
+                }
+                return {
+                  ...current,
+                  achievements: [...current.achievements, achievementId],
+                };
+              });
+            }, 0);
+          });
+          
+          return newState;
+        }
+      }
+      
+      // No level up, just update XP
+      return {
+        ...prev,
+        xp: newXP,
+      };
+    });
   }, []);
 
   const levelUp = useCallback(() => {
@@ -133,28 +200,101 @@ export function ProgressionProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
-  const purchaseItem = useCallback((itemId: string) => {
+  const purchaseItem = useCallback((itemId: string): { success: boolean; error?: string } => {
+    const item = SHOP_ITEMS.find((shopItem) => shopItem.id === itemId);
+    
+    // Validate item exists
+    if (!item) {
+      if (import.meta.env.DEV) {
+        console.warn(`Cannot purchase item: Item "${itemId}" not found in shop.`);
+      }
+      return { success: false, error: 'Item not found' };
+    }
+    
+    // Check current state synchronously using ref
+    const currentState = progressionStateRef.current;
+    
+    // Avoid duplicates
+    if (currentState.purchasedItems.includes(itemId)) {
+      if (import.meta.env.DEV) {
+        console.warn(`Cannot purchase item: Item "${itemId}" already purchased.`);
+      }
+      return { success: false, error: 'Already purchased' };
+    }
+    
+    // Validate currency
+    if (currentState.svitlyachky < item.price) {
+      if (import.meta.env.DEV) {
+        console.warn(`Cannot purchase item: Insufficient currency. Need ${item.price}, have ${currentState.svitlyachky}.`);
+      }
+      return { success: false, error: 'Insufficient currency' };
+    }
+    
+    // Deduct currency and add item to purchasedItems
     setProgressionState((prev) => {
-      // Avoid duplicates
-      if (prev.purchasedItems.includes(itemId)) {
+      // Double-check state hasn't changed (race condition protection)
+      if (prev.purchasedItems.includes(itemId) || prev.svitlyachky < item.price) {
         return prev;
       }
+      
       return {
         ...prev,
+        svitlyachky: prev.svitlyachky - item.price,
         purchasedItems: [...prev.purchasedItems, itemId],
       };
     });
+    
+    return { success: true };
   }, []);
 
   const equipItem = useCallback(
-    (slot: 'characterSkin' | 'cat' | 'candle', itemId: string) => {
-      setProgressionState((prev) => ({
-        ...prev,
-        equippedItems: {
-          ...prev.equippedItems,
-          [slot]: itemId,
-        },
-      }));
+    (slot: 'characterSkin' | 'cat' | 'candle', itemId: string): { success: boolean; error?: string } => {
+      const item = SHOP_ITEMS.find((shopItem) => shopItem.id === itemId);
+      
+      // Validate item exists
+      if (!item) {
+        if (import.meta.env.DEV) {
+          console.warn(`Cannot equip item: Item "${itemId}" not found in shop.`);
+        }
+        return { success: false, error: 'Item not found' };
+      }
+      
+      // Validate item is cosmetic type (buffs don't need equipping)
+      if (item.type !== 'cosmetic') {
+        if (import.meta.env.DEV) {
+          console.warn(`Cannot equip item: Item "${itemId}" is not a cosmetic item (type: ${item.type}).`);
+        }
+        return { success: false, error: 'Item is not cosmetic' };
+      }
+      
+      // Check current state synchronously using ref
+      const currentState = progressionStateRef.current;
+      
+      // Validate item is purchased
+      if (!currentState.purchasedItems.includes(itemId)) {
+        if (import.meta.env.DEV) {
+          console.warn(`Cannot equip item: Item "${itemId}" is not purchased.`);
+        }
+        return { success: false, error: 'Item not purchased' };
+      }
+      
+      // Equip item
+      setProgressionState((prev) => {
+        // Double-check item is still purchased (race condition protection)
+        if (!prev.purchasedItems.includes(itemId)) {
+          return prev;
+        }
+        
+        return {
+          ...prev,
+          equippedItems: {
+            ...prev.equippedItems,
+            [slot]: itemId,
+          },
+        };
+      });
+      
+      return { success: true };
     },
     []
   );

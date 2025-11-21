@@ -1,0 +1,342 @@
+/**
+ * Apartment Component Styles
+ * 
+ * Styles for the apartment layout with "Cozy Blackout" theme.
+ * Uses dark blues/greys for background, warm yellows/oranges for light sources.
+ * Simple CSS shapes - no complex pixel art.
+ */
+
+/* ============================================================================
+   Main Apartment Container
+   ============================================================================ */
+
+.apartment {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1a1f2e; /* Dark Night - main apartment background */
+}
+
+/* ============================================================================
+   Background Layer
+   ============================================================================ */
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    #1e2740 0%,    /* Deep Blue - shadows, depth */
+    #1a1f2e 50%,   /* Dark Night - main background */
+    #2d3442 100%   /* Dark Grey - furniture, objects */
+  );
+  z-index: 0;
+}
+
+/* ============================================================================
+   Room Layout
+   ============================================================================ */
+
+.rooms {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Living Room */
+.livingRoom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  /* Room boundaries defined here */
+}
+
+/* Kitchen Area */
+.kitchen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 100%;
+}
+
+/* ============================================================================
+   Furniture and Objects
+   ============================================================================ */
+
+/* Sofa */
+.sofa {
+  position: absolute;
+  bottom: 20%;
+  left: 15%;
+  width: 200px;
+  height: 80px;
+  background: #2d3442; /* Dark Grey */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+/* Плед в клітинку на дивані - Plaid blanket on sofa */
+.blanket {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  width: 180px;
+  height: 60px;
+  background: repeating-linear-gradient(
+    90deg,
+    #8b4513 0px,    /* Brown */
+    #8b4513 20px,
+    #cd853f 20px,   /* Beige */
+    #cd853f 40px,
+    #a0522d 40px,   /* Red-brown */
+    #a0522d 60px,
+    #cd853f 60px,
+    #cd853f 80px
+  );
+  background-size: 80px 60px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 3;
+}
+
+/* Килим на стіні / етно-постер - Carpet on wall or ethno-poster behind sofa */
+.wallCarpet {
+  position: absolute;
+  bottom: 30%;
+  left: 10%;
+  width: 220px;
+  height: 150px;
+  background: linear-gradient(
+    45deg,
+    #4a5568 0%,
+    #2d3748 25%,
+    #4a5568 50%,
+    #2d3748 75%,
+    #4a5568 100%
+  );
+  background-size: 40px 40px;
+  border: 2px solid #1a202c;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  /* Optional subtle parallax effect - very minor */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Shelf */
+.shelf {
+  position: absolute;
+  top: 15%;
+  right: 20%;
+  width: 120px;
+  height: 20px;
+  background: #2d3442; /* Dark Grey */
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+/* Гном з JYSK - JYSK Gnome on shelf */
+.gnome {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 40px;
+  background: linear-gradient(
+    to bottom,
+    #8b4513 0%,     /* Brown hat */
+    #8b4513 20%,
+    #d4a574 20%,   /* Beige face */
+    #d4a574 60%,
+    #8b4513 60%,   /* Brown body */
+    #8b4513 100%
+  );
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+  /* Subtle glow effect */
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.3));
+}
+
+/* Gnome details (hat, beard) */
+.gnome::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 25px;
+  height: 12px;
+  background: #654321; /* Dark brown hat */
+  border-radius: 50% 50% 0 0;
+  z-index: 4;
+}
+
+.gnome::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 15px;
+  background: #8b7355; /* Light brown beard */
+  border-radius: 0 0 50% 50%;
+  z-index: 3;
+}
+
+/* TV/Entertainment Area */
+.tvArea {
+  position: absolute;
+  top: 20%;
+  right: 15%;
+  width: 100px;
+  height: 70px;
+  background: #1a1f2e;
+  border: 2px solid #2d3442;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+/* Kitchen Counter */
+.counter {
+  position: absolute;
+  bottom: 25%;
+  right: 10%;
+  width: 150px;
+  height: 60px;
+  background: #2d3442; /* Dark Grey */
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+/* ============================================================================
+   Light Sources (Warm & Cozy)
+   ============================================================================ */
+
+.lightSources {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Candle light sources - warm glow */
+.candleLight1,
+.candleLight2 {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.4) 0%,    /* Soft Glow */
+    rgba(244, 164, 96, 0.3) 30%,  /* Candle Yellow */
+    rgba(255, 140, 66, 0.2) 60%,  /* Warm Orange */
+    transparent 100%
+  );
+  filter: blur(20px);
+  animation: flicker 3s ease-in-out infinite;
+}
+
+.candleLight1 {
+  bottom: 15%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.candleLight2 {
+  bottom: 20%;
+  right: 25%;
+  animation-delay: 1.5s;
+}
+
+/* ============================================================================
+   Animations
+   ============================================================================ */
+
+/* Gnome wiggle animation - subtle idle movement */
+@keyframes gnomeWiggle {
+  0%, 100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-50%) rotate(-2deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  75% {
+    transform: translateX(-50%) rotate(2deg);
+  }
+}
+
+.gnome {
+  animation: gnomeWiggle 4s ease-in-out infinite;
+}
+
+/* Candle light flicker animation */
+@keyframes flicker {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  75% {
+    opacity: 0.65;
+    transform: scale(1.02);
+  }
+}
+
+/* Optional subtle parallax for килим (very minor, performance-friendly) */
+@keyframes subtleParallax {
+  0%, 100% {
+    transform: translateZ(0) translateY(0);
+  }
+  50% {
+    transform: translateZ(0) translateY(-2px);
+  }
+}
+
+/* Enable parallax only if performance allows (can be disabled if needed) */
+.wallCarpet {
+  animation: subtleParallax 6s ease-in-out infinite;
+}
+
+/* ============================================================================
+   Performance Optimizations
+   ============================================================================ */
+
+/* GPU acceleration for animations */
+.gnome,
+.wallCarpet,
+.candleLight1,
+.candleLight2 {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+

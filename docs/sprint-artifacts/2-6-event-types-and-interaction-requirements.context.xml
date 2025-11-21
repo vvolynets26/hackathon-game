@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context id="2-6-event-types-and-interaction-requirements" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>6</storyId>
+    <title>Event Types and Interaction Requirements</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-6-event-types-and-interaction-requirements.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>player</asA>
+    <iWant>different event types with specific interaction requirements</iWant>
+    <soThat>I have variety in gameplay and different challenges to overcome</soThat>
+    <tasks>
+      <task id="1" description="Verify event type definitions (AC: 3)">
+        <subtask>Check `src/types/events.ts` has EventType union with all 4 types</subtask>
+        <subtask>Verify EventType includes: 'phone', 'kettle', 'cat', 'candle'</subtask>
+        <subtask>Ensure EventPriority union includes: 'minor', 'standard', 'critical'</subtask>
+        <subtask>Verify GameEvent interface has all required properties</subtask>
+        <subtask>Reference PRD FR24 for event type specifications</subtask>
+      </task>
+      <task id="2" description="Verify event type to priority mapping (AC: 5)">
+        <subtask>Check EventManager has EVENT_TYPE_TO_PRIORITY mapping</subtask>
+        <subtask>Verify phone → standard priority</subtask>
+        <subtask>Verify kettle → critical priority</subtask>
+        <subtask>Verify cat → minor priority</subtask>
+        <subtask>Verify candle → standard priority</subtask>
+        <subtask>Ensure mapping is used in spawnEvent() method</subtask>
+      </task>
+      <task id="3" description="Verify event properties match constants (AC: 1, 6)">
+        <subtask>Check EVENT_SCORING constant has correct values: minor: +10, standard: +15, critical: +20</subtask>
+        <subtask>Check EVENT_COZINESS_IMPACT constant has correct values: minor: +5/-5, standard: +8/-10, critical: +10/-20</subtask>
+        <subtask>Verify EventManager uses constants when creating events</subtask>
+        <subtask>Ensure points and coziness values come from constants (not hardcoded)</subtask>
+      </task>
+      <task id="4" description="Add interaction requirements to event data (AC: 4)">
+        <subtask>Define interaction text/descriptions for each event type: phone: "plug into power bank" (Ukrainian: "Підключити до павербанку"), kettle: "turn off" (Ukrainian: "Вимкнути"), cat: "calm it" (Ukrainian: "Заспокоїти"), candle: "light it" (Ukrainian: "Запалити")</subtask>
+        <subtask>Add interactionText property to GameEvent interface OR create separate mapping</subtask>
+        <subtask>Store interaction requirements in constants or type definitions</subtask>
+        <subtask>Make interaction text accessible for UI display (Story 2.9)</subtask>
+      </task>
+      <task id="5" description="Verify event visual identifiers (AC: 2)">
+        <subtask>Ensure each event type has unique identifier for visual rendering</subtask>
+        <subtask>Document icon/visual mapping for Story 2.7: phone: 📱, kettle: 🫖, cat: 🐱, candle: 🕯️</subtask>
+        <subtask>Prepare event data structure for visual rendering in Story 2.7</subtask>
+      </task>
+      <task id="6" description="Verify timer duration logic (AC: 2, 6)">
+        <subtask>Check getEventTimerDuration(level) function exists in constants.ts</subtask>
+        <subtask>Verify timer duration is based on priority and level</subtask>
+        <subtask>Ensure EventManager uses getEventTimerDuration() when creating events</subtask>
+        <subtask>Verify timer durations are appropriate (5-10 seconds based on difficulty)</subtask>
+      </task>
+      <task id="7" description="Testing and validation (AC: 1, 2, 3, 4, 5, 6)">
+        <subtask>Test phone events have standard priority, +15 points, +8/-10 coziness</subtask>
+        <subtask>Test kettle events have critical priority, +20 points, +10/-20 coziness</subtask>
+        <subtask>Test cat events have minor priority, +10 points, +5/-5 coziness</subtask>
+        <subtask>Test candle events have standard priority, +15 points, +8/-10 coziness</subtask>
+        <subtask>Test event type to priority mapping is correct</subtask>
+        <subtask>Test event properties come from constants (not hardcoded)</subtask>
+        <subtask>Test interaction requirements are accessible for each event type</subtask>
+        <subtask>Verify all event types match PRD specifications exactly</subtask>
+        <subtask>Test timer durations are appropriate for each priority/level</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">
+      <given>Events are spawning</given>
+      <when>An event of a specific type appears</when>
+      <then>The event has the correct properties:
+        - Phone (low battery): standard priority, +15 points, +8/-10 coziness, interaction: "plug into power bank"
+        - Kettle (boiling): critical priority, +20 points, +10/-20 coziness, interaction: "turn off"
+        - Cat (stressed): minor priority, +10 points, +5/-5 coziness, interaction: "calm it"
+        - Candle (needed/going out): standard priority, +15 points, +8/-10 coziness, interaction: "light it"
+      </then>
+    </criterion>
+    <criterion id="2">
+      <given>Event types are defined</given>
+      <when>I review the event type system</when>
+      <then>Each event type has:
+        - Unique visual identifier (icon type for Story 2.7)
+        - Specific interaction text/description
+        - Correct scoring values (from constants)
+        - Correct coziness impact (from constants)
+        - Appropriate timer duration based on priority and level
+      </then>
+    </criterion>
+    <criterion id="3">
+      <given>Event types are implemented</given>
+      <when>I check the type definitions</when>
+      <then>Event types are defined in `src/types/events.ts` as EventType union</then>
+      <and>Event type definitions match PRD FR24, FR25, FR26, FR27 exactly</and>
+    </criterion>
+    <criterion id="4">
+      <given>Events are created</given>
+      <when>An event is spawned</when>
+      <then>Event interaction requirements are stored with event data</then>
+      <and>Interaction text/description is accessible for UI display (Story 2.9)</and>
+    </criterion>
+    <criterion id="5">
+      <given>Event type to priority mapping exists</given>
+      <when>Events are spawned</when>
+      <then>The mapping correctly assigns:
+        - phone → standard priority
+        - kettle → critical priority
+        - cat → minor priority
+        - candle → standard priority
+      </then>
+    </criterion>
+    <criterion id="6">
+      <given>Event properties are set</given>
+      <when>Events are created</when>
+      <then>All properties match constants from `src/utils/constants.ts`:
+        - Points values from EVENT_SCORING constant
+        - Coziness rewards/penalties from EVENT_COZINESS_IMPACT constant
+        - Timer durations from getEventTimerDuration(level) function
+      </then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Event Types &amp; Scoring">
+        <snippet>FR24: The game supports at least 4 event types: low phone battery, boiling kettle, candle needed/going out, cat stressed. FR25: Each event type has specific interaction requirements (e.g., plug phone into power bank, turn off kettle, light candle, calm cat). FR26: Events have different scoring values: minor events (+10 points), standard events (+15 points), critical events (+20 points). FR27: Events have different «Затишок» impacts: minor events (+5/-5), standard events (+8/-10), critical events (+10/-20).</snippet>
+      </doc>
+      <doc path="docs/prd.md" title="Product Requirements Document" section="Game Mechanics">
+        <snippet>FR31: The game adjusts event difficulty based on player level (shorter timers, more simultaneous events, larger penalties at higher levels). Event Priorities: Critical Events (kettle, power, candles): Big «Затишок» penalty on failure, Decent reward on success, Higher priority in UI (more prominent indicators). Soft Events (cat, blanket): Small «Затишок» penalty on failure, Slightly higher score bonus on success.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Game Event System Pattern">
+        <snippet>Pattern Name: Time-Pressured Event Spawning System. Purpose: Manages dynamic event spawning with countdown timers, priorities, and simultaneous event handling. Components: EventManager (core/EventManager.ts): Central event lifecycle manager, Event Types (types/events.ts): Event definitions (phone, kettle, cat, candle), Event Indicators (components/game/EventIndicator.tsx): Visual representation.</snippet>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Data Architecture">
+        <snippet>Event types defined in `src/types/events.ts` (matches architecture document). Event constants in `src/utils/constants.ts` (matches architecture document). EventManager class in `src/core/EventManager.ts` (already exists from Story 2.4). Type definitions follow TypeScript naming conventions.</snippet>
+      </doc>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 2.6: Event Types and Interaction Requirements">
+        <snippet>As a player, I want different event types with specific interaction requirements, so that I have variety in gameplay and different challenges to overcome. Event types match PRD "Event Types &amp; Scoring" section. Event properties come from constants (Story 1.5). Prepare event data structure for visual rendering in Story 2.7.</snippet>
+      </doc>
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Event Priority Colors">
+        <snippet>Event Priority Colors: Minor Events: #64b5f6 (soft blue - calm cat, blanket), Standard Events: #fff176 (light yellow - phone, candle), Critical Events: #ff8c42 (orange/red - kettle, power).</snippet>
+      </doc>
+      <doc path="docs/sprint-artifacts/2-4-event-spawning-system.md" title="Story 2.4: Event Spawning System">
+        <snippet>EventManager class is available at `src/core/EventManager.ts`. EventManager already has EVENT_TYPE_TO_PRIORITY mapping. EventManager uses constants for points and coziness values. EventManager creates events with all required properties.</snippet>
+      </doc>
+      <doc path="docs/sprint-artifacts/2-5-event-timer-management.md" title="Story 2.5: Event Timer Management">
+        <snippet>EventManager.updateEvents() manages event timer countdown. Timer updates use delta time for frame-rate independence. Timer expiration triggers coziness penalties. Timer durations come from getEventTimerDuration(level).</snippet>
+      </doc>
+      <doc path="docs/sprint-artifacts/1-5-game-constants-and-configuration.md" title="Story 1.5: Game Constants and Configuration">
+        <snippet>Game constants are available at `src/utils/constants.ts`. EVENT_SCORING constant has priority-based points. EVENT_COZINESS_IMPACT constant has priority-based rewards/penalties. getEventTimerDuration(level) function provides level-based timer durations. Constants match PRD specifications exactly.</snippet>
+      </doc>
+      <doc path="docs/sprint-artifacts/1-2-core-type-definitions.md" title="Story 1.2: Core Type Definitions">
+        <snippet>Event types are defined at `src/types/events.ts`. EventType union includes: 'phone', 'kettle', 'cat', 'candle'. EventPriority union includes: 'minor', 'standard', 'critical'. GameEvent interface has all required properties. Types match architecture document data structures.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact path="src/types/events.ts" kind="type-definition" symbol="EventType" lines="20" reason="EventType union defines all 4 event types (phone, kettle, cat, candle) that need verification">
+        <snippet>export type EventType = 'phone' | 'kettle' | 'cat' | 'candle';</snippet>
+      </artifact>
+      <artifact path="src/types/events.ts" kind="type-definition" symbol="EventPriority" lines="30" reason="EventPriority union defines priority levels (minor, standard, critical) used for event properties">
+        <snippet>export type EventPriority = 'minor' | 'standard' | 'critical';</snippet>
+      </artifact>
+      <artifact path="src/types/events.ts" kind="interface" symbol="GameEvent" lines="62-84" reason="GameEvent interface defines event structure - needs interactionText property added for AC: 4">
+        <snippet>export interface GameEvent {
+  id: string;
+  type: EventType;
+  priority: EventPriority;
+  location: { x: number; y: number };
+  timer: number;
+  points: number;
+  cozinessReward: number;
+  cozinessPenalty: number;
+}</snippet>
+      </artifact>
+      <artifact path="src/core/EventManager.ts" kind="class" symbol="EventManager" lines="83-214" reason="EventManager class handles event spawning - contains EVENT_TYPE_TO_PRIORITY mapping and spawnEvent() method">
+        <snippet>export class EventManager {
+  spawnEvent(level: number, activeEventsCount?: number): GameEvent | null {
+    // Uses EVENT_TYPE_TO_PRIORITY mapping
+    // Creates events with properties from constants
+  }
+}</snippet>
+      </artifact>
+      <artifact path="src/core/EventManager.ts" kind="constant" symbol="EVENT_TYPE_TO_PRIORITY" lines="48-53" reason="Event type to priority mapping - needs verification for AC: 5">
+        <snippet>const EVENT_TYPE_TO_PRIORITY: Readonly&lt;Record&lt;EventType, EventPriority&gt;&gt; = {
+  phone: 'standard',
+  kettle: 'critical',
+  cat: 'minor',
+  candle: 'standard',
+} as const;</snippet>
+      </artifact>
+      <artifact path="src/utils/constants.ts" kind="constant" symbol="EVENT_SCORING" lines="177-181" reason="EVENT_SCORING constant defines points for each priority - needs verification for AC: 1, 6">
+        <snippet>export const EVENT_SCORING: Readonly&lt;Record&lt;EventPriority, number&gt;&gt; = {
+  minor: 10,
+  standard: 15,
+  critical: 20,
+} as const;</snippet>
+      </artifact>
+      <artifact path="src/utils/constants.ts" kind="constant" symbol="EVENT_COZINESS_IMPACT" lines="193-208" reason="EVENT_COZINESS_IMPACT constant defines rewards/penalties for each priority - needs verification for AC: 1, 6">
+        <snippet>export const EVENT_COZINESS_IMPACT: Readonly&lt;
+  Record&lt;EventPriority, { reward: number; penalty: number }&gt;
+&gt; = {
+  minor: { reward: 5, penalty: -5 },
+  standard: { reward: 8, penalty: -10 },
+  critical: { reward: 10, penalty: -20 },
+} as const;</snippet>
+      </artifact>
+      <artifact path="src/utils/constants.ts" kind="function" symbol="getEventTimerDuration" lines="157-165" reason="getEventTimerDuration() function provides level-based timer durations - needs verification for AC: 2, 6">
+        <snippet>export function getEventTimerDuration(level: number): number {
+  if (level &lt;= 0) {
+    return EVENT_TIMER_DURATION[1];
+  }
+  if (level &lt;= 5) {
+    return EVENT_TIMER_DURATION[level as keyof typeof EVENT_TIMER_DURATION];
+  }
+  return EVENT_TIMER_DURATION[5];
+}</snippet>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0"/>
+        <package name="react-dom" version="^19.2.0"/>
+        <package name="typescript" version="~5.9.3"/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <name>Event Type System</name>
+      <description>Event types are defined as union type in `src/types/events.ts`. Event type to priority mapping is in EventManager class. Event properties come from constants in `src/utils/constants.ts`. Follow architecture document "Event System Pattern" section.</description>
+    </constraint>
+    <constraint>
+      <name>Type Safety</name>
+      <description>EventType union ensures only valid event types can be created. EventPriority union ensures only valid priorities can be assigned. GameEvent interface ensures all required properties are present. TypeScript types prevent invalid event configurations.</description>
+    </constraint>
+    <constraint>
+      <name>Constants Usage</name>
+      <description>EVENT_SCORING: Priority-based points (minor: +10, standard: +15, critical: +20). EVENT_COZINESS_IMPACT: Priority-based rewards/penalties (minor: +5/-5, standard: +8/-10, critical: +10/-20). getEventTimerDuration(level): Level-based timer durations (5-10 seconds). EVENT_TYPE_TO_PRIORITY: Event type to priority mapping (already in EventManager).</description>
+    </constraint>
+    <constraint>
+      <name>Performance Considerations</name>
+      <description>Event type mapping should be efficient (constant-time lookups). Constants should be accessed directly (no function calls for simple values). Event creation should be fast (no unnecessary computations).</description>
+    </constraint>
+    <constraint>
+      <name>Integration Points</name>
+      <description>Event types already defined in Story 1.2 type definitions. Event spawning already implemented in Story 2.4. EventManager already has type to priority mapping. Constants already defined in Story 1.5. Prepare for visual rendering in Story 2.7. Prepare for interaction system in Story 2.9.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="GameEvent" kind="TypeScript interface" signature="interface GameEvent { id: string; type: EventType; priority: EventPriority; location: { x: number; y: number }; timer: number; points: number; cozinessReward: number; cozinessPenalty: number; }" path="src/types/events.ts"/>
+    <interface name="EventType" kind="TypeScript type alias" signature="type EventType = 'phone' | 'kettle' | 'cat' | 'candle'" path="src/types/events.ts"/>
+    <interface name="EventPriority" kind="TypeScript type alias" signature="type EventPriority = 'minor' | 'standard' | 'critical'" path="src/types/events.ts"/>
+    <interface name="EventManager.spawnEvent" kind="class method" signature="spawnEvent(level: number, activeEventsCount?: number): GameEvent | null" path="src/core/EventManager.ts"/>
+    <interface name="getEventTimerDuration" kind="function" signature="getEventTimerDuration(level: number): number" path="src/utils/constants.ts"/>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should verify event type definitions, priority mappings, and constant usage. Use unit tests for EventManager methods and constant verification. Test event creation ensures all properties match PRD specifications. Integration tests verify event spawning with correct properties. TypeScript types provide compile-time safety.
+    </standards>
+    <locations>
+      <location>src/core/EventManager.test.ts (to be created)</location>
+      <location>src/utils/constants.test.ts (to be created)</location>
+      <location>src/types/events.test.ts (to be created)</location>
+    </locations>
+    <ideas>
+      <test acId="1" description="Test phone events have standard priority, +15 points, +8/-10 coziness"/>
+      <test acId="1" description="Test kettle events have critical priority, +20 points, +10/-20 coziness"/>
+      <test acId="1" description="Test cat events have minor priority, +10 points, +5/-5 coziness"/>
+      <test acId="1" description="Test candle events have standard priority, +15 points, +8/-10 coziness"/>
+      <test acId="3" description="Test EventType union includes all 4 types: phone, kettle, cat, candle"/>
+      <test acId="3" description="Test EventPriority union includes all 3 priorities: minor, standard, critical"/>
+      <test acId="3" description="Test GameEvent interface has all required properties"/>
+      <test acId="5" description="Test EVENT_TYPE_TO_PRIORITY mapping: phone → standard, kettle → critical, cat → minor, candle → standard"/>
+      <test acId="5" description="Test spawnEvent() uses EVENT_TYPE_TO_PRIORITY mapping"/>
+      <test acId="6" description="Test EVENT_SCORING constant values: minor: 10, standard: 15, critical: 20"/>
+      <test acId="6" description="Test EVENT_COZINESS_IMPACT constant values: minor: +5/-5, standard: +8/-10, critical: +10/-20"/>
+      <test acId="6" description="Test EventManager uses EVENT_SCORING when creating events"/>
+      <test acId="6" description="Test EventManager uses EVENT_COZINESS_IMPACT when creating events"/>
+      <test acId="6" description="Test getEventTimerDuration() returns correct durations for each level"/>
+      <test acId="6" description="Test EventManager uses getEventTimerDuration() when creating events"/>
+      <test acId="4" description="Test interaction text is stored with event data for each event type"/>
+      <test acId="4" description="Test interaction text is accessible for UI display"/>
+      <test acId="2" description="Test each event type has unique visual identifier"/>
+      <test acId="2" description="Test timer durations are appropriate for each priority/level"/>
+    </ideas>
+  </tests>
+</story-context>
+

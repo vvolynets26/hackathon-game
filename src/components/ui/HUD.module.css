@@ -1,0 +1,52 @@
+/**
+ * HUD Component Styles
+ * 
+ * Styles for the game HUD (Heads-Up Display) at the top of the screen.
+ * Uses dark background with light text and warm accents.
+ */
+
+.hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem; /* 8px 16px - sm and md spacing from 8px grid system (UX Design Specification) */
+  background: rgba(26, 31, 46, 0.95); /* Dark Night (#1a1f2e) with slight transparency - UX Design Specification */
+  backdrop-filter: blur(8px); /* 8px blur - follows 8px grid */
+  border-bottom: 1px solid rgba(255, 140, 66, 0.2); /* Warm Orange (#ff8c42) accent - UX Design Specification */
+  z-index: 1000; /* Always on top */
+  min-height: 3rem; /* 48px - 2xl spacing from 8px grid system */
+}
+
+/* HUD Sections */
+.leftSection {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.centerSection {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rightSection {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .hud {
+    padding: 0.5rem;
+    min-height: 2.5rem;
+  }
+}
+

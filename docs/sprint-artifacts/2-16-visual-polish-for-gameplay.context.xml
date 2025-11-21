@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>16</storyId>
+    <title>Visual Polish for Gameplay</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>player</asA>
+    <iWant>polished visual effects during gameplay</iWant>
+    <soThat>the experience feels smooth and professional</soThat>
+    <tasks>
+      <task id="1" acceptanceCriteria="1">
+        <title>Optimize character movement animations</title>
+        <subtasks>
+          <subtask>Review `src/components/game/Character.tsx` for movement implementation</subtask>
+          <subtask>Ensure movement uses CSS `transform: translate()` for GPU acceleration (not top/left)</subtask>
+          <subtask>Verify frame-rate independent movement using delta time</subtask>
+          <subtask>Test smooth movement with no jank or stuttering</subtask>
+          <subtask>Ensure movement speed is consistent and responsive</subtask>
+          <subtask>Reference architecture document for movement patterns</subtask>
+        </subtasks>
+      </task>
+      <task id="2" acceptanceCriteria="1">
+        <title>Polish event indicator animations</title>
+        <subtasks>
+          <subtask>Review `src/components/game/EventIndicator.tsx` for animation implementation</subtask>
+          <subtask>Ensure icon appearance uses smooth CSS transitions</subtask>
+          <subtask>Verify timer updates animate smoothly (no stuttering)</subtask>
+          <subtask>Test event indicator animations at 60 FPS</subtask>
+          <subtask>Ensure animations don't cause frame drops</subtask>
+          <subtask>Reference UX design for event indicator specifications</subtask>
+        </subtasks>
+      </task>
+      <task id="3" acceptanceCriteria="1">
+        <title>Optimize «Затишок» bar updates</title>
+        <subtasks>
+          <subtask>Review `src/components/ui/CozinessBar.tsx` for update implementation</subtask>
+          <subtask>Ensure bar fill updates use CSS transitions (not JavaScript animations)</subtask>
+          <subtask>Verify smooth gradient transitions as value changes</subtask>
+          <subtask>Test bar updates with no stuttering or visual glitches</subtask>
+          <subtask>Ensure updates are frame-rate independent</subtask>
+          <subtask>Reference CozinessBar component implementation</subtask>
+        </subtasks>
+      </task>
+      <task id="4" acceptanceCriteria="1">
+        <title>Optimize timer countdown display</title>
+        <subtasks>
+          <subtask>Review `src/components/ui/Timer.tsx` for countdown implementation</subtask>
+          <subtask>Ensure timer updates smoothly (no frame drops)</subtask>
+          <subtask>Verify timer text updates are synchronized with game loop</subtask>
+          <subtask>Test timer countdown at 60 FPS</subtask>
+          <subtask>Ensure timer doesn't cause performance issues</subtask>
+          <subtask>Reference Timer component implementation</subtask>
+        </subtasks>
+      </task>
+      <task id="5" acceptanceCriteria="1,3">
+        <title>Ensure consistent visual style</title>
+        <subtasks>
+          <subtask>Review all gameplay components for color consistency</subtask>
+          <subtask>Verify colors match UX design "Cozy Blackout" theme</subtask>
+          <subtask>Verify spacing follows 8px grid system across all components</subtask>
+          <subtask>Check typography consistency (system sans-serif, proper type scale)</subtask>
+          <subtask>Ensure border-radius is consistent (8px for rounded corners)</subtask>
+          <subtask>Reference UX design color system, typography, and spacing</subtask>
+        </subtasks>
+      </task>
+      <task id="6" acceptanceCriteria="2">
+        <title>Performance optimization and testing</title>
+        <subtasks>
+          <subtask>Test game performance in Chrome (primary target browser)</subtask>
+          <subtask>Verify 60 FPS maintained during gameplay using browser DevTools</subtask>
+          <subtask>Check for visual glitches or layout issues</subtask>
+          <subtask>Ensure all CSS transitions are GPU-accelerated</subtask>
+          <subtask>Verify character movement uses transform (not top/left)</subtask>
+          <subtask>Test with multiple simultaneous events to ensure performance</subtask>
+          <subtask>Profile performance and optimize any bottlenecks</subtask>
+          <subtask>Reference architecture performance considerations</subtask>
+        </subtasks>
+      </task>
+      <task id="7" acceptanceCriteria="3">
+        <title>Visual consistency audit</title>
+        <subtasks>
+          <subtask>Audit all gameplay components for "Cozy Blackout" theme compliance</subtask>
+          <subtask>Verify colors match UX design specifications exactly</subtask>
+          <subtask>Check spacing follows 8px grid system</subtask>
+          <subtask>Verify typography is consistent (font family, sizes, weights)</subtask>
+          <subtask>Ensure all components use CSS variables for colors (if applicable)</subtask>
+          <subtask>Test visual consistency across all gameplay screens</subtask>
+          <subtask>Reference UX design visual foundation</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">
+      <given>I am playing the game</given>
+      <when>I observe gameplay visuals</when>
+      <then>
+        <item>Smooth character movement animations (no jank)</item>
+        <item>Smooth event indicator animations (icon appearance, timer updates)</item>
+        <item>Smooth «Затишок» bar updates (no stuttering)</item>
+        <item>Smooth timer countdown (no frame drops)</item>
+        <item>Consistent visual style (colors, spacing, typography)</item>
+      </then>
+    </criterion>
+    <criterion id="2">
+      <given>the game is running</given>
+      <when>I observe performance</when>
+      <then>
+        <item>60 FPS maintained during gameplay</item>
+        <item>No visual glitches or layout issues</item>
+        <item>Smooth CSS transitions and animations</item>
+        <item>GPU-accelerated transforms for movement</item>
+      </then>
+    </criterion>
+    <criterion id="3">
+      <given>I view gameplay elements</given>
+      <when>I observe visual consistency</when>
+      <then>
+        <item>All gameplay elements follow "Cozy Blackout" theme</item>
+        <item>Colors match UX design specifications</item>
+        <item>Spacing follows 8px grid system</item>
+        <item>Typography is consistent and readable</item>
+      </then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown - Story 2.16</title>
+        <section>Epic 2: Core Gameplay - Story 2.16: Visual Polish for Gameplay</section>
+        <snippet>Story 2.16 focuses on polishing visual effects during gameplay: smooth character movement animations, smooth event indicator animations, smooth «Затишок» bar updates, smooth timer countdown, and consistent visual style. Performance polish includes 60 FPS maintenance, no visual glitches, smooth CSS transitions, and GPU-accelerated transforms.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Performance Considerations</section>
+        <snippet>Use CSS transforms for animations (GPU-accelerated). Avoid layout thrashing (use `transform` not `top/left`). Use `requestAnimationFrame` for smooth 60 FPS. Batch state updates to minimize re-renders. Use `React.memo` for expensive components.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Character Movement</section>
+        <snippet>Character movement uses CSS `transform: translate()` for GPU-accelerated positioning. Movement is frame-rate independent using delta time. Character position is stored in component state and updated every frame.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>ADR-005: CSS Modules for Styling</section>
+        <snippet>Decision: Use CSS Modules for component styling. Rationale: Scoped styles prevent conflicts, good organization, no runtime overhead. Components use CSS Modules for scoped styles.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Color System</section>
+        <snippet>"Cozy Blackout" theme: Background (Dark Night #1a1f2e, Dark Grey #2d3442, Deep Blue #1e2740), Light Sources (Candle Yellow #f4a460, Warm Orange #ff8c42, Soft Glow #ffd700), UI/HUD (Light Text #ffffff, Accent Warm #ffd700). Event Priority Colors: Minor #64b5f6, Standard #fff176, Critical #ff8c42.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Typography System</section>
+        <snippet>Font Families: System sans-serif stack. Type Scale: H1 28px/1.2/600, H2 24px/1.3/600, H3 20px/1.4/500, Body 16px/1.5/400, Small 14px/1.4/400, Tiny 12px/1.3/400.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Spacing and Layout</section>
+        <snippet>Base Unit: 8px grid system. Spacing Scale: xs 4px, sm 8px, md 16px, lg 24px, xl 32px, 2xl 48px. Layout Grid: Game Screen flexible, UI Screens 12-column grid max-width 1200px, HUD absolute positioning with 8px padding.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Visual Foundation</section>
+        <snippet>All UI elements have soft rounded corners (8px border-radius consistent), subtle shadows behind panels and cards, consistent spacing (8px grid system), proper typography (system fonts, appropriate sizes). Visual effects are polished with smooth transitions, consistent animation timing, no visual glitches.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/components/game/Character.tsx</path>
+        <kind>component</kind>
+        <symbol>Character</symbol>
+        <lines>1-461</lines>
+        <reason>Character component handles movement animations. Currently uses CSS transform: translate() for GPU acceleration (line 436). Movement is frame-rate independent using delta time (lines 300-336). Needs optimization verification for smooth animations without jank.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/Character.module.css</path>
+        <kind>stylesheet</kind>
+        <symbol>Character styles</symbol>
+        <lines>1-*</lines>
+        <reason>CSS Module for Character component. Contains character visual styles and walking animation. Needs review for smooth animation transitions and GPU acceleration.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/EventIndicator.tsx</path>
+        <kind>component</kind>
+        <symbol>EventIndicator</symbol>
+        <lines>1-331</lines>
+        <reason>EventIndicator component displays event icons with timers. Uses CSS transforms for positioning (line 187). Timer ring uses conic-gradient (lines 209-213). Needs optimization for smooth icon appearance animations and timer updates without stuttering.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/EventIndicator.module.css</path>
+        <kind>stylesheet</kind>
+        <symbol>EventIndicator styles</symbol>
+        <lines>1-*</lines>
+        <reason>CSS Module for EventIndicator component. Contains event indicator styles, timer ring styles, and icon styles. Needs review for smooth CSS transitions and animations.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/CozinessBar.tsx</path>
+        <kind>component</kind>
+        <symbol>CozinessBar</symbol>
+        <lines>1-112</lines>
+        <reason>CozinessBar component displays «Затишок» meter with gradient. Bar fill uses CSS width percentage (line 99) and linear-gradient (line 86). Needs optimization to ensure smooth CSS transitions for bar updates without stuttering.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/CozinessBar.module.css</path>
+        <kind>stylesheet</kind>
+        <symbol>CozinessBar styles</symbol>
+        <lines>1-*</lines>
+        <reason>CSS Module for CozinessBar component. Contains bar container, bar fill, and label styles. Needs review for smooth CSS transitions on bar width changes.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/Timer.tsx</path>
+        <kind>component</kind>
+        <symbol>Timer</symbol>
+        <lines>1-70</lines>
+        <reason>Timer component displays evening timer in MM:SS format. Updates via GameContext (line 52). Needs optimization to ensure smooth countdown updates synchronized with game loop without frame drops.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/ui/Timer.module.css</path>
+        <kind>stylesheet</kind>
+        <symbol>Timer styles</symbol>
+        <lines>1-*</lines>
+        <reason>CSS Module for Timer component. Contains timer display styles. Needs review for smooth text updates and color transitions.</reason>
+      </artifact>
+      <artifact>
+        <path>src/hooks/useGameLoop.ts</path>
+        <kind>hook</kind>
+        <symbol>useGameLoop</symbol>
+        <lines>1-*</lines>
+        <reason>Game loop hook using requestAnimationFrame. Updates game state every frame. Needs verification for 60 FPS performance and frame-rate independent updates.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>utility</kind>
+        <symbol>CHARACTER_MOVEMENT_SPEED</symbol>
+        <lines>1-502</lines>
+        <reason>Game constants file. Contains CHARACTER_MOVEMENT_SPEED and other game mechanics values. Movement speed constant used for character movement calculations.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="typescript" version="~5.9.3" />
+        <package name="vite" version="^5.4.11" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <category>Performance Optimization</category>
+      <rule>Use CSS `transform: translate()` for character movement (GPU-accelerated). Do not use top/left properties.</rule>
+      <source>docs/architecture.md#Character-Movement</source>
+    </constraint>
+    <constraint>
+      <category>Performance Optimization</category>
+      <rule>Use CSS transitions for animations (not JavaScript) for better performance.</rule>
+      <source>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md#Dev-Notes</source>
+    </constraint>
+    <constraint>
+      <category>Performance Optimization</category>
+      <rule>Ensure frame-rate independent updates using delta time.</rule>
+      <source>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md#Dev-Notes</source>
+    </constraint>
+    <constraint>
+      <category>Performance Optimization</category>
+      <rule>Target 60 FPS during gameplay.</rule>
+      <source>docs/architecture.md#Performance-Considerations</source>
+    </constraint>
+    <constraint>
+      <category>Performance Optimization</category>
+      <rule>Use requestAnimationFrame for game loop (already implemented in Story 2.1).</rule>
+      <source>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md#Dev-Notes</source>
+    </constraint>
+    <constraint>
+      <category>Visual Consistency</category>
+      <rule>Follow "Cozy Blackout" theme from UX design specification.</rule>
+      <source>docs/ux-design-specification.md#Color-System</source>
+    </constraint>
+    <constraint>
+      <category>Visual Consistency</category>
+      <rule>Use CSS variables for consistent colors across components.</rule>
+      <source>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md#Dev-Notes</source>
+    </constraint>
+    <constraint>
+      <category>Visual Consistency</category>
+      <rule>Follow 8px grid system for spacing.</rule>
+      <source>docs/ux-design-specification.md#Spacing-and-Layout</source>
+    </constraint>
+    <constraint>
+      <category>Visual Consistency</category>
+      <rule>Use consistent typography system (system sans-serif stack).</rule>
+      <source>docs/ux-design-specification.md#Typography-System</source>
+    </constraint>
+    <constraint>
+      <category>Visual Consistency</category>
+      <rule>Maintain consistent border-radius (8px) for rounded corners.</rule>
+      <source>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md#Dev-Notes</source>
+    </constraint>
+    <constraint>
+      <category>Component Patterns</category>
+      <rule>Components use CSS Modules for styling.</rule>
+      <source>docs/architecture.md#ADR-005</source>
+    </constraint>
+    <constraint>
+      <category>Component Patterns</category>
+      <rule>Components read from GameContext for state (no local state duplication).</rule>
+      <source>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md#Dev-Notes</source>
+    </constraint>
+    <constraint>
+      <category>Component Patterns</category>
+      <rule>Smooth transitions use CSS transitions (not JavaScript animations).</rule>
+      <source>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md#Dev-Notes</source>
+    </constraint>
+    <constraint>
+      <category>Testing</category>
+      <rule>Test performance in Chrome (primary target browser).</rule>
+      <source>docs/sprint-artifacts/2-16-visual-polish-for-gameplay.md#Dev-Notes</source>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>Character Component Props</name>
+      <kind>React Component Interface</kind>
+      <signature>interface CharacterProps { containerRef?: React.RefObject&lt;HTMLElement&gt;; }</signature>
+      <path>src/components/game/Character.tsx</path>
+    </interface>
+    <interface>
+      <name>EventIndicator Component Props</name>
+      <kind>React Component Interface</kind>
+      <signature>interface EventIndicatorProps { event: GameEvent; containerRef?: React.RefObject&lt;HTMLElement&gt;; stackOffset?: number; }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+    <interface>
+      <name>GameContext Hook</name>
+      <kind>React Hook</kind>
+      <signature>const { gameState, setCharacterPosition } = useGame()</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>CSS Transform API</name>
+      <kind>CSS Property</kind>
+      <signature>transform: translate(x, y)</signature>
+      <path>src/components/game/Character.tsx:436</path>
+    </interface>
+    <interface>
+      <name>CSS Transition API</name>
+      <kind>CSS Property</kind>
+      <signature>transition: property duration timing-function</signature>
+      <path>CSS Modules files</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing standards: Use Vitest for unit tests. Test files co-located with source files (*.test.ts). Test performance using browser DevTools Performance tab. Verify 60 FPS using Chrome DevTools FPS meter. Test visual consistency by comparing components against UX design specifications. Test animations for smoothness and frame-rate independence.
+    </standards>
+    <locations>
+      <location>src/components/game/Character.test.ts</location>
+      <location>src/components/game/EventIndicator.test.ts</location>
+      <location>src/components/ui/CozinessBar.test.ts</location>
+      <location>src/components/ui/Timer.test.ts</location>
+      <location>src/hooks/useGameLoop.test.ts</location>
+    </locations>
+    <ideas>
+      <test id="ac1-character-movement">
+        <acceptanceCriteria>1</acceptanceCriteria>
+        <description>Test character movement uses CSS transform (not top/left). Verify smooth movement with no jank using performance profiling.</description>
+      </test>
+      <test id="ac1-event-indicator">
+        <acceptanceCriteria>1</acceptanceCriteria>
+        <description>Test event indicator icon appearance uses smooth CSS transitions. Verify timer updates animate smoothly without stuttering.</description>
+      </test>
+      <test id="ac1-coziness-bar">
+        <acceptanceCriteria>1</acceptanceCriteria>
+        <description>Test «Затишок» bar fill updates use CSS transitions. Verify smooth gradient transitions as value changes without stuttering.</description>
+      </test>
+      <test id="ac1-timer">
+        <acceptanceCriteria>1</acceptanceCriteria>
+        <description>Test timer countdown updates smoothly synchronized with game loop. Verify no frame drops during countdown.</description>
+      </test>
+      <test id="ac1-visual-style">
+        <acceptanceCriteria>1,3</acceptanceCriteria>
+        <description>Test all gameplay components for consistent visual style: colors match UX design, spacing follows 8px grid, typography is consistent, border-radius is 8px.</description>
+      </test>
+      <test id="ac2-performance">
+        <acceptanceCriteria>2</acceptanceCriteria>
+        <description>Test game maintains 60 FPS during gameplay using Chrome DevTools. Verify no visual glitches or layout issues. Ensure all CSS transitions are GPU-accelerated.</description>
+      </test>
+      <test id="ac3-theme-consistency">
+        <acceptanceCriteria>3</acceptanceCriteria>
+        <description>Test all gameplay elements follow "Cozy Blackout" theme. Verify colors, spacing, and typography match UX design specifications exactly.</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

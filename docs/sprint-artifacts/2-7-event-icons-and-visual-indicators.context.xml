@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>7</storyId>
+    <title>Event Icons and Visual Indicators</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-7-event-icons-and-visual-indicators.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want to see visual icons above event objects with color-coded priorities</iWant>
+    <soThat>So that I know where events are and how urgent they are</soThat>
+    <tasks>
+      <task id="1" description="Enhance EventIndicator component with priority colors (AC: 1, 5)">
+        <subtask>Verify EVENT_TYPE_ICONS mapping includes all 4 event types (phone, kettle, cat, candle)</subtask>
+        <subtask>Update CSS module with priority color classes matching UX design: Minor: #64b5f6 (soft blue), Standard: #fff176 (light yellow), Critical: #ff8c42 (orange/red)</subtask>
+        <subtask>Ensure icons have proper visibility (drop shadows, glow effects) against dark background</subtask>
+        <subtask>Apply priority colors to icon background or glow effect</subtask>
+        <subtask>Reference UX design specification for exact colors</subtask>
+        <subtask>Reference PRD FR4, FR28 for visual indicator specifications</subtask>
+      </task>
+      <task id="2" description="Ensure proper positioning and visibility (AC: 2, 5)">
+        <subtask>Verify absolute positioning works correctly relative to apartment container</subtask>
+        <subtask>Ensure indicators are visible against dark apartment background (#1a1f2e)</subtask>
+        <subtask>Adjust icon sizing to be appropriately visible (not too large, not too small)</subtask>
+        <subtask>Test visibility with different apartment background colors</subtask>
+        <subtask>Add drop shadows or glow effects for better visibility</subtask>
+        <subtask>Reference UX design for background colors</subtask>
+      </task>
+      <task id="3" description="Implement stacked/offset positioning for multiple events (AC: 6)">
+        <subtask>Detect when multiple events are at same location</subtask>
+        <subtask>Calculate offset positions to prevent overlap</subtask>
+        <subtask>Implement stacking logic (vertical offset or slight horizontal offset)</subtask>
+        <subtask>Ensure all indicators remain readable when stacked</subtask>
+        <subtask>Test with maximum simultaneous events (4 events)</subtask>
+        <subtask>Reference architecture document for event positioning</subtask>
+      </task>
+      <task id="4" description="Ensure real-time updates and removal (AC: 3, 4)">
+        <subtask>Verify indicators update when event data changes (timer, priority)</subtask>
+        <subtask>Ensure color remains consistent with priority throughout event lifetime</subtask>
+        <subtask>Verify indicators are removed when event resolved (removed from activeEvents)</subtask>
+        <subtask>Verify indicators are removed when event expired (removed from activeEvents)</subtask>
+        <subtask>Test indicator removal doesn't leave visual artifacts</subtask>
+        <subtask>Ensure React key prop properly handles indicator mounting/unmounting</subtask>
+      </task>
+      <task id="5" description="Polish visual styling and animations (AC: 5)">
+        <subtask>Add subtle pulse animation to draw attention (already in CSS, verify)</subtask>
+        <subtask>Ensure drop shadows provide depth and visibility</subtask>
+        <subtask>Verify priority colors are prominent but not overwhelming</subtask>
+        <subtask>Test visual hierarchy (critical more urgent than minor)</subtask>
+        <subtask>Ensure CSS animations are performant (GPU-accelerated)</subtask>
+        <subtask>Reference UX design for animation timing</subtask>
+      </task>
+      <task id="6" description="Testing and validation (AC: 1, 2, 3, 4, 5, 6)">
+        <subtask>Test all 4 event types display correct icons</subtask>
+        <subtask>Test all 3 priority levels display correct colors</subtask>
+        <subtask>Test visibility against dark background</subtask>
+        <subtask>Test stacked indicators with multiple events</subtask>
+        <subtask>Test indicator removal on resolution</subtask>
+        <subtask>Test indicator removal on expiration</subtask>
+        <subtask>Test real-time updates during gameplay</subtask>
+        <subtask>Verify no visual artifacts after removal</subtask>
+        <subtask>Test with maximum simultaneous events</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">
+      <given>An event is active</given>
+      <when>The event is rendered</when>
+      <then>EventIndicator component displays: Icon above the event object location (phone, kettle, cat, candle icons), Color-coded priority indicator: Minor events: soft blue (#64b5f6), Standard events: light yellow (#fff176), Critical events: orange/red (#ff8c42)</then>
+    </criterion>
+    <criterion id="2">
+      <given>Event indicators are displayed</given>
+      <when>I view the gameplay screen</when>
+      <then>Event indicators are: Positioned above event objects using absolute positioning, Visible and readable against dark apartment background, Sized appropriately (not too large, not too small), Stacked/offset if multiple events at same location</then>
+    </criterion>
+    <criterion id="3">
+      <given>Events are active</given>
+      <when>The game updates</when>
+      <then>Event indicators update in real-time: Color remains consistent with priority, Icon remains visible until event resolved or expired, Position updates if event location changes (if applicable)</then>
+    </criterion>
+    <criterion id="4">
+      <given>Event indicators are displayed</given>
+      <when>An event is resolved or expires</when>
+      <then>Event indicators are removed: Event is removed from active events array, Indicator component is unmounted/removed from DOM, No lingering visual artifacts</then>
+    </criterion>
+    <criterion id="5">
+      <given>Event indicators are styled</given>
+      <when>I view event indicators</when>
+      <then>Styling matches UX design specification: Priority colors match UX design colors exactly, Icons are visible against dark background (drop shadows or glow), Indicators have appropriate sizing and spacing, Visual hierarchy clearly communicates urgency</then>
+    </criterion>
+    <criterion id="6">
+      <given>Multiple events at same location</given>
+      <when>Events spawn</when>
+      <then>Indicators are stacked/offset: Multiple indicators visible without overlap, Offset positioning prevents visual confusion, All indicators remain readable</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Event System - FR4, FR28</section>
+        <snippet>FR4: Each event displays a visual indicator (icon) above the object with a countdown timer showing time remaining. FR28: The game visually distinguishes event priorities through color coding (minor: soft blue, standard: light yellow, critical: orange/red).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Event Priority Colors, Color System</section>
+        <snippet>Event Priority Colors: Minor Events: #64b5f6 (soft blue), Standard Events: #fff176 (light yellow), Critical Events: #ff8c42 (orange/red). Background/Apartment: Dark Night: #1a1f2e (main apartment background).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Game Event System Pattern, Project Structure</section>
+        <snippet>EventManager maintains active events array. EventIndicator components render for each active event. Component receives event object with all properties (type, priority, location, timer). Component calculates position from event.location (percentage-based coordinates).</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.7: Event Icons and Visual Indicators</section>
+        <snippet>Story 2.7 focuses on visual polish: priority colors, visibility, stacking. Component structure is solid, needs styling enhancements. Priority color classes already exist in CSS, need to verify they match UX design.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-6-event-types-and-interaction-requirements.md</path>
+        <title>Story 2.6: Event Types and Interaction Requirements</title>
+        <section>Dev Notes</section>
+        <snippet>Event types are fully defined with correct priorities. Icon mapping already exists in EventIndicator component (EVENT_TYPE_ICONS). Event type to priority mapping is in EventManager.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-4-event-spawning-system.md</path>
+        <title>Story 2.4: Event Spawning System</title>
+        <section>Implementation</section>
+        <snippet>EventManager.spawnEvent() creates events. Events added to GameContext.activeEvents array. Events have all required properties (type, priority, location, timer). Event indicators render automatically when events spawn.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/components/game/EventIndicator.tsx</path>
+        <kind>component</kind>
+        <symbol>EventIndicator, EventIndicators</symbol>
+        <lines>1-142</lines>
+        <reason>Main component to enhance. Already has basic implementation with EVENT_TYPE_ICONS mapping and PRIORITY_CLASSES. Needs priority color verification, visibility improvements, and stacking logic.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/EventIndicator.module.css</path>
+        <kind>stylesheet</kind>
+        <symbol>priorityMinor, priorityStandard, priorityCritical, pulse animation</symbol>
+        <lines>1-92</lines>
+        <reason>CSS module with priority classes already defined. Has drop-shadow filters and pulse animation. Need to verify colors match UX design exactly (#64b5f6, #fff176, #ff8c42).</reason>
+      </artifact>
+      <artifact>
+        <path>src/core/EventManager.ts</path>
+        <kind>class</kind>
+        <symbol>EventManager, spawnEvent, updateEvents, resolveEvent, expireEvent</symbol>
+        <lines>1-410</lines>
+        <reason>Manages event lifecycle. updateEvents() updates timers every frame. Events removed from activeEvents on resolution/expiration. Provides event data with type, priority, location, timer.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/events.ts</path>
+        <kind>type-definition</kind>
+        <symbol>GameEvent, EventType, EventPriority</symbol>
+        <lines>1-95</lines>
+        <reason>Type definitions for events. GameEvent interface includes type, priority, location, timer. EventType union: 'phone' | 'kettle' | 'cat' | 'candle'. EventPriority union: 'minor' | 'standard' | 'critical'.</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, GameProvider, addEvent, removeEvent</symbol>
+        <lines>82-205</lines>
+        <reason>Provides activeEvents array to components. addEvent() adds events to state. removeEvent() removes events from state. EventIndicators component reads activeEvents from this context.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>constants</kind>
+        <symbol>EVENT_SCORING, EVENT_COZINESS_IMPACT, EVENT_INTERACTION_TEXT</symbol>
+        <lines>1-485</lines>
+        <reason>Game constants including event scoring, coziness impact, and interaction text. Priority values defined: 'minor', 'standard', 'critical'. Constants match PRD specifications.</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/game/Apartment.tsx</path>
+        <kind>component</kind>
+        <symbol>Apartment</symbol>
+        <lines>1-104</lines>
+        <reason>Apartment container component. Event indicators are positioned relative to this container. Provides containerRef for position calculation. Dark background (#1a1f2e) requires good visibility for indicators.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem>node</ecosystem>
+      <packages>
+        <package name="react" version="^19.2.0" />
+        <package name="react-dom" version="^19.2.0" />
+        <package name="typescript" version="~5.9.3" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <category>Architecture</category>
+      <description>EventIndicator component already exists at src/components/game/EventIndicator.tsx. Component receives GameEvent object with type, priority, location, timer properties. Component uses CSS Modules for styling. Absolute positioning relative to apartment container. Follow architecture document "Event System Pattern" section.</description>
+    </constraint>
+    <constraint>
+      <category>Styling</category>
+      <description>Priority colors must match UX design exactly: Minor: #64b5f6 (soft blue), Standard: #fff176 (light yellow), Critical: #ff8c42 (orange/red). Colors applied via CSS classes or inline styles. Drop shadows or glow effects ensure visibility against dark background (#1a1f2e).</description>
+    </constraint>
+    <constraint>
+      <category>Positioning</category>
+      <description>Events use percentage-based coordinates (0.0 to 1.0) for responsive positioning. EventIndicator converts percentages to pixel positions based on container size. Absolute positioning relative to apartment container. Transform translate(-50%, -50%) centers indicator on event location. Stacked events need offset calculation to prevent overlap.</description>
+    </constraint>
+    <constraint>
+      <category>Performance</category>
+      <description>Use CSS transforms for animations (GPU-accelerated). Minimize re-renders (React.memo if needed). Efficient position calculations. Lightweight animations (pulse, glow effects). CSS transitions for smooth position updates.</description>
+    </constraint>
+    <constraint>
+      <category>Integration</category>
+      <description>EventIndicator integrates with GameContext (reads activeEvents). Component receives containerRef for position calculation. Integrates with Apartment component (positioned relative to apartment container). Event removal handled by GameContext state updates. Prepare for timer display in Story 2.8 (timer already shown, may need enhancement).</description>
+    </constraint>
+    <constraint>
+      <category>Visual</category>
+      <description>Icons are Unicode emoji (📱, ☕, 🐱, 🕯️) - prepare for future SVG integration. Drop shadows and glow effects ensure visibility. Pulse animation draws attention (already implemented in CSS). Critical events have faster pulse animation for urgency.</description>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>EventIndicator Component Props</name>
+      <kind>React Component Interface</kind>
+      <signature>interface EventIndicatorProps { event: GameEvent; containerRef?: React.RefObject&lt;HTMLElement&gt;; }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+    <interface>
+      <name>EventIndicators Component Props</name>
+      <kind>React Component Interface</kind>
+      <signature>interface EventIndicatorsProps { events: GameEvent[]; containerRef?: React.RefObject&lt;HTMLElement&gt;; }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+    <interface>
+      <name>GameEvent Interface</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface GameEvent { id: string; type: EventType; priority: EventPriority; location: { x: number; y: number }; timer: number; points: number; cozinessReward: number; cozinessPenalty: number; interactionText: { en: string; uk: string }; }</signature>
+      <path>src/types/events.ts</path>
+    </interface>
+    <interface>
+      <name>GameContext activeEvents</name>
+      <kind>React Context State</kind>
+      <signature>activeEvents: GameEvent[] (from GameContext)</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+    <interface>
+      <name>EVENT_TYPE_ICONS Mapping</name>
+      <kind>Constant Object</kind>
+      <signature>const EVENT_TYPE_ICONS: Record&lt;GameEvent['type'], string&gt; = { phone: '📱', kettle: '☕', cat: '🐱', candle: '🕯️' }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+    <interface>
+      <name>PRIORITY_CLASSES Mapping</name>
+      <kind>Constant Object</kind>
+      <signature>const PRIORITY_CLASSES: Record&lt;GameEvent['priority'], string&gt; = { minor: styles.priorityMinor, standard: styles.priorityStandard, critical: styles.priorityCritical }</signature>
+      <path>src/components/game/EventIndicator.tsx</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing should focus on visual verification and integration testing. No formal test framework is currently set up, but manual testing should verify: All 4 event types display correct icons, All 3 priority levels display correct colors, Visibility against dark background, Stacked indicators with multiple events, Indicator removal on resolution/expiration, Real-time updates during gameplay, No visual artifacts after removal. CSS animations should be tested for performance (GPU-accelerated transforms).
+    </standards>
+    <locations>
+      Manual testing in browser during development. Visual regression testing by comparing against UX design specifications. Performance testing using Chrome DevTools Performance tab. No automated test files exist yet - consider adding tests in src/components/game/EventIndicator.test.tsx if test framework is added.
+    </locations>
+    <ideas>
+      <test id="AC1">
+        <criterion>AC1: Event icons and priority colors</criterion>
+        <idea>Test each event type (phone, kettle, cat, candle) displays correct emoji icon. Test each priority level (minor, standard, critical) displays correct color glow (#64b5f6, #fff176, #ff8c42). Verify colors match UX design specification exactly.</idea>
+      </test>
+      <test id="AC2">
+        <criterion>AC2: Positioning and visibility</criterion>
+        <idea>Test indicators are positioned correctly above event objects using absolute positioning. Test visibility against dark apartment background (#1a1f2e) - icons should be clearly visible with drop shadows/glow. Test icon sizing is appropriate (not too large, not too small). Test indicators remain readable when multiple events spawn.</idea>
+      </test>
+      <test id="AC3">
+        <criterion>AC3: Real-time updates</criterion>
+        <idea>Test color remains consistent with priority throughout event lifetime (no color changes). Test icon remains visible until event resolved or expired. Test position updates smoothly if event location changes (if applicable). Test timer display updates in real-time.</idea>
+      </test>
+      <test id="AC4">
+        <criterion>AC4: Indicator removal</criterion>
+        <idea>Test indicators are removed when event resolved (removed from activeEvents array). Test indicators are removed when event expired (removed from activeEvents array). Test no lingering visual artifacts after removal. Test React key prop properly handles mounting/unmounting.</idea>
+      </test>
+      <test id="AC5">
+        <criterion>AC5: Styling matches UX design</criterion>
+        <idea>Test priority colors match UX design colors exactly (#64b5f6, #fff176, #ff8c42). Test icons have drop shadows or glow for visibility against dark background. Test indicators have appropriate sizing and spacing. Test visual hierarchy clearly communicates urgency (critical more prominent than minor).</idea>
+      </test>
+      <test id="AC6">
+        <criterion>AC6: Stacked indicators</criterion>
+        <idea>Test multiple indicators visible without overlap when events at same location. Test offset positioning prevents visual confusion. Test all indicators remain readable when stacked. Test with maximum simultaneous events (4 events) to verify stacking works at scale.</idea>
+      </test>
+      <test id="performance">
+        <criterion>Performance</criterion>
+        <idea>Test CSS animations are GPU-accelerated (use transform, not top/left). Test pulse animation runs smoothly at 60 FPS. Test no frame drops when multiple indicators animate simultaneously. Test indicator updates don't cause layout thrashing.</idea>
+      </test>
+      <test id="integration">
+        <criterion>Integration</criterion>
+        <idea>Test EventIndicator integrates correctly with GameContext (reads activeEvents). Test component receives containerRef for position calculation. Test indicators positioned relative to Apartment component. Test event removal triggers React re-render and indicator unmounts.</idea>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
+

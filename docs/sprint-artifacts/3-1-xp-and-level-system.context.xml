@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>1</storyId>
+    <title>XP and Level System</title>
+    <status>drafted</status>
+    <generatedAt>2025-01-21T00:00:00Z</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-1-xp-and-level-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a player</asA>
+    <iWant>I want to earn XP and level up based on my performance</iWant>
+    <soThat>So that I can unlock passive bonuses and see my progress</soThat>
+    <tasks>
+      <![CDATA[
+- [ ] Task 1: Create ProgressionSystem class with XP calculation (AC: 1, 4)
+  - [ ] Create `src/core/ProgressionSystem.ts` file
+  - [ ] Implement `calculateXP(score: number): number` method
+  - [ ] Verify XP calculation: XP = floor(score / 10)
+  - [ ] Test with example: 200 points = 20 XP
+  - [ ] Reference XP_LEVEL_THRESHOLDS constant [Source: src/utils/constants.ts]
+  - [ ] Reference PRD FR11 for XP calculation formula [Source: docs/prd.md#Progression-&-Economy]
+
+- [ ] Task 2: Implement level up checking logic (AC: 2, 4)
+  - [ ] Implement `checkLevelUp(currentXP: number, currentLevel: number)` method
+  - [ ] Verify level thresholds: Level 1 (0 XP), Level 2 (100 XP), Level 3 (300 XP), Level 4 (600 XP)
+  - [ ] Return `{ leveledUp: boolean, newLevel: number }` object
+  - [ ] Handle multiple level ups in single session (if XP gain is large)
+  - [ ] Reference XP_LEVEL_THRESHOLDS constant [Source: src/utils/constants.ts]
+  - [ ] Reference PRD FR12 for level thresholds [Source: docs/prd.md#Progression-&-Economy]
+
+- [ ] Task 3: Implement XP progress calculation methods (AC: 4)
+  - [ ] Implement `getXPForNextLevel(level: number): number` method
+  - [ ] Implement `getXPProgress(currentXP: number, level: number): number` method
+  - [ ] Verify progress returns 0-1 value (0 = no progress, 1 = ready to level up)
+  - [ ] Test edge cases: level 1, max level, exact threshold matches
+  - [ ] Reference XP_LEVEL_THRESHOLDS constant [Source: src/utils/constants.ts]
+
+- [ ] Task 4: Integrate XP calculation into game end flow (AC: 1, 2)
+  - [ ] Add XP calculation when evening ends (win or lose)
+  - [ ] Get final score from GameContext
+  - [ ] Calculate XP using ProgressionSystem.calculateXP()
+  - [ ] Add XP to progression state using ProgressionContext.addXP()
+  - [ ] Check for level up after adding XP
+  - [ ] Apply level up if occurred (update level in ProgressionContext)
+  - [ ] Reference GameContext for final score [Source: src/contexts/GameContext.tsx]
+  - [ ] Reference ProgressionContext for XP/level updates [Source: src/contexts/ProgressionContext.tsx]
+  - [ ] Reference game end logic [Source: src/hooks/useGameLoop.ts]
+
+- [ ] Task 5: Integrate localStorage persistence for XP and level (AC: 3)
+  - [ ] Verify localStorage utilities exist (Story 1.4)
+  - [ ] Ensure XP and level are saved to localStorage after evening ends
+  - [ ] Ensure XP and level are loaded from localStorage on game start
+  - [ ] Test persistence across browser sessions
+  - [ ] Reference localStorage utilities [Source: src/utils/localStorage.ts]
+  - [ ] Reference ProgressionContext for state management [Source: src/contexts/ProgressionContext.tsx]
+
+- [ ] Task 6: Prepare for HUD display integration (AC: 3)
+  - [ ] Verify level and XP accessible from ProgressionContext
+  - [ ] Verify XP progress calculation available for HUD bar
+  - [ ] Prepare data structure for HUD display (Story 4.1)
+  - [ ] Reference ProgressionContext for level/XP access [Source: src/contexts/ProgressionContext.tsx]
+  - [ ] Reference Story 4.1 for HUD requirements [Source: docs/epics.md#Story-4.1]
+
+- [ ] Task 7: Prepare for results screen integration (AC: 1, 2)
+  - [ ] Ensure XP gained this evening is accessible for results screen
+  - [ ] Ensure level up status is accessible for results screen
+  - [ ] Prepare data structure for results screen display (Story 4.3)
+  - [ ] Reference Story 4.3 for results screen requirements [Source: docs/epics.md#Story-4.3]
+
+- [ ] Task 8: Prepare for level bonuses integration (AC: 2)
+  - [ ] Ensure level up triggers are accessible for bonus application
+  - [ ] Prepare integration point for level bonuses (Story 3.3)
+  - [ ] Reference Story 3.3 for level bonuses requirements [Source: docs/epics.md#Story-3.3]
+
+- [ ] Task 9: Testing and validation (AC: 1, 2, 3, 4)
+  - [ ] Test XP calculation: 200 points = 20 XP
+  - [ ] Test XP calculation: 150 points = 15 XP
+  - [ ] Test XP calculation: 99 points = 9 XP (floor function)
+  - [ ] Test level up: 100 XP = level 2
+  - [ ] Test level up: 300 XP = level 3
+  - [ ] Test level up: 600 XP = level 4
+  - [ ] Test multiple level ups in single session
+  - [ ] Test XP progress calculation for HUD bar
+  - [ ] Test localStorage persistence
+  - [ ] Test edge cases: level 1, max level, exact thresholds
+      ]]>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <![CDATA[
+1. **Given** I complete an evening (win or lose)
+   **When** the evening ends
+   **Then** XP is calculated and added:
+   - XP = floor(total_score / 10)
+   - Example: 200 points = 20 XP
+   - XP is added to my total XP
+   - XP is displayed in results screen (Story 4.3)
+
+2. **Given** I complete an evening and earn XP
+   **When** XP is added to my total
+   **Then** level up is checked:
+   - If total XP >= level threshold: level increases
+   - Level thresholds: Level 1 (0 XP), Level 2 (100 XP), Level 3 (300 XP), Level 4 (600 XP)
+   - Level up notification is shown (Story 4.3)
+   - Level up bonuses are applied (Story 3.3)
+
+3. **Given** I have level and XP
+   **When** I view the game
+   **Then** level and XP are:
+   - Displayed in HUD (Story 4.1): "Lv. 2" with XP bar showing progress
+   - Saved to localStorage (Story 1.4)
+   - Loaded on game start (Story 1.4)
+   - Persisted across sessions
+
+4. **Given** ProgressionSystem class exists
+   **When** I use progression functions
+   **Then** ProgressionSystem class (`src/core/ProgressionSystem.ts`) provides:
+   - `calculateXP(score: number): number` - calculates XP from score
+   - `checkLevelUp(currentXP: number, currentLevel: number): { leveledUp: boolean, newLevel: number }` - checks if level up occurred
+   - `getXPForNextLevel(level: number): number` - returns XP needed for next level
+   - `getXPProgress(currentXP: number, level: number): number` - returns 0-1 progress to next level
+    ]]>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progression &amp; Economy - XP System</section>
+        <snippet>XP = floor(total_score / 10) per evening. Level thresholds: Level 1 (0 XP), Level 2 (100 XP), Level 3 (300 XP), Level 4 (600 XP). Players earn XP at the end of each evening based on their total score.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Epic 3: Progression System - Story 3.1: XP and Level System</section>
+        <snippet>Story 3.1 implements XP calculation (XP = floor(score / 10)), level up checking with thresholds [0, 100, 300, 600], and ProgressionSystem class with methods: calculateXP, checkLevelUp, getXPForNextLevel, getXPProgress.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Project Structure - Progression System</section>
+        <snippet>ProgressionSystem class at `src/core/ProgressionSystem.ts` provides pure functions for XP/level calculations (no React dependencies). ProgressionSystem uses constants from `src/utils/constants.ts` for level thresholds. ProgressionSystem integrates with ProgressionContext for state updates.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/2-12-scoring-system.md</path>
+        <title>Story 2.12: Scoring System</title>
+        <section>Story and Acceptance Criteria</section>
+        <snippet>Final score stored in GameState.score. Final score accessible from GameContext at end of evening. Score available for XP calculation: XP = floor(score / 10). Game end logic established in useGameLoop.ts.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-4-local-storage-utilities.md</path>
+        <title>Story 1.4: localStorage Utilities</title>
+        <section>Story and Acceptance Criteria</section>
+        <snippet>localStorage utilities exist: `saveGameState(state: ProgressionState): void` and `loadGameState(): ProgressionState | null`. localStorage key: `'hackathon-game:progression'`. Error handling for quota limits and corrupted data.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/1-3-react-context-setup-for-game-state.md</path>
+        <title>Story 1.3: React Context Setup for Game State</title>
+        <section>Story and Acceptance Criteria</section>
+        <snippet>ProgressionContext exists with basic functions: `addXP(amount: number)`, `levelUp()`. ProgressionState includes level and xp properties. Need to integrate level up checking into addXP function.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/core/ProgressionSystem.ts</path>
+        <kind>class</kind>
+        <symbol>ProgressionSystem</symbol>
+        <lines>1-100</lines>
+        <reason>New file to create. ProgressionSystem class provides pure functions for XP/level calculations: calculateXP, checkLevelUp, getXPForNextLevel, getXPProgress. No React dependencies, uses constants from constants.ts.</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/ProgressionContext.tsx</path>
+        <kind>context</kind>
+        <symbol>ProgressionContext, ProgressionProvider, useProgression</symbol>
+        <lines>1-222</lines>
+        <reason>ProgressionContext manages progression state (level, xp, svitlyachky, purchasedItems, equippedItems, achievements). Provides addXP and levelUp functions. Need to integrate level up checking into addXP function.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/progression.ts</path>
+        <kind>type</kind>
+        <symbol>ProgressionState, EquippedItems</symbol>
+        <lines>29-85</lines>
+        <reason>ProgressionState interface defines structure: level (number), xp (number), svitlyachky (number), purchasedItems (string[]), equippedItems (EquippedItems), achievements (string[]). Used throughout progression system.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/constants.ts</path>
+        <kind>constants</kind>
+        <symbol>XP_LEVEL_THRESHOLDS, getXPThreshold</symbol>
+        <lines>256-294</lines>
+        <reason>XP_LEVEL_THRESHOLDS constant: [0, 100, 300, 600] for levels 1-4. getXPThreshold(level: number) helper function returns XP threshold for given level. Used by ProgressionSystem for level up checking.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/localStorage.ts</path>
+        <kind>utilities</kind>
+        <symbol>saveGameState, loadGameState</symbol>
+        <lines>121-198</lines>
+        <reason>localStorage utilities for progression persistence. saveGameState(state: ProgressionState): void saves to 'hackathon-game:progression'. loadGameState(): ProgressionState | null loads and validates data. Handles quota limits and corrupted data.</reason>
+      </artifact>
+      <artifact>
+        <path>src/hooks/useGameLoop.ts</path>
+        <kind>hook</kind>
+        <symbol>useGameLoop, initializeGameState</symbol>
+        <lines>1-366</lines>
+        <reason>Game loop hook manages game state updates. Game end logic at lines 134-142 (win condition) and 153-158 (lose condition). Integration point for XP calculation when evening ends. Final score available from GameContext.gameState.score.</reason>
+      </artifact>
+      <artifact>
+        <path>src/contexts/GameContext.tsx</path>
+        <kind>context</kind>
+        <symbol>GameContext, GameProvider, useGame</symbol>
+        <lines>1-225</lines>
+        <reason>GameContext manages game state including final score (GameState.score). Provides access to gameState and update functions. Final score available at game end for XP calculation.</reason>
+      </artifact>
+      <artifact>
+        <path>src/types/game.ts</path>
+        <kind>type</kind>
+        <symbol>GameState</symbol>
+        <lines>39-54</lines>
+        <reason>GameState interface includes score property (number) which stores final score for XP calculation. Score increases when events are resolved, available at game end.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="react" version="^19.2.0"/>
+        <package name="react-dom" version="^19.2.0"/>
+        <package name="typescript" version="~5.9.3"/>
+        <package name="vite" version="^5.4.11"/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <![CDATA[
+**Progression System Architecture:**
+- ProgressionSystem class at `src/core/ProgressionSystem.ts` (new file to create) [Source: docs/architecture.md#Project-Structure]
+- ProgressionSystem provides pure functions for XP/level calculations (no React dependencies)
+- ProgressionSystem uses constants from `src/utils/constants.ts` for level thresholds
+- ProgressionSystem integrates with ProgressionContext for state updates
+
+**XP Calculation:**
+- XP = floor(total_score / 10) per evening [Source: docs/prd.md#Progression-&-Economy]
+- XP is calculated at end of evening (win or lose)
+- Final score comes from GameContext.gameState.score
+- XP is added to total XP (cumulative across sessions)
+
+**Level System:**
+- Level thresholds: [0, 100, 300, 600] for levels 1-4 [Source: src/utils/constants.ts]
+- Level starts at 1 (0 XP)
+- Level increases when total XP >= threshold for next level
+- Multiple level ups possible in single session (if large XP gain)
+- Level up bonuses applied in Story 3.3 (not this story)
+
+**State Management:**
+- XP and level stored in ProgressionState [Source: src/types/progression.ts]
+- ProgressionState managed by ProgressionContext [Source: src/contexts/ProgressionContext.tsx]
+- ProgressionContext provides `addXP(amount: number)` function
+- ProgressionContext provides `levelUp()` function
+- ProgressionContext already has basic addXP and levelUp functions (need to integrate level up checking)
+
+**localStorage Persistence:**
+- localStorage utilities exist in `src/utils/localStorage.ts` (Story 1.4) [Source: docs/architecture.md#Persistence]
+- Progression state saved with key `'hackathon-game:progression'`
+- Progression state loaded on game start
+- XP and level persist across browser sessions
+
+**Game End Integration:**
+- Game end logic in `src/hooks/useGameLoop.ts` [Source: docs/architecture.md#Game-Loop]
+- Game end triggers when timer reaches 0 (win) or coziness reaches 0 (lose)
+- Final score available from GameContext at game end
+- XP calculation should happen at game end, before results screen
+
+**HUD Display Integration:**
+- HUD will display level and XP progress (Story 4.1) [Source: docs/epics.md#Story-4.1]
+- Level displayed as "Lv. 2" format
+- XP bar shows progress to next level (0-1 fill)
+- HUD reads from ProgressionContext
+
+**Results Screen Integration:**
+- Results screen will display XP gained this evening (Story 4.3) [Source: docs/epics.md#Story-4.3]
+- Results screen will show level up notification if occurred
+- Results screen reads from ProgressionContext and game end state
+
+**Project Structure Notes:**
+- ProgressionSystem at `src/core/ProgressionSystem.ts` (new file, matches architecture document)
+- ProgressionContext at `src/contexts/ProgressionContext.tsx` (exists, needs integration)
+- Constants at `src/utils/constants.ts` (exists, has XP_LEVEL_THRESHOLDS)
+- localStorage utilities at `src/utils/localStorage.ts` (exists from Story 1.4)
+- GameContext at `src/contexts/GameContext.tsx` (exists, provides final score)
+- Game loop at `src/hooks/useGameLoop.ts` (exists, handles game end)
+    ]]>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ProgressionSystem</name>
+      <kind>class</kind>
+      <signature>class ProgressionSystem {
+  calculateXP(score: number): number
+  checkLevelUp(currentXP: number, currentLevel: number): { leveledUp: boolean, newLevel: number }
+  getXPForNextLevel(level: number): number
+  getXPProgress(currentXP: number, level: number): number
+}</signature>
+      <path>src/core/ProgressionSystem.ts</path>
+    </interface>
+    <interface>
+      <name>ProgressionContext API</name>
+      <kind>React Context</kind>
+      <signature>interface ProgressionStateContextValue {
+  progressionState: ProgressionState
+  addXP(amount: number): void
+  levelUp(): void
+  addSvitlyachky(amount: number): void
+  purchaseItem(itemId: string): void
+  equipItem(slot: 'characterSkin' | 'cat' | 'candle', itemId: string): void
+  unequipItem(slot: 'characterSkin' | 'cat' | 'candle'): void
+  unlockAchievement(achievementId: string): void
+}</signature>
+      <path>src/contexts/ProgressionContext.tsx</path>
+    </interface>
+    <interface>
+      <name>localStorage API</name>
+      <kind>utility functions</kind>
+      <signature>function saveGameState(state: ProgressionState): void
+function loadGameState(): ProgressionState | null</signature>
+      <path>src/utils/localStorage.ts</path>
+    </interface>
+    <interface>
+      <name>GameContext API</name>
+      <kind>React Context</kind>
+      <signature>interface GameStateContextValue {
+  gameState: GameState
+  // ... other properties
+  // gameState.score provides final score for XP calculation
+}</signature>
+      <path>src/contexts/GameContext.tsx</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      <![CDATA[
+Testing should use Vitest (Vite-native testing framework). Tests should be co-located with source files (e.g., `ProgressionSystem.test.ts` next to `ProgressionSystem.ts`). Test files use `*.test.ts` or `*.spec.ts` naming convention. Tests should cover unit tests for ProgressionSystem methods, integration tests for XP calculation flow, and edge cases (level 1, max level, exact thresholds, multiple level ups).
+      ]]>
+    </standards>
+    <locations>
+      <![CDATA[
+- `src/core/ProgressionSystem.test.ts` - Unit tests for ProgressionSystem class
+- `src/hooks/useGameLoop.test.ts` - Integration tests for game end XP calculation
+- `src/contexts/ProgressionContext.test.tsx` - Tests for ProgressionContext level up integration
+      ]]>
+    </locations>
+    <ideas>
+      <![CDATA[
+**AC1 - XP Calculation:**
+- Test XP calculation: 200 points = 20 XP
+- Test XP calculation: 150 points = 15 XP
+- Test XP calculation: 99 points = 9 XP (floor function)
+- Test XP calculation: 0 points = 0 XP
+- Test XP calculation: negative score (should handle gracefully)
+
+**AC2 - Level Up Checking:**
+- Test level up: 100 XP = level 2
+- Test level up: 300 XP = level 3
+- Test level up: 600 XP = level 4
+- Test multiple level ups in single session (e.g., 0 XP → 350 XP should level to 3)
+- Test no level up: 50 XP stays at level 1
+- Test edge case: exact threshold matches (100 XP exactly = level 2)
+
+**AC3 - Persistence:**
+- Test localStorage persistence: save and load XP/level
+- Test localStorage persistence across browser sessions
+- Test localStorage error handling (quota exceeded, corrupted data)
+- Test default values when localStorage is empty
+
+**AC4 - ProgressionSystem Methods:**
+- Test getXPForNextLevel: level 1 returns 100, level 2 returns 300, level 3 returns 600
+- Test getXPProgress: 0 XP at level 1 returns 0, 50 XP at level 1 returns 0.5, 100 XP at level 1 returns 1.0
+- Test getXPProgress edge cases: max level, exact thresholds
+- Test checkLevelUp return values: leveledUp boolean, newLevel number
+      ]]>
+    </ideas>
+  </tests>
+</story-context>
+

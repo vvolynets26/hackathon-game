@@ -44,6 +44,7 @@ export type EventPriority = 'minor' | 'standard' | 'critical';
  * @property points - Points awarded when event is successfully resolved
  * @property cozinessReward - Coziness gained when event is resolved
  * @property cozinessPenalty - Coziness lost when event expires without resolution
+ * @property interactionText - Interaction text describing what action the player needs to take (English and Ukrainian)
  * 
  * @example
  * ```typescript
@@ -55,7 +56,8 @@ export type EventPriority = 'minor' | 'standard' | 'critical';
  *   timer: 10,
  *   points: 50,
  *   cozinessReward: 5,
- *   cozinessPenalty: -10
+ *   cozinessPenalty: -10,
+ *   interactionText: { en: 'turn off', uk: 'Вимкнути' }
  * };
  * ```
  */
@@ -81,5 +83,12 @@ export interface GameEvent {
   cozinessReward: number;
   /** Coziness lost when event expires without resolution */
   cozinessPenalty: number;
+  /** Interaction text describing what action the player needs to take */
+  interactionText: {
+    /** English interaction text */
+    en: string;
+    /** Ukrainian interaction text */
+    uk: string;
+  };
 }
 

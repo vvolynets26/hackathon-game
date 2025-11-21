@@ -1,0 +1,318 @@
+/**
+ * Character Component Styles
+ *
+ * Styles for the character visual and movement.
+ * Uses CSS transforms for GPU-accelerated positioning.
+ * Character visual is simple CSS-styled element for hackathon scope.
+ */
+
+/* ============================================================================
+   Character Container
+   ============================================================================ */
+
+.character {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  z-index: 10; /* Above apartment background, below HUD */
+  pointer-events: none; /* Character doesn't block clicks */
+  will-change: transform; /* GPU acceleration hint */
+  transform: translateZ(0); /* Force GPU acceleration */
+  transition: opacity 0.3s ease; /* Smooth fade in */
+}
+
+/* ============================================================================
+   Character Visual
+   ============================================================================ */
+
+.characterVisual {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2px; /* Padding to avoid edge clipping */
+}
+
+/* Character head (40-45% of height = ~20px) */
+.characterVisual::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(
+    135deg,
+    #f5e6d3 0%,    /* Warm light skin tone */
+    #e8d4b8 50%,   /* Medium */
+    #dcc5a3 100%   /* Slightly darker */
+  );
+  border-radius: 50%;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    0 0 12px rgba(255, 215, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  position: relative;
+  z-index: 3;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Character hair (dark blob on top) */
+.characterVisual::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 8px;
+  background: linear-gradient(
+    135deg,
+    #3a2e1f 0%,    /* Dark brown */
+    #2a1f15 100%   /* Darker brown */
+  );
+  border-radius: 50% 50% 18% 18%;
+  z-index: 4;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Character body (55-60% of height = ~28px) - cozy sweater/hoodie */
+.body {
+  width: 26px;
+  height: 24px;
+  background: linear-gradient(
+    135deg,
+    #c97d60 0%,    /* Warm terracotta/orange */
+    #b86a4f 30%,   /* Medium */
+    #a85a3f 60%,   /* Darker */
+    #984a2f 100%   /* Deep warm tone */
+  );
+  border-radius: 10px 10px 12px 12px;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  margin-top: -1px;
+  position: relative;
+  z-index: 2;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Arms */
+.armLeft,
+.armRight {
+  position: absolute;
+  width: 5px;
+  height: 10px;
+  background: linear-gradient(
+    135deg,
+    #b86a4f 0%,
+    #a85a3f 100%
+  );
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  top: 8px;
+  z-index: 1;
+}
+
+.armLeft {
+  left: -3px;
+  transform-origin: top center;
+}
+
+.armRight {
+  right: -3px;
+  transform-origin: top center;
+}
+
+/* Subtle walking animation for arms (just a little movement) */
+/* GPU-accelerated transforms for smooth animation */
+.walking .armLeft {
+  animation: armSwingLeft 0.5s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+.walking .armRight {
+  animation: armSwingRight 0.5s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+@keyframes armSwingLeft {
+  0%, 100% {
+    transform: translateZ(0) rotate(-5deg); /* GPU-accelerated */
+  }
+  50% {
+    transform: translateZ(0) rotate(5deg); /* GPU-accelerated */
+  }
+}
+
+@keyframes armSwingRight {
+  0%, 100% {
+    transform: translateZ(0) rotate(5deg); /* GPU-accelerated */
+  }
+  50% {
+    transform: translateZ(0) rotate(-5deg); /* GPU-accelerated */
+  }
+}
+
+/* UnitySpace text on body */
+/*.body::before {*/
+/*  content: 'UnitySpace';*/
+/*  position: absolute;*/
+/*  top: 50%;*/
+/*  left: 50%;*/
+/*  transform: translate(-50%, -50%);*/
+/*  font-size: 5px;*/
+/*  font-weight: bold;*/
+/*  color: rgba(255, 255, 255, 0.9);*/
+/*  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);*/
+/*  white-space: nowrap;*/
+/*  z-index: 3;*/
+/*  letter-spacing: 0.2px;*/
+/*  font-family: 'Arial', sans-serif;*/
+/*}*/
+
+/* Legs container */
+.legs {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 18px;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  align-items: flex-start;
+}
+
+/* Individual legs */
+.legLeft,
+.legRight {
+  width: 8px;
+  height: 16px;
+  background: linear-gradient(
+    135deg,
+    #5a4a3a 0%,    /* Dark brown pants */
+    #4a3a2a 50%,
+    #3a2a1a 100%
+  );
+  border-radius: 4px 4px 5px 5px;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+/* Feet (socks/slippers) */
+.legLeft::after,
+.legRight::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    #8b7355 0%,
+    #7a6345 100%
+  );
+  border-radius: 2px 2px 3px 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Walking animation for legs - subtle bounce only */
+/* GPU-accelerated transforms for smooth animation */
+.walking .legLeft {
+  animation: legBounce 0.6s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+.walking .legRight {
+  animation: legBounce 0.6s ease-in-out infinite;
+  animation-delay: 0.3s; /* Offset for alternating effect */
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+@keyframes legBounce {
+  0%, 100% {
+    transform: translateZ(0) translateY(0); /* GPU-accelerated */
+  }
+  50% {
+    transform: translateZ(0) translateY(-1px); /* GPU-accelerated */
+  }
+}
+
+/* Character eyes */
+.eyes {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 5;
+}
+
+.eye {
+  width: 3.5px;
+  height: 3.5px;
+  background: #1a1f2e;
+  border-radius: 50%;
+  box-shadow:
+    0 0 3px rgba(0, 0, 0, 0.8),
+    inset 0 0 1px rgba(255, 255, 255, 0.3);
+  animation: blink 4s ease-in-out infinite;
+}
+
+/* Subtle blink animation */
+/* GPU-accelerated transform for smooth animation */
+.eye {
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
+@keyframes blink {
+  0%, 90%, 100% {
+    transform: translateZ(0) scaleY(1); /* GPU-accelerated */
+  }
+  92%, 94% {
+    transform: translateZ(0) scaleY(0.1); /* GPU-accelerated */
+  }
+}
+
+/* Character glow effect (cozy warm light) */
+.characterVisual {
+  filter: drop-shadow(0 0 8px rgba(255, 140, 66, 0.3));
+}
+
+/* ============================================================================
+   Performance Optimizations
+   ============================================================================ */
+
+.character,
+.characterVisual {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================================
+   Future Enhancements (Story 4.5 - Equipped Skins)
+   ============================================================================ */
+
+/* Character skins can be added as CSS classes:
+   .characterVisual.skin-cozy-sweater { ... }
+   .characterVisual.skin-default { ... }
+*/
+
